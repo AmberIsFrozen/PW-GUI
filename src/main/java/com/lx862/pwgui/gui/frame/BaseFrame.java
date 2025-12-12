@@ -57,13 +57,6 @@ public abstract class BaseFrame extends JFrame {
 //        KMenuItem refreshMenuItem = new KMenuItem(new RefreshPackAction(this));
 //        toolMenu.add(refreshMenuItem);
 
-        KMenuItem reinstallMenuItem = new KMenuItem(new ReinstallAction(this, modpack));
-        toolMenu.add(reinstallMenuItem);
-
-        KMenuItem updateAllMenuItem = new KMenuItem(new UpdateAction(() -> this));
-        toolMenu.add(updateAllMenuItem);
-
-
         KMenuItem generateModlistItem = new KMenuItem(new GenerateModlistAction(this, modpack.packFile.get()));
         toolMenu.add(generateModlistItem);
 
@@ -83,6 +76,12 @@ public abstract class BaseFrame extends JFrame {
 
     protected KMenu getEditMenu(Modpack modpack) {
         KMenu editMenu = new KMenu("Edit");
+        KMenuItem reinstallMenuItem = new KMenuItem(new ReinstallAction("Reinstall Modpack", this, modpack));
+        editMenu.add(reinstallMenuItem);
+
+        KMenuItem updateAllMenuItem = new KMenuItem(new UpdateAction(() -> this));
+        editMenu.add(updateAllMenuItem);
+
         KMenu addMissingMenu = new KMenu("Add Missing...");
 
         KMenuItem modsDirectoryMenuItem = new KMenuItem(new CreateMissingDirectoryAction(this, modpack.getRootPath(), "mods", "Mods Folder"));

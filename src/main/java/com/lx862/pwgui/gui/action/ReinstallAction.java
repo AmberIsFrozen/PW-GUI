@@ -22,8 +22,8 @@ public class ReinstallAction extends AbstractAction {
     private final Window parent;
     private final Modpack modpack;
 
-    public ReinstallAction(Window parent, Modpack modpack) {
-        super("Reinstall...");
+    public ReinstallAction(String title, Window parent, Modpack modpack) {
+        super(title);
         this.parent = parent;
         this.modpack = modpack;
         putValue(MNEMONIC_KEY, KeyEvent.VK_R);

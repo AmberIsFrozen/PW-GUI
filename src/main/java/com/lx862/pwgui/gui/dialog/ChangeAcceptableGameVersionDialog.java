@@ -92,7 +92,7 @@ public class ChangeAcceptableGameVersionDialog extends JDialog {
             });
         });
 
-        KButton cancelButton = new KButton(new CloseWindowAction(this, true));
+        KButton cancelButton = new KButton(new CloseWindowAction("Cancel", this));
 
         KActionPanel actionPanel = new KActionPanel.Builder().setPositiveButton(okButton).setNegativeButton(cancelButton).build();
         actionPanel.setAlignmentX(Component.LEFT_ALIGNMENT);

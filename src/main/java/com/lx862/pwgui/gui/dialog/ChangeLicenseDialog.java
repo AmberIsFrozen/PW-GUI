@@ -122,7 +122,7 @@ public class ChangeLicenseDialog extends JDialog {
         contentPanel.add(splitPane);
 
         JButton changeLicenseButton = new KButton(new ChangeLicenseAction(licenseFile));
-        JButton cancelButton = new KButton(new CloseWindowAction(this, true));
+        JButton cancelButton = new KButton(new CloseWindowAction("Cancel", this));
 
         KActionPanel actionPanel = new KActionPanel.Builder().setNegativeButton(cancelButton).setPositiveButton(changeLicenseButton).build();
         actionPanel.setAlignmentX(Component.LEFT_ALIGNMENT);

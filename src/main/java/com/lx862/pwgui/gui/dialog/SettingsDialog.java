@@ -7,7 +7,7 @@ import com.lx862.pwgui.core.Constants;
 import com.lx862.pwgui.core.data.ApplicationTheme;
 import com.lx862.pwgui.executable.Executables;
 import com.lx862.pwgui.gui.action.DownloadPackwizAction;
-import com.lx862.pwgui.gui.components.filter.PackwizExecutableFileFilter;
+import com.lx862.pwgui.gui.action.LocatePackwizAction;
 import com.lx862.pwgui.gui.components.kui.*;
 import com.lx862.pwgui.util.GUIHelper;
 import com.lx862.pwgui.util.Util;
@@ -196,15 +196,11 @@ public class SettingsDialog extends JDialog {
             packwizLocationPanel.setAlignmentX(Component.LEFT_ALIGNMENT);
             this.packwizLocationLabel = new JLabel("Location: ???");
 
-            KButton changePackwizLocationButton = new KButton("Change...");
-            changePackwizLocationButton.addActionListener(actionEvent -> {
-                KFileChooser fileChooser = new KFileChooser("locate-pw");
-                fileChooser.setFileFilter(new PackwizExecutableFileFilter());
-
-                if(fileChooser.showOpenDialog(this) == JFileChooser.APPROVE_OPTION) {
-                    updatePackwizPath(fileChooser.getSelectedFile().toPath());
-                }
-            });
+            KButton changePackwizLocationButton = new KButton(new LocatePackwizAction("Change...", SettingsDialog.this, () -> {
+                Path newPath = PWGUI.getConfig().packwizExecutablePath.getValue();
+                packwizLocationLabel.setText(String.format("Location: %s", newPath.toString()));
+                packwizLocationLabel.setToolTipText(newPath.toString());
+            }));
 
             packwizLocationPanel.addRow(1, 0, packwizLocationLabel, changePackwizLocationButton);
 

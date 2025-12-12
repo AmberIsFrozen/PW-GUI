@@ -13,15 +13,11 @@ import com.lx862.pwgui.util.Util;
 import org.apache.commons.io.FileUtils;
 
 import javax.swing.*;
-import javax.swing.text.BadLocationException;
-import javax.swing.text.Document;
-import javax.swing.text.Style;
-import javax.swing.text.StyleConstants;
+import javax.swing.text.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.io.File;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 
@@ -55,17 +51,17 @@ public class ViewLogDialog extends JDialog {
 
             Document doc = logTextPane.getDocument();
             try {
-                doc.insertString(doc.getLength(), line + "\n", style);
+                doc.insertString(doc.getLength(), line + "\n\n", style);
                 logHistory.append(line).append("\n");
             } catch (BadLocationException ignored) {}
             logTextAreaScrollPane.getVerticalScrollBar().setValue(logTextAreaScrollPane.getVerticalScrollBar().getMaximum()); // Jump to bottom
+            SimpleAttributeSet aSet = new SimpleAttributeSet();
         };
 
         PWGUI.LOGGER.addListener(appendLogCallback);
 
         KButton saveAsButton = new KButton(new SaveLogAction());
-        KButton closeButton = new KButton(new CloseWindowAction(this, false));
-        KActionPanel actionPanel = new KActionPanel.Builder().add(saveAsButton, closeButton).build();
+        KActionPanel actionPanel = new KActionPanel.Builder().add(saveAsButton).build();
 
         contentPanel.add(actionPanel, BorderLayout.PAGE_END);
         add(contentPanel);

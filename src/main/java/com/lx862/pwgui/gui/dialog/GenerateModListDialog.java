@@ -115,9 +115,8 @@ public class GenerateModListDialog extends JDialog {
 
         KButton saveAsButton = new KButton(new SaveModlistAction());
         KButton copyButton = new KButton(new CopyModListAction());
-        KButton closeButton = new KButton(new CloseWindowAction(this, false));
 
-        KActionPanel actionPanel = new KActionPanel.Builder().add(saveAsButton, copyButton, closeButton).build();
+        KActionPanel actionPanel = new KActionPanel.Builder().add(saveAsButton, copyButton).build();
         contentPanel.add(actionPanel, BorderLayout.PAGE_END);
 
         add(contentPanel);

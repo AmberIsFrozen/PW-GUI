@@ -23,7 +23,7 @@ public class PackwizIgnorePanel extends FileTypePanel {
         this.fileEntry = fileEntry;
         setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 
-        JLabel descriptionLabel = new JLabel("<html>By default, packwiz already ignores a handful of files. Here you can specify additional paths to be ignored. Packwiz will not track these files, nor will it be included in the modpack.<br>Files that are grayed out on the left pane represents files that are ignored.</html>"); // Use html tag to wrap text
+        JLabel descriptionLabel = new JLabel("<html>Packwiz already ignores a handful of files by default. Here, you may specify additional paths to be ignored. Packwiz will not track these files, nor will it be included in the modpack.<br><br>Files that are grayed out on the left pane represents files that are ignored.</html>"); // Use html tag to wrap text
         descriptionLabel.setAlignmentX(CENTER_ALIGNMENT);
         add(descriptionLabel);
 

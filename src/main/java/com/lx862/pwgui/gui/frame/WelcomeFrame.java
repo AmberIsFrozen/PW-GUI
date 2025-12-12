@@ -81,12 +81,14 @@ public class WelcomeFrame extends BaseFrame {
         }
 
         public static void openModpack(Path path, JFrame parent) {
+            parent.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
             try {
                 Modpack modpack = new Modpack(path);
                 EditFrame editFrame = new EditFrame(parent, modpack);
                 parent.dispose();
                 editFrame.setVisible(true);
             } catch (Exception e) {
+                parent.setCursor(Cursor.getDefaultCursor());
                 PWGUI.LOGGER.exception(e);
                 JOptionPane.showMessageDialog(parent, String.format("Failed to open modpack:\n%s", e.getMessage()), Util.withTitlePrefix("Failed to open Modpack"), JOptionPane.ERROR_MESSAGE);
             }

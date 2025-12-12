@@ -12,6 +12,9 @@ import com.lx862.pwgui.util.Util;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.KeyEvent;
+
+import static javax.swing.Action.MNEMONIC_KEY;
 
 /** The greeting splash screen if the packwiz executable is not found */
 public class SetupFrame extends BaseFrame {
@@ -75,11 +78,15 @@ public class SetupFrame extends BaseFrame {
 
             add(Box.createRigidArea(new Dimension(0, 8)));
 
-            KButton locateButton = new KButton(new LocatePackwizAction(parent, () -> {
+            LocatePackwizAction action = new LocatePackwizAction("Locate Packwiz...", parent, () -> {
+                JOptionPane.showMessageDialog(parent, "Packwiz executable has been configured!", Util.withTitlePrefix("Configure Success!"), JOptionPane.INFORMATION_MESSAGE);
                 WelcomeFrame welcomeFrame = new WelcomeFrame(parent);
                 welcomeFrame.setVisible(true);
                 parent.dispose();
-            }));
+            });
+            action.putValue(MNEMONIC_KEY, KeyEvent.VK_L);
+
+            KButton locateButton = new KButton(action);
             locateButton.setAlignmentX(Component.CENTER_ALIGNMENT);
             add(locateButton);
 
