@@ -260,7 +260,7 @@ public class GenerateModListDialog extends JDialog {
 
 
         if(packwizMetaFile.optionDescription != null) {
-            line += " - " + packwizMetaFile.optionDescription;
+            line += " - " + (packwizMetaFile.optionDescription).replace("\n", "\n  ");
         }
         if(showFileName) {
             line += String.format(" (%s)", packwizMetaFile.fileName);
