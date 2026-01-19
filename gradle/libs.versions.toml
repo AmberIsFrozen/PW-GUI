@@ -1,11 +1,11 @@
 [versions]
-shadow = "9.0.0-beta17"
-flatlaf = "3.6"
+shadow = "9.3.1"
+flatlaf = "3.7"
 toml4j = "0.7.2"
-common-io = "2.18.0"
-common-cli = "1.9.0"
-imageio = "3.12.0"
-gson = "2.13.1"
+common-io = "2.21.0"
+common-cli = "1.11.0"
+imageio = "3.13.0"
+gson = "2.13.2"
 txtmark = "0.13"
 
 [plugins]
