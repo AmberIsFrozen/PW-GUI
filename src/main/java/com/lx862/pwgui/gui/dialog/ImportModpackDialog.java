@@ -17,7 +17,7 @@ import java.io.File;
 import java.nio.file.Path;
 import java.util.function.Consumer;
 
-public class ImportModpackDialog extends JDialog {
+public class ImportModpackDialog extends BaseDialog {
     public ImportModpackDialog(JFrame parentFrame) {
         super(parentFrame, Util.withTitlePrefix("Import Modpack"), true);
 

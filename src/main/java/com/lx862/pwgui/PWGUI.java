@@ -1,5 +1,6 @@
 package com.lx862.pwgui;
 
+import com.formdev.flatlaf.util.UIScale;
 import com.lx862.pwgui.core.Config;
 import com.lx862.pwgui.core.Logger;
 import com.lx862.pwgui.executable.Executables;
@@ -55,6 +56,7 @@ public class PWGUI {
     private static void launchGUI(String packFilePath, boolean packwizLocated) {
         Config config = getConfig();
         GUIHelper.setupApplicationTheme(config.applicationTheme.getValue(), config.useWindowDecoration.getValue(), null); // Initialize FlatLaf and it's config
+        UIScale.setZoomFactor(config.zoomFactor.getValue());
 
         if(!packwizLocated) { // No packwiz, show setup wizard
             SwingUtilities.invokeLater(() -> {

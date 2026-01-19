@@ -20,6 +20,7 @@ public class FileSystemTreeCellRenderer extends KTreeCellRenderer {
     public Component getTreeCellRendererComponent(JTree jTree, Object o, boolean selected, boolean expanded, boolean leaf, int row, boolean b3) {
         super.getTreeCellRendererComponent(jTree, o, selected, expanded, leaf, row, b3);
         if(jTree instanceof FileSystemTree fileSystemTree) {
+            Font defaultFont = UIManager.getFont("defaultFont");
             if(o instanceof FileSystemSortedTreeNode fileSystemSortedTreeNode) {
                 FileSystemEntityModel fileInfo = (FileSystemEntityModel)fileSystemSortedTreeNode.getUserObject();
 
@@ -29,12 +30,12 @@ public class FileSystemTreeCellRenderer extends KTreeCellRenderer {
                 }
 
                 setText(fileInfo.getDisplayName());
-                setFont(getFont().deriveFont(fileInfo.isUserFriendlyName() ? Font.ITALIC : Font.PLAIN));
+                setFont(defaultFont.deriveFont(fileInfo.isUserFriendlyName() ? Font.ITALIC : Font.PLAIN));
                 setIcon(fileInfo.getIcon());
 
                 fileIsNew = fileSystemTree.isNewFile(fileSystemSortedTreeNode.path);
             } else {
-                setFont(getFont().deriveFont(Font.PLAIN));
+                setFont(defaultFont.deriveFont(Font.PLAIN));
                 setText(o.toString());
             }
         } else {

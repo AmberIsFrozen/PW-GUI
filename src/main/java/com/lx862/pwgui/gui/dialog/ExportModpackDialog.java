@@ -22,7 +22,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
 
-public class ExportModpackDialog extends JDialog {
+public class ExportModpackDialog extends BaseDialog {
     private final KButton exportButton;
 
     public ExportModpackDialog(JFrame parentFrame, Modpack modpack) {

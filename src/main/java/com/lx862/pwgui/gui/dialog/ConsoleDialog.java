@@ -17,7 +17,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.StringTokenizer;
 
-public class ConsoleDialog extends JDialog {
+public class ConsoleDialog extends BaseDialog {
     private final List<String> commandHistory;
     private final Executable executable;
     private final KTextArea logTextArea;

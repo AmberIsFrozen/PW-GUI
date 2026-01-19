@@ -14,7 +14,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.io.IOException;
 
-public class AboutDialog extends JDialog {
+public class AboutDialog extends BaseDialog {
     public AboutDialog(Window parent) {
         super(parent, String.format("About %s", Constants.PROGRAM_NAME), ModalityType.DOCUMENT_MODAL);
         setSize(325, 500);

@@ -25,7 +25,7 @@ import java.time.Year;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ChangeLicenseDialog extends JDialog {
+public class ChangeLicenseDialog extends BaseDialog {
     private LicenseModel selectedLicenseModel = null;
     private JPanel overviewPanel = null;
     private KTextArea licenseTextArea = null;

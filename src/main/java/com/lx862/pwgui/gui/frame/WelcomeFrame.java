@@ -29,7 +29,8 @@ public class WelcomeFrame extends BaseFrame {
 
         Executables.packwiz.setPackFileLocation(null);
         PWGUI.getConfig().setLastModpackPath(null);
-        this.jMenuBar.add(super.getHelpMenu());
+        jMenuBar.add(super.getViewMenu());
+        jMenuBar.add(super.getHelpMenu());
 
         KRootContentPanel contentPanel = new KRootContentPanel(10);
         JPanel mainPanel = new MainPanel(this);

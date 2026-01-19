@@ -27,6 +27,7 @@ public class Config extends WritableFile {
     public final ConfigEntry<ApplicationTheme> applicationTheme = new ConfigEntry<>("applicationTheme", ApplicationTheme.LIGHT, (jsonElement -> ApplicationTheme.valueOf(jsonElement.getAsString())));
     public final ConfigEntry<String> authorName = new ConfigEntry<>("authorName", null, (jsonElement -> jsonElement.getAsString()));
     public final ConfigEntry<Boolean> debugMode = new ConfigEntry<>("debugMode", false, (jsonElement -> jsonElement.getAsBoolean()));
+    public final ConfigEntry<Float> zoomFactor = new ConfigEntry<>("zoomFactor", 1.0f, (jsonElement -> jsonElement.getAsFloat()));
     public final ConfigEntry<Boolean> openLastModpackOnLaunch = new ConfigEntry<>("openLastModpackOnLaunch", true, (jsonElement -> jsonElement.getAsBoolean()));
     public final ConfigEntry<Boolean> useWindowDecoration = new ConfigEntry<>("useWindowDecoration", false, (jsonElement -> jsonElement.getAsBoolean()));
     public final ConfigEntry<Boolean> showMetaFileName = new ConfigEntry<>("showMetaFileName", false, (jsonElement -> jsonElement.getAsBoolean()));
@@ -64,6 +65,7 @@ public class Config extends WritableFile {
         this.useWindowDecoration.read(configJson);
         this.showMetaFileName.read(configJson);
         this.lastModpackPath.read(configJson);
+        this.zoomFactor.read(configJson);
     }
 
     public void write(String reason) throws IOException {
@@ -88,6 +90,7 @@ public class Config extends WritableFile {
         jsonObject.addProperty(debugMode.getKey(), debugMode.getValue());
         jsonObject.addProperty(useWindowDecoration.getKey(), useWindowDecoration.getValue());
         jsonObject.addProperty(showMetaFileName.getKey(), showMetaFileName.getValue());
+        jsonObject.addProperty(zoomFactor.getKey(), zoomFactor.getValue());
 
         JsonObject executableJsonObject = new JsonObject();
         if(packwizExecutablePath.valueNotNull()) {

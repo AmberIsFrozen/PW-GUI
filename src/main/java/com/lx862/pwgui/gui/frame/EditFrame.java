@@ -59,6 +59,7 @@ public class EditFrame extends BaseFrame {
     private void initMenuBars(Modpack modpack, Consumer<Boolean> saveChanges) {
         jMenuBar.add(getFileMenu(modpack, saveChanges));
         jMenuBar.add(getEditMenu(modpack));
+        jMenuBar.add(getViewMenu());
         jMenuBar.add(getToolMenu(modpack));
         jMenuBar.add(getHelpMenu());
     }

@@ -22,7 +22,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
 
-public class ChangeAcceptableGameVersionDialog extends JDialog {
+public class ChangeAcceptableGameVersionDialog extends BaseDialog {
     private final List<VersionMetadata> versions;
 
     public ChangeAcceptableGameVersionDialog(JFrame parentFrame, String requiredVersion, List<String> preSelectedVersions, Runnable saveCallback) {

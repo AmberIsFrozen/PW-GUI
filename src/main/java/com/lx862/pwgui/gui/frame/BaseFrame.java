@@ -1,5 +1,9 @@
 package com.lx862.pwgui.gui.frame;
 
+import com.formdev.flatlaf.FlatLaf;
+import com.formdev.flatlaf.util.UIScale;
+import com.lx862.pwgui.PWGUI;
+import com.lx862.pwgui.gui.components.kui.KCheckBoxMenuItem;
 import com.lx862.pwgui.pwcore.Modpack;
 import com.lx862.pwgui.gui.action.*;
 import com.lx862.pwgui.gui.components.kui.KMenu;
@@ -13,21 +17,43 @@ import com.lx862.pwgui.util.Util;
 
 import javax.swing.*;
 import java.awt.event.KeyEvent;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.function.Consumer;
 
 public abstract class BaseFrame extends JFrame {
+    private static final float[] ZOOM_LEVELS = {1.0f, 1.1f, 1.2f ,1.3f, 1.4f, 1.5f, 1.6f, 1.7f, 1.8f, 1.9f, 2.0f};
     protected final JMenuBar jMenuBar;
+    private int baseWidth;
+    private int baseHeight;
 
     public BaseFrame() {
         this.jMenuBar = new JMenuBar();
         setIconImage(GUIHelper.convertImage(Util.getAssets("/assets/icon.png")));
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         setJMenuBar(jMenuBar);
+
+        UIScale.setSupportedZoomFactors(ZOOM_LEVELS);
+        UIScale.addPropertyChangeListener((evt) -> {
+            if(evt.getPropertyName().equals("zoomFactor")) {
+                setSize(this.baseWidth, this.baseHeight);
+            }
+        });
     }
 
     public BaseFrame(String title) {
         this();
         setTitle(title);
+    }
+
+    @Override
+    public void setSize(int width, int height) {
+        this.baseWidth = width;
+        this.baseHeight = height;
+
+        float zoom = PWGUI.getConfig().zoomFactor.getValue();
+        super.setSize((int)(width * zoom), (int)(height * zoom));
     }
 
     protected KMenu getHelpMenu() {
@@ -139,5 +165,40 @@ public abstract class BaseFrame extends JFrame {
         fileMenu.add(quitMenuItem);
 
         return fileMenu;
+    }
+
+    protected KMenu getViewMenu() {
+        KMenu viewMenu = new KMenu("View");
+        KMenu zoomMenu = new KMenu("Zoom...");
+
+        List<KCheckBoxMenuItem> items = new ArrayList<>();
+
+        for(float zoomFactor : ZOOM_LEVELS) {
+            int scalePercentage = (int)(zoomFactor * 100);
+            KCheckBoxMenuItem zoomLevelMenu = new KCheckBoxMenuItem(scalePercentage + "%");
+            zoomLevelMenu.addActionListener(actionEvent -> {
+                PWGUI.getConfig().zoomFactor.setValue(zoomFactor);
+                try {
+                    PWGUI.getConfig().write("Update zoom level");
+                } catch (IOException e) {
+                    PWGUI.LOGGER.exception(e);
+                }
+
+                if(UIScale.setZoomFactor(zoomFactor)) {
+                    FlatLaf.updateUI();
+                    items.forEach(e -> {
+                        e.setSelected(false);
+                    });
+                    zoomLevelMenu.setSelected(true);
+                }
+            });
+
+            items.add(zoomLevelMenu);
+            zoomLevelMenu.setSelected(UIScale.getZoomFactor() == zoomFactor);
+            zoomMenu.add(zoomLevelMenu);
+        }
+
+        viewMenu.add(zoomMenu);
+        return viewMenu;
     }
 }

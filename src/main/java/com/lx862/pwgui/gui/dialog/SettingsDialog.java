@@ -20,7 +20,7 @@ import java.awt.event.KeyEvent;
 import java.io.IOException;
 import java.nio.file.Path;
 
-public class SettingsDialog extends JDialog {
+public class SettingsDialog extends BaseDialog {
     private final ProgramPanel programPanel;
     private final PackwizPanel packwizPanel;
     private final Config config;

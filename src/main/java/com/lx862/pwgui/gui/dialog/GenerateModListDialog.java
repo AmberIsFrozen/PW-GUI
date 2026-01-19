@@ -24,7 +24,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class GenerateModListDialog extends JDialog {
+public class GenerateModListDialog extends BaseDialog {
     private final PackFile packFile;
     private String plainTextModlist = null;
 

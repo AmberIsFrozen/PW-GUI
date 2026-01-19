@@ -1,5 +1,6 @@
 package com.lx862.pwgui.gui.components.kui;
 
+import com.formdev.flatlaf.util.UIScale;
 import com.lx862.pwgui.gui.components.DocumentChangedListener;
 
 import javax.swing.*;
@@ -15,7 +16,7 @@ public class KTextArea extends JTextArea {
     }
 
     public void useMonospacedFont() {
-        setFont(new Font(Font.MONOSPACED, getFont().getStyle(), 12));
+        setFont(new Font(Font.MONOSPACED, getFont().getStyle(), (int)(12 * UIScale.getZoomFactor())));
     }
 
     public void wrapCharacter() {

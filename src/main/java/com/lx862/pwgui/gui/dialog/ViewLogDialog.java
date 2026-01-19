@@ -22,7 +22,7 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 
 /** Dialog to view the program's log */
-public class ViewLogDialog extends JDialog {
+public class ViewLogDialog extends BaseDialog {
     private final Logger.LogCallback appendLogCallback;
     private final StringBuilder logHistory;
 

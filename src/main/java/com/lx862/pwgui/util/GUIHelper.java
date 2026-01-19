@@ -1,6 +1,7 @@
 package com.lx862.pwgui.util;
 
 import com.formdev.flatlaf.FlatLaf;
+import com.formdev.flatlaf.util.UIScale;
 import com.lx862.pwgui.PWGUI;
 import com.lx862.pwgui.core.data.ApplicationTheme;
 
@@ -92,7 +93,9 @@ public class GUIHelper {
     }
 
     public static Image resizeImage(Image img, int width, int height, int scaleMode) {
-        return img.getScaledInstance(width, height, scaleMode);
+        int zoomW = (int)(width * UIScale.getZoomFactor());
+        int zoomH = (int)(height * UIScale.getZoomFactor());
+        return img.getScaledInstance(zoomW, zoomH, scaleMode);
     }
 
     /** Returns a new image with the specified opacity */

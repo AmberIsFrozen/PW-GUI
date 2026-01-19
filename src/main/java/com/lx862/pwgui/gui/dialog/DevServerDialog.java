@@ -16,7 +16,7 @@ import java.awt.event.KeyEvent;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-public class DevServerDialog extends JDialog {
+public class DevServerDialog extends BaseDialog {
     private final KTextArea logTextArea;
     private final KButton startButton;
     private final KButton stopButton;
