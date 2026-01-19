@@ -4,6 +4,7 @@ import com.formdev.flatlaf.ui.FlatUIUtils;
 import com.lx862.pwgui.gui.components.kui.KActionPanel;
 import com.lx862.pwgui.gui.components.kui.KButton;
 import com.lx862.pwgui.gui.components.kui.KRootContentPanel;
+import com.lx862.pwgui.gui.dialog.BaseDialog;
 import com.lx862.pwgui.util.Util;
 
 import javax.swing.*;
@@ -12,7 +13,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.io.File;
 
-public class FileSavedDialog extends JDialog {
+public class FileSavedDialog extends BaseDialog {
     public FileSavedDialog(JDialog parentDialog, String title, File file) {
         super(parentDialog, Util.withTitlePrefix(title), true);
 

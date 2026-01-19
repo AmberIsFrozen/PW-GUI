@@ -4,6 +4,7 @@ import com.formdev.flatlaf.ui.FlatUIUtils;
 import com.lx862.pwgui.PWGUI;
 import com.lx862.pwgui.gui.components.kui.KActionPanel;
 import com.lx862.pwgui.gui.components.kui.KRootContentPanel;
+import com.lx862.pwgui.gui.dialog.BaseDialog;
 import com.lx862.pwgui.pwcore.PackwizMetaFile;
 import com.lx862.pwgui.gui.components.ModDetailListCellRenderer;
 import com.lx862.pwgui.gui.components.kui.KButton;
@@ -17,7 +18,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.util.List;
 
-public class IncompatibleSummaryDialog extends JDialog {
+public class IncompatibleSummaryDialog extends BaseDialog {
     public IncompatibleSummaryDialog(Window parent, List<PackwizMetaFile> items) {
         super(parent, Util.withTitlePrefix("Compatibility Summary"), ModalityType.DOCUMENT_MODAL);
 

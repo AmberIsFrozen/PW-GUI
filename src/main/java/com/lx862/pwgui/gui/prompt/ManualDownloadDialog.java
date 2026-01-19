@@ -6,6 +6,7 @@ import com.lx862.pwgui.core.data.model.ManualModInfo;
 import com.lx862.pwgui.gui.action.OKAction;
 import com.lx862.pwgui.gui.components.fstree.FileSystemWatcher;
 import com.lx862.pwgui.gui.components.kui.*;
+import com.lx862.pwgui.gui.dialog.BaseDialog;
 import com.lx862.pwgui.util.Util;
 
 import javax.swing.*;
@@ -16,7 +17,7 @@ import java.nio.file.*;
 import java.util.List;
 import java.util.function.Consumer;
 
-public class ManualDownloadDialog extends JDialog {
+public class ManualDownloadDialog extends BaseDialog {
     private final List<ManualModInfo> modList;
     private final JPanel modListPanel;
     private final JLabel watchingPathLabel;

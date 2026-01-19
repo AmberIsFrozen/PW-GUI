@@ -18,6 +18,10 @@ public class BaseDialog extends JDialog {
         super(owner, title, modal);
     }
 
+    public BaseDialog(JDialog owner, String title, boolean modal) {
+        super(owner, title, modal);
+    }
+
     @Override
     public void setSize(int width, int height) {
         float zoom = PWGUI.getConfig().zoomFactor.getValue();

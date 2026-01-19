@@ -4,13 +4,14 @@ import com.formdev.flatlaf.ui.FlatUIUtils;
 import com.lx862.pwgui.gui.components.kui.KButton;
 import com.lx862.pwgui.gui.components.kui.KCollapsibleToggle;
 import com.lx862.pwgui.gui.components.kui.KRootContentPanel;
+import com.lx862.pwgui.gui.dialog.BaseDialog;
 import com.lx862.pwgui.util.GUIHelper;
 import com.lx862.pwgui.util.Util;
 
 import javax.swing.*;
 import java.awt.*;
 
-public abstract class ProgressDialog extends JDialog {
+public abstract class ProgressDialog extends BaseDialog {
     private final JProgressBar progressBar;
     private final JLabel statusLabel;
     private final JTextArea logTextArea;

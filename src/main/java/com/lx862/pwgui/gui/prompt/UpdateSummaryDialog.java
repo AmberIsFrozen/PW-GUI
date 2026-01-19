@@ -6,6 +6,7 @@ import com.lx862.pwgui.gui.components.kui.KActionPanel;
 import com.lx862.pwgui.gui.components.kui.KButton;
 import com.lx862.pwgui.gui.components.kui.KCollapsibleToggle;
 import com.lx862.pwgui.gui.components.kui.KRootContentPanel;
+import com.lx862.pwgui.gui.dialog.BaseDialog;
 import com.lx862.pwgui.util.Util;
 
 import javax.swing.*;
@@ -15,7 +16,7 @@ import java.awt.event.KeyEvent;
 import java.util.List;
 import java.util.function.Consumer;
 
-public class UpdateSummaryDialog extends JDialog {
+public class UpdateSummaryDialog extends BaseDialog {
     public UpdateSummaryDialog(Window parent, List<String> newItems, List<String> skippedItems, List<String> unsupportedItems, Consumer<Boolean> callback) {
         super(parent, Util.withTitlePrefix("Update Summary"), ModalityType.DOCUMENT_MODAL);
 

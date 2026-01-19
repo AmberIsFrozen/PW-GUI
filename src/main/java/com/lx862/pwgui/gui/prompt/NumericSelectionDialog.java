@@ -6,6 +6,7 @@ import com.lx862.pwgui.gui.components.kui.KActionPanel;
 import com.lx862.pwgui.gui.components.kui.KButton;
 import com.lx862.pwgui.gui.components.kui.KGridBagLayoutPanel;
 import com.lx862.pwgui.gui.components.kui.KListCellRenderer;
+import com.lx862.pwgui.gui.dialog.BaseDialog;
 import com.lx862.pwgui.util.GUIHelper;
 import com.lx862.pwgui.util.Util;
 
@@ -15,7 +16,7 @@ import java.awt.event.KeyEvent;
 import java.util.List;
 import java.util.function.Consumer;
 
-public class NumericSelectionDialog extends JDialog {
+public class NumericSelectionDialog extends BaseDialog {
     public <T> NumericSelectionDialog(Window parent, String title, List<T> list, Consumer<Integer> callback) {
         super(parent, Util.withTitlePrefix(title), ModalityType.DOCUMENT_MODAL);
         init(parent, title, list, callback);
