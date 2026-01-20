@@ -23,6 +23,6 @@ public class GitDirectoryModel extends DirectoryModel {
 
     @Override
     public Icon getIcon() {
-        return new ImageIcon(GUIHelper.convertImage(Util.getAssets("/assets/mime/git.png"), 18));
+        return new ImageIcon(GUIHelper.convertImage(Util.getAssets("/assets/ui/mime/git.png"), 18));
     }
 }

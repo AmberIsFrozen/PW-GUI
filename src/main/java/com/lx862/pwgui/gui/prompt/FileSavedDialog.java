@@ -15,7 +15,7 @@ import java.io.File;
 
 public class FileSavedDialog extends BaseDialog {
     public FileSavedDialog(JDialog parentDialog, String title, File file) {
-        super(parentDialog, Util.withTitlePrefix(title), true);
+        super(parentDialog, Util.withTitlePrefix("Save Successful!"), true);
 
         KRootContentPanel contentPanel = new KRootContentPanel(10);
         contentPanel.setLayout(new BoxLayout(contentPanel, BoxLayout.PAGE_AXIS));

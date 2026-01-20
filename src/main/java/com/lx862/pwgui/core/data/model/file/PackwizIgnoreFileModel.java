@@ -23,6 +23,6 @@ public class PackwizIgnoreFileModel extends PlainTextFileModel {
 
     @Override
     public Icon getIcon() {
-        return new ImageIcon(GUIHelper.convertImage(Util.getAssets("/assets/mime/packwizignore.png"), 18));
+        return new ImageIcon(GUIHelper.convertImage(Util.getAssets("/assets/ui/mime/packwizignore.png"), 18));
     }
 }

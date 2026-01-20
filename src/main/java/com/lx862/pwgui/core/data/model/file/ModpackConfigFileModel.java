@@ -32,6 +32,6 @@ public class ModpackConfigFileModel extends PlainTextFileModel {
 
     @Override
     public Icon getIcon() {
-        return new ImageIcon(GUIHelper.convertImage(Util.getAssets("/assets/mime/settings.png"), 18));
+        return new ImageIcon(GUIHelper.convertImage(Util.getAssets("/assets/ui/mime/settings.png"), 18));
     }
 }

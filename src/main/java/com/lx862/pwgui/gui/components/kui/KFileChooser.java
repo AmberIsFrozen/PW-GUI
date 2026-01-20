@@ -12,7 +12,6 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.stream.Stream;
 
 public class KFileChooser extends SystemFileChooser {
@@ -31,8 +30,9 @@ public class KFileChooser extends SystemFileChooser {
         SystemFileChooser.setStateStore(FILE_PICKER_STATE);
         if(context != null) {
             setStateStoreID(context);
-        } else {
-            setCurrentDirectory(defaultPath == null ? Paths.get(System.getProperty("user.dir")).toFile() : defaultPath.toFile());
+            if(defaultPath != null && FILE_PICKER_STATE.get(context + "." + StateStore.KEY_CURRENT_DIRECTORY, null) == null) {
+                setCurrentDirectory(defaultPath.toFile());
+            }
         }
     }
 

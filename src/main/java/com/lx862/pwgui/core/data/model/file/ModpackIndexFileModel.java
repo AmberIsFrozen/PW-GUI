@@ -23,6 +23,6 @@ public class ModpackIndexFileModel extends PlainTextFileModel {
 
     @Override
     public Icon getIcon() {
-        return new ImageIcon(GUIHelper.convertImage(Util.getAssets("/assets/mime/packwiz.png"), 18));
+        return new ImageIcon(GUIHelper.convertImage(Util.getAssets("/assets/ui/mime/packwiz.png"), 18));
     }
 }

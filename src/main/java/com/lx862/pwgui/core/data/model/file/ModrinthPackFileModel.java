@@ -13,6 +13,6 @@ public class ModrinthPackFileModel extends GenericFileModel {
 
     @Override
     public Icon getIcon() {
-        return new ImageIcon(GUIHelper.convertImage(Util.getAssets("/assets/services/modrinth.png"), 18));
+        return new ImageIcon(GUIHelper.convertImage(Util.getAssets("/assets/ui/services/modrinth.png"), 18));
     }
 }

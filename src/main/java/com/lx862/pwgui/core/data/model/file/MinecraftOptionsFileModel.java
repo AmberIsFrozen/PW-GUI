@@ -23,6 +23,6 @@ public class MinecraftOptionsFileModel extends PlainTextFileModel {
 
     @Override
     public Icon getIcon() {
-        return new ImageIcon(GUIHelper.convertImage(Util.getAssets("/assets/components/minecraft.png"), 18));
+        return new ImageIcon(GUIHelper.convertImage(Util.getAssets("/assets/ui/components/minecraft.png"), 18));
     }
 }
