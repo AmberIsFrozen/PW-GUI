@@ -22,6 +22,7 @@ dependencies {
     implementation libs.gson
     implementation libs.toml4j
     implementation libs.bundles.imageio.ext
+    implementation libs.rsyntaxtextarea
 }
 
 tasks.withType(JavaCompile).configureEach {

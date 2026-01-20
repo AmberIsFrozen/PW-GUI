@@ -7,6 +7,7 @@ common-cli = "1.11.0"
 imageio = "3.13.0"
 gson = "2.13.2"
 txtmark = "0.13"
+rsyntaxtextarea = "3.6.1"
 
 [plugins]
 shadow = { id = "com.gradleup.shadow", version.ref = "shadow" }
@@ -21,6 +22,7 @@ common-cli = { group = "commons-cli", name = "commons-cli", version.ref = "commo
 imageio-bmp = { group = "com.twelvemonkeys.imageio", name = "imageio-bmp", version.ref = "imageio" }
 imageio-webp = { group = "com.twelvemonkeys.imageio", name = "imageio-webp", version.ref = "imageio" }
 txtmark = { group = "com.github.rjeschke", name = "txtmark", version.ref = "txtmark" }
+rsyntaxtextarea = { group = "com.fifesoft", name = "rsyntaxtextarea", version.ref = "rsyntaxtextarea" }
 
 [bundles]
 flatlaf = ["flatlaf", "flatlaf-ij-themes"]

@@ -1,19 +1,24 @@
 package com.lx862.pwgui.gui.panel.editing.filetype;
 
+import com.formdev.flatlaf.util.UIScale;
 import com.lx862.pwgui.PWGUI;
 import com.lx862.pwgui.core.data.model.file.GenericFileModel;
+import com.lx862.pwgui.gui.components.DocumentChangedListener;
 import com.lx862.pwgui.gui.components.kui.KTextArea;
 import com.lx862.pwgui.util.Util;
 import com.lx862.pwgui.core.data.model.file.PlainTextFileModel;
+import org.fife.ui.rsyntaxtextarea.*;
+import org.fife.ui.rtextarea.RTextScrollPane;
 
 import javax.swing.*;
+import javax.swing.text.JTextComponent;
 import java.awt.*;
 import java.io.FileWriter;
 import java.io.IOException;
 
 public class PlainTextPanel extends FileTypePanel {
     private final GenericFileModel fileEntry;
-    private final KTextArea textArea;
+    private final JTextComponent textArea;
     private String initialContent;
 
     public PlainTextPanel(FileEntryPaneContext context, PlainTextFileModel fileEntry) {
@@ -21,24 +26,38 @@ public class PlainTextPanel extends FileTypePanel {
         this.fileEntry = fileEntry;
         setLayout(new BorderLayout());
 
-        textArea = new KTextArea();
-        textArea.useMonospacedFont();
-        textArea.wrapWord();
-        textArea.onChange(this::updateSaveState);
-
         String content;
-
         try {
             content = fileEntry.getContent();
         } catch (Exception e) {
             PWGUI.LOGGER.exception(e);
             content = Util.withBracketPrefix(String.format("Error trying to read file: %s", e.getMessage()));
         }
-
         this.initialContent = content;
-        textArea.setText(content, true);
 
-        JScrollPane jScrollPane = new JScrollPane(textArea);
+        // TODO: Move to it's own component
+        RSyntaxTextArea textArea = new RSyntaxTextArea(content);
+        this.textArea = textArea;
+        textArea.setWrapStyleWord(true);
+        textArea.setLineWrap(true);
+        textArea.setBracketMatchingEnabled(true);
+        textArea.setTabSize(4);
+        textArea.setCaretPosition(0);
+
+        try {
+            Theme theme = Theme.load(getClass().getResourceAsStream(
+                    "/org/fife/ui/rsyntaxtextarea/themes/default-alt.xml"));
+            theme.apply(textArea);
+        } catch (IOException ignored) {
+        }
+
+        // RSyntaxTextArea doesn't zoom the text by default, have to handle it ourselves
+        textArea.setFont(textArea.getFont().deriveFont(Font.PLAIN, textArea.getFont().getSize() * UIScale.getZoomFactor()));
+
+        textArea.setSyntaxEditingStyle(FileTypeUtil.get().guessContentType(fileEntry.path.toFile()));
+        textArea.getDocument().addDocumentListener(new DocumentChangedListener(this::updateSaveState));
+
+        RTextScrollPane jScrollPane = new RTextScrollPane(textArea);
         jScrollPane.setAlignmentX(LEFT_ALIGNMENT);
         jScrollPane.setAlignmentY(BOTTOM_ALIGNMENT);
         add(jScrollPane, BorderLayout.CENTER);
