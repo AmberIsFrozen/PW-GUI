@@ -1,5 +1,6 @@
 plugins {
     id 'java'
+    id 'edu.sc.seis.launch4j' version '4.0.0'
     alias libs.plugins.shadow
 }
 
@@ -28,6 +29,8 @@ tasks.withType(JavaCompile).configureEach {
 }
 
 jar {
+    enabled = false
+    archiveFileName = "${rootProject.name}-v${project.version}-nodep.jar"
     manifest {
         attributes(
             'Main-Class': 'com.lx862.pwgui.Main'
@@ -35,8 +38,24 @@ jar {
     }
 }
 
+launch4j {
+    mainClassName = 'com.lx862.pwgui.Main'
+    icon = "${projectDir}/assets/pwgui_icon.ico"
+    outfile = "${rootProject.name}-v${project.version}.exe"
+    errTitle = "This program requires at least Java 17 to run"
+    downloadUrl = "https://adoptium.net/"
+    jreMinVersion = "17.0.0"
+    fileDescription = "Lightweight GUI Wrapper around packwiz, a Minecraft modpack tool."
+    copyright = "AmberFrost"
+    jarTask = project.tasks.shadowJar
+}
+
 build {
     dependsOn(shadowJar)
+}
+
+shadowJar {
+    archiveFileName = "${rootProject.name}-v${project.version}.jar"
 }
 
 test {

@@ -33,22 +33,15 @@ jobs:
       - name: Make Gradle wrapper executable
         run: chmod +x ./gradlew
       - name: Build with Gradle
-        run: ./gradlew build
-      - name: Download Launch4j
         run: |
-          curl https://jaist.dl.sourceforge.net/project/launch4j/launch4j-3/3.50/launch4j-3.50-linux-x64.tgz -o launch4j.tgz
-          tar -xzvf launch4j.tgz
-      - name: Run Launch4j
-        run: |
-          cd assets/launch4j
-          java -jar $GITHUB_WORKSPACE/launch4j/launch4j.jar launch4j.xml
-          cp PW-GUI.exe $GITHUB_WORKSPACE/build/libs/
+          ./gradlew build
+          ./gradlew createAllExecutables
       - name: Generate artifact attestation
         uses: actions/attest-build-provenance@v3
         with:
-          subject-path: 'build/libs/*-all.jar, build/libs/*.exe'
+          subject-path: 'build/libs/PW-GUI-*.jar, build/launch4j/PW-GUI-*.exe'
       - name: Upload GitHub release
         uses: AButler/upload-release-assets@v3.0
         with:
-          files: 'build/libs/*-all.jar;build/libs/*.exe'
+          files: 'build/libs/PW-GUI-*.jar;build/launch4j/PW-GUI-*.exe'
           repo-token: ${{ secrets.GITHUB_TOKEN }}
