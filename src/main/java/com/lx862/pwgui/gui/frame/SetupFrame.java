@@ -30,6 +30,7 @@ public class SetupFrame extends BaseFrame {
         MainPanel mainPanel = new MainPanel(this);
         contentPanel.add(mainPanel, BorderLayout.CENTER);
         add(contentPanel);
+        this.jMenuBar.add(super.getViewMenu());
         this.jMenuBar.add(super.getHelpMenu());
     }
 
