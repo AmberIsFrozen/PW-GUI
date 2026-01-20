@@ -16,17 +16,20 @@ import com.lx862.pwgui.util.GUIHelper;
 import com.lx862.pwgui.util.Util;
 
 import javax.swing.*;
+import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashMap;
 import java.util.function.Consumer;
 
 public abstract class BaseFrame extends JFrame {
     private static final float[] ZOOM_LEVELS = {1.0f, 1.1f, 1.2f ,1.3f, 1.4f, 1.5f, 1.6f, 1.7f, 1.8f, 1.9f, 2.0f};
     protected final JMenuBar jMenuBar;
+    private final KeyEventDispatcher shortcutKeyListener;
     private int baseWidth;
     private int baseHeight;
+
+    HashMap<Float, KCheckBoxMenuItem> zoomDropdownItems = new HashMap<>();
 
     public BaseFrame() {
         this.jMenuBar = new JMenuBar();
@@ -35,6 +38,30 @@ public abstract class BaseFrame extends JFrame {
         setJMenuBar(jMenuBar);
 
         UIScale.setSupportedZoomFactors(ZOOM_LEVELS);
+        UIScale.setZoomFactor(PWGUI.getConfig().zoomFactor.getValue());
+
+        shortcutKeyListener = e -> {
+            if(e.getID() == KeyEvent.KEY_PRESSED) {
+                if(e.isControlDown()) {
+                    if(e.getKeyChar() == '+') {
+                        if(UIScale.zoomIn()) {
+                            updateZoom(UIScale.getZoomFactor());
+                            return true;
+                        }
+                    }
+                    if(e.getKeyChar() == '-') {
+                        if(UIScale.zoomOut()) {
+                            updateZoom(UIScale.getZoomFactor());
+                            return true;
+                        }
+                    }
+                }
+            }
+            return false;
+        };
+        KeyboardFocusManager manager = KeyboardFocusManager.getCurrentKeyboardFocusManager();
+        manager.addKeyEventDispatcher(shortcutKeyListener);
+
         UIScale.addPropertyChangeListener((evt) -> {
             if(evt.getPropertyName().equals("zoomFactor")) {
                 setSize(this.baseWidth, this.baseHeight);
@@ -51,9 +78,14 @@ public abstract class BaseFrame extends JFrame {
     public void setSize(int width, int height) {
         this.baseWidth = width;
         this.baseHeight = height;
+        super.setSize((int)(width * UIScale.getZoomFactor()), (int)(height * UIScale.getZoomFactor()));
+    }
 
-        float zoom = PWGUI.getConfig().zoomFactor.getValue();
-        super.setSize((int)(width * zoom), (int)(height * zoom));
+    @Override
+    public void dispose() {
+        KeyboardFocusManager manager = KeyboardFocusManager.getCurrentKeyboardFocusManager();
+        manager.removeKeyEventDispatcher(shortcutKeyListener);
+        super.dispose();
     }
 
     protected KMenu getHelpMenu() {
@@ -171,34 +203,35 @@ public abstract class BaseFrame extends JFrame {
         KMenu viewMenu = new KMenu("View");
         KMenu zoomMenu = new KMenu("Zoom...");
 
-        List<KCheckBoxMenuItem> items = new ArrayList<>();
-
         for(float zoomFactor : ZOOM_LEVELS) {
             int scalePercentage = (int)(zoomFactor * 100);
             KCheckBoxMenuItem zoomLevelMenu = new KCheckBoxMenuItem(scalePercentage + "%");
             zoomLevelMenu.addActionListener(actionEvent -> {
-                PWGUI.getConfig().zoomFactor.setValue(zoomFactor);
-                try {
-                    PWGUI.getConfig().write("Update zoom level");
-                } catch (IOException e) {
-                    PWGUI.LOGGER.exception(e);
-                }
-
                 if(UIScale.setZoomFactor(zoomFactor)) {
-                    FlatLaf.updateUI();
-                    items.forEach(e -> {
-                        e.setSelected(false);
-                    });
-                    zoomLevelMenu.setSelected(true);
+                    updateZoom(zoomFactor);
                 }
             });
 
-            items.add(zoomLevelMenu);
+            zoomDropdownItems.put(zoomFactor, zoomLevelMenu);
             zoomLevelMenu.setSelected(UIScale.getZoomFactor() == zoomFactor);
             zoomMenu.add(zoomLevelMenu);
         }
 
         viewMenu.add(zoomMenu);
         return viewMenu;
+    }
+
+    private void updateZoom(float zoomFactor) {
+        PWGUI.getConfig().zoomFactor.setValue(zoomFactor);
+        try {
+            PWGUI.getConfig().write("Update zoom level");
+        } catch (IOException e) {
+            PWGUI.LOGGER.exception(e);
+        }
+
+        FlatLaf.updateUI();
+        zoomDropdownItems.forEach((itemZoomFactor, zoomLevelMenu) -> {
+            zoomLevelMenu.setSelected(UIScale.getZoomFactor() == itemZoomFactor);
+        });
     }
 }
