@@ -58,7 +58,7 @@ public class AboutDialog extends BaseDialog {
 
             add(tabbedPane);
 
-            JLabel footerLabel = new JLabel(String.format("%s 2025 <3", Constants.AUTHOR));
+            JLabel footerLabel = new JLabel(String.format("%s 2026 <3", Constants.AUTHOR));
             footerLabel.setAlignmentX(CENTER_ALIGNMENT);
             add(footerLabel);
         }
