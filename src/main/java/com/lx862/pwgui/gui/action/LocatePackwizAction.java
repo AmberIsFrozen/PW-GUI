@@ -2,7 +2,7 @@ package com.lx862.pwgui.gui.action;
 
 import com.lx862.pwgui.PWGUI;
 import com.lx862.pwgui.executable.Executables;
-import com.lx862.pwgui.gui.components.filter.PackwizExecutableFileFilter;
+import com.lx862.pwgui.gui.components.filepicker.PackwizExecutableFileFilter;
 import com.lx862.pwgui.gui.components.kui.KFileChooser;
 import com.lx862.pwgui.util.Util;
 

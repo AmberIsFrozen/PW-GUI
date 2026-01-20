@@ -4,7 +4,7 @@ import com.formdev.flatlaf.ui.FlatUIUtils;
 import com.lx862.pwgui.core.Constants;
 import com.lx862.pwgui.executable.Executables;
 import com.lx862.pwgui.executable.ProgramExecution;
-import com.lx862.pwgui.gui.components.filter.CurseForgeModpackFilter;
+import com.lx862.pwgui.gui.components.filepicker.CurseForgeModpackFilter;
 import com.lx862.pwgui.gui.components.kui.KButton;
 import com.lx862.pwgui.gui.components.kui.KFileChooser;
 import com.lx862.pwgui.gui.prompt.TaskProgressDialog;

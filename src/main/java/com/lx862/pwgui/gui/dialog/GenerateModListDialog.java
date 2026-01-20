@@ -8,7 +8,6 @@ import com.lx862.pwgui.gui.prompt.FileSavedDialog;
 import com.lx862.pwgui.pwcore.PackFile;
 import com.lx862.pwgui.pwcore.PackIndexFile;
 import com.lx862.pwgui.pwcore.PackwizMetaFile;
-import com.lx862.pwgui.gui.action.CloseWindowAction;
 import com.lx862.pwgui.gui.components.kui.KButton;
 import com.lx862.pwgui.gui.components.kui.KFileChooser;
 import com.lx862.pwgui.gui.panel.editing.filetype.MarkdownPanel;
@@ -130,9 +129,8 @@ public class GenerateModListDialog extends BaseDialog {
 
         @Override
         public void actionPerformed(ActionEvent actionEvent) {
-            KFileChooser fileChooser = new KFileChooser();
-            fileChooser.setCurrentDirectory(packFile.getPath().getParent().toFile());
-            fileChooser.setSelectedFile(new File(markdownRadioButton.isSelected() ? "modlist.md" : "modlist.txt"));
+            KFileChooser fileChooser = new KFileChooser("generate-modlist", packFile.getPath().getParent());
+            fileChooser.setSaveAsFileName(markdownRadioButton.isSelected() ? "modlist.md" : "modlist.txt");
             if (fileChooser.openSaveAsDialog(GenerateModListDialog.this) == JFileChooser.APPROVE_OPTION) {
                 File file = fileChooser.getSelectedFile();
                 try {

@@ -1,10 +1,12 @@
-package com.lx862.pwgui.gui.components.filter;
+package com.lx862.pwgui.gui.components.filepicker;
+
+import com.formdev.flatlaf.util.SystemFileChooser;
 
 import javax.swing.filechooser.FileFilter;
 import java.io.File;
 import java.nio.file.Files;
 
-public class PackFileFilter extends FileFilter {
+public class PackFileFilter extends FileFilter implements NativeFileFilter {
     @Override
     public boolean accept(File file) {
         if(file.isDirectory()) return true;
@@ -18,5 +20,10 @@ public class PackFileFilter extends FileFilter {
     @Override
     public String getDescription() {
         return "Packwiz Pack File (pack.toml by default)";
+    }
+
+    @Override
+    public SystemFileChooser.FileFilter getNativeFilePicker() {
+        return new SystemFileChooser.FileNameExtensionFilter(getDescription(), "toml");
     }
 }

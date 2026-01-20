@@ -1,6 +1,7 @@
 package com.lx862.pwgui.gui.dialog;
 
 import com.formdev.flatlaf.ui.FlatUIUtils;
+import com.formdev.flatlaf.util.SystemFileChooser;
 import com.lx862.pwgui.gui.components.kui.KRootContentPanel;
 import com.lx862.pwgui.gui.prompt.TaskProgressDialog;
 import com.lx862.pwgui.gui.prompt.FileSavedDialog;
@@ -15,7 +16,6 @@ import com.lx862.pwgui.executable.ProgramExecution;
 import com.lx862.pwgui.util.Util;
 
 import javax.swing.*;
-import javax.swing.filechooser.FileNameExtensionFilter;
 import java.awt.*;
 import java.io.File;
 import java.util.ArrayList;
@@ -53,9 +53,9 @@ public class ExportModpackDialog extends BaseDialog {
             ExportPanel selectedTab = (ExportPanel)formatTabPane.getComponentAt(formatTabPane.getSelectedIndex());
 
             KFileChooser fileChooser = new KFileChooser("export-modpack");
-            fileChooser.setFileFilter(new FileNameExtensionFilter("Modpack file", selectedTab.getExtension().substring(1)));
+            fileChooser.setFileFilter(new SystemFileChooser.FileNameExtensionFilter("Modpack file", selectedTab.getExtension().substring(1)));
             fileChooser.setDialogTitle("Choose Modpack Saving Location");
-            fileChooser.setSelectedFile(new File(modpack.packFile.get().name + selectedTab.getExtension()));
+            fileChooser.setSaveAsFileName(modpack.packFile.get().name + selectedTab.getExtension());
             if(fileChooser.openSaveAsDialog(this) == JFileChooser.APPROVE_OPTION) {
                 File file = fileChooser.getSelectedFile();
                 List<String> args = new ArrayList<>(selectedTab.getArguments());
