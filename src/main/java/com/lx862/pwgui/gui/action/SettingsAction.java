@@ -1,6 +1,6 @@
 package com.lx862.pwgui.gui.action;
 
-import com.lx862.pwgui.PWGUI;
+import com.lx862.pwgui.core.Config;
 import com.lx862.pwgui.gui.dialog.SettingsDialog;
 
 import javax.swing.*;
@@ -19,6 +19,6 @@ public class SettingsAction extends AbstractAction {
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        new SettingsDialog(PWGUI.getConfig(), parent).setVisible(true);
+        new SettingsDialog(Config.getInstance(), parent).setVisible(true);
     }
 }

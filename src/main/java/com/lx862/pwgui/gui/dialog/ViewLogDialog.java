@@ -2,7 +2,11 @@ package com.lx862.pwgui.gui.dialog;
 
 import com.lx862.pwgui.PWGUI;
 import com.lx862.pwgui.core.BuildMetadata;
-import com.lx862.pwgui.core.Logger;
+import com.lx862.pwgui.core.Config;
+import com.lx862.pwgui.core.log.LogEntry;
+import com.lx862.pwgui.core.log.Logger;
+import com.lx862.pwgui.gui.components.JListPopupMenu;
+import com.lx862.pwgui.gui.components.LogEntryListCellRenderer;
 import com.lx862.pwgui.gui.components.kui.KActionPanel;
 import com.lx862.pwgui.gui.components.kui.KButton;
 import com.lx862.pwgui.gui.components.kui.KFileChooser;
@@ -12,13 +16,14 @@ import com.lx862.pwgui.util.Util;
 import org.apache.commons.io.FileUtils;
 
 import javax.swing.*;
-import javax.swing.text.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.util.Arrays;
+import java.util.stream.Collectors;
 
 /** Dialog to view the program's log */
 public class ViewLogDialog extends BaseDialog {
@@ -38,23 +43,27 @@ public class ViewLogDialog extends BaseDialog {
         JLabel descriptionLabel = new JLabel(String.format("This displays the program log for %s, which may be useful for diagnosing issues", BuildMetadata.INSTANCE.name));
         contentPanel.add(descriptionLabel, BorderLayout.NORTH);
 
-        JTextPane logTextPane = new JTextPane();
-        logTextPane.setEditable(false);
-        JScrollPane logTextAreaScrollPane = new JScrollPane(logTextPane);
-        contentPanel.add(logTextAreaScrollPane, BorderLayout.CENTER);
+        DefaultListModel<LogEntry> logs = new DefaultListModel<>();
+        JList<LogEntry> logListPane = new JList<>(logs);
+        logListPane.setCellRenderer(new LogEntryListCellRenderer());
 
-        Style style = logTextPane.addStyle("Log Style", null);
-        this.appendLogCallback = (line, realtime) -> {
-            Color logColor = line.contains("[WARN]") ? new Color(0xFF8800) : line.contains("[ERROR]") ? Color.RED : Color.BLACK;
-            StyleConstants.setForeground(style, logColor);
+        JListPopupMenu popupMenu = new JListPopupMenu(logListPane);
+        popupMenu.add(new JMenuItem(new LogEntryListCellRenderer.CopyLogAction(() -> logs.get(logListPane.getSelectedIndex()))));
 
-            Document doc = logTextPane.getDocument();
-            try {
-                doc.insertString(doc.getLength(), line + "\n\n", style);
-                logHistory.append(line).append("\n");
-            } catch (BadLocationException ignored) {}
-            logTextAreaScrollPane.getVerticalScrollBar().setValue(logTextAreaScrollPane.getVerticalScrollBar().getMaximum()); // Jump to bottom
-            SimpleAttributeSet aSet = new SimpleAttributeSet();
+        logListPane.setComponentPopupMenu(popupMenu);
+
+        JScrollPane scrollPane = new JScrollPane(logListPane);
+        contentPanel.add(scrollPane, BorderLayout.CENTER);
+
+        this.appendLogCallback = (entry, realtime) -> {
+            if(entry.logLevel() == LogEntry.LogLevel.DEBUG && !Config.getInstance().debugMode.getValue()) return;
+
+            logs.addElement(entry);
+            logHistory.append(entry.message());
+
+            SwingUtilities.invokeLater(() -> {
+                scrollPane.getVerticalScrollBar().setValue(scrollPane.getVerticalScrollBar().getMaximum()); // Jump to bottom
+            });
         };
 
         PWGUI.LOGGER.addListener(appendLogCallback);
@@ -84,7 +93,7 @@ public class ViewLogDialog extends BaseDialog {
             if (fileChooser.openSaveAsDialog(ViewLogDialog.this) == JFileChooser.APPROVE_OPTION) {
                 File file = fileChooser.getSelectedFile();
                 try {
-                    FileUtils.writeStringToFile(file, logHistory.toString(), StandardCharsets.UTF_8);
+                    FileUtils.writeStringToFile(file, String.join(System.lineSeparator(), Arrays.stream(PWGUI.LOGGER.getLogHistory()).map(LogEntry::message).toList()), StandardCharsets.UTF_8);
                     new FileSavedDialog(ViewLogDialog.this, "Log Saved!", file).setVisible(true);
                 } catch (IOException e) {
                     JOptionPane.showMessageDialog(ViewLogDialog.this, String.format("Failed to save log:\n%s", e.getMessage()), Util.withTitlePrefix("Save Log"), JOptionPane.ERROR_MESSAGE);

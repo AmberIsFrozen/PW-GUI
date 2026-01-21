@@ -3,6 +3,7 @@ package com.lx862.pwgui.gui.frame;
 import com.formdev.flatlaf.FlatLaf;
 import com.formdev.flatlaf.util.UIScale;
 import com.lx862.pwgui.PWGUI;
+import com.lx862.pwgui.core.Config;
 import com.lx862.pwgui.gui.components.kui.KCheckBoxMenuItem;
 import com.lx862.pwgui.pwcore.Modpack;
 import com.lx862.pwgui.gui.action.*;
@@ -38,7 +39,7 @@ public abstract class BaseFrame extends JFrame {
         setJMenuBar(jMenuBar);
 
         UIScale.setSupportedZoomFactors(ZOOM_LEVELS);
-        UIScale.setZoomFactor(PWGUI.getConfig().zoomFactor.getValue());
+        UIScale.setZoomFactor(Config.getInstance().zoomFactor.getValue());
 
         shortcutKeyListener = e -> {
             if(e.getID() == KeyEvent.KEY_PRESSED) {
@@ -222,11 +223,11 @@ public abstract class BaseFrame extends JFrame {
     }
 
     private void updateZoom(float zoomFactor) {
-        PWGUI.getConfig().zoomFactor.setValue(zoomFactor);
+        Config.getInstance().zoomFactor.setValue(zoomFactor);
         try {
-            PWGUI.getConfig().write("Update zoom level");
+            Config.getInstance().write("Update zoom level");
         } catch (IOException e) {
-            PWGUI.LOGGER.exception(e);
+            PWGUI.LOGGER.error("", e);
         }
 
         FlatLaf.updateUI();

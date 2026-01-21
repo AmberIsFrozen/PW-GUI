@@ -32,7 +32,7 @@ public class CreateMissingDirectoryAction extends AbstractAction {
                 Files.createDirectory(finalPath);
                 JOptionPane.showMessageDialog(parent, String.format("Created folder \"%s\"!", dirName), Util.withTitlePrefix("Folder Created!"), JOptionPane.INFORMATION_MESSAGE);
             } catch (IOException e) {
-                PWGUI.LOGGER.exception(e);
+                PWGUI.LOGGER.error("Failed to create folder!", e);
                 JOptionPane.showMessageDialog(parent, String.format("Failed to create folder \"%s\", see program logs for detail!", dirName), Util.withTitlePrefix("Failed to Create Folder"), JOptionPane.ERROR_MESSAGE);
             }
         }

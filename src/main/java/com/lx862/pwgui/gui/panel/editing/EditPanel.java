@@ -5,7 +5,7 @@ import com.lx862.pwgui.core.data.model.file.*;
 import com.lx862.pwgui.pwcore.Modpack;
 import com.lx862.pwgui.gui.components.kui.KSplitPane;
 import com.lx862.pwgui.gui.panel.editing.filetype.*;
-import com.lx862.pwgui.gui.components.NameTabPair;
+import com.lx862.pwgui.gui.NameTabPair;
 import com.lx862.pwgui.gui.components.fstree.FileSystemSortedTreeNode;
 import com.lx862.pwgui.gui.panel.editing.filetype.content.AddContentPanel;
 
@@ -85,7 +85,7 @@ public class EditPanel extends JPanel {
             if(node instanceof PackwizIgnoreFileModel) addPanel(panels, () -> new NameTabPair("Packwiz Ignore", new PackwizIgnorePanel(context, (PackwizIgnoreFileModel) node)));
             if(node instanceof PackMetadataFileModel) addPanel(panels, () -> new NameTabPair("Packwiz Meta File", new PackwizMetaPanel(context, (PackMetadataFileModel) node)));
         } catch (Exception e) {
-            PWGUI.LOGGER.exception(e);
+            PWGUI.LOGGER.error("", e);
         }
 
         return panels;
@@ -97,7 +97,7 @@ public class EditPanel extends JPanel {
         } catch (Exception e) {
             panels.add(new NameTabPair("Error", new ErrorPanel(e)));
             PWGUI.LOGGER.error("Failed to initialize panel!");
-            PWGUI.LOGGER.exception(e);
+            PWGUI.LOGGER.error("", e);
         }
     }
 }

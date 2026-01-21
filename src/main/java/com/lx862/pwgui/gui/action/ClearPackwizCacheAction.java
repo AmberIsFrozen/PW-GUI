@@ -33,7 +33,7 @@ public class ClearPackwizCacheAction extends AbstractAction {
                     FileUtils.deleteDirectory(packwizCacheDir.toFile());
                     JOptionPane.showMessageDialog(parent, "Packwiz cache has been cleared!", Util.withTitlePrefix("Packwiz Cache Cleared!"), JOptionPane.INFORMATION_MESSAGE);
                 } catch (IOException e) {
-                    PWGUI.LOGGER.exception(e);
+                    PWGUI.LOGGER.error("Failed to clear packwiz cache!", e);
                     JOptionPane.showMessageDialog(parent, String.format("Failed to clear packwiz cache:\n%s", e.getMessage()), Util.withTitlePrefix("Error Clearing Cache"), JOptionPane.ERROR_MESSAGE);
                 }
             }

@@ -43,7 +43,7 @@ public class ReinstallAction extends AbstractAction {
                     PackwizMetaFile metaFile = new PackwizMetaFile(fileEntry.path);
                     metas.add(metaFile);
                 } catch (Exception e) {
-                    PWGUI.LOGGER.exception(e);
+                    PWGUI.LOGGER.error("", e);
                     PWGUI.LOGGER.warn("Failed to parse meta file " + fileEntry.path + ", disregarding!");
                 }
             }

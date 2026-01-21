@@ -94,7 +94,7 @@ public class Util {
         try {
             Desktop.getDesktop().open(file);
         } catch (IOException e) {
-            PWGUI.LOGGER.exception(e);
+            PWGUI.LOGGER.error("", e);
             JOptionPane.showMessageDialog(null, String.format("Failed to open file \"%s\":\n%s", file.getName(), e.getMessage()), withTitlePrefix("Open External Application"), JOptionPane.ERROR_MESSAGE);
         }
     }
@@ -108,11 +108,11 @@ public class Util {
                 Process process = Runtime.getRuntime().exec(new String[]{"xdg-open", uri});
                 process.waitFor();
             } catch (Exception ex) {
-                PWGUI.LOGGER.exception(e);
+                PWGUI.LOGGER.error("", e);
                 JOptionPane.showMessageDialog(null, String.format("Failed to open link \"%s\" with xdg-open:\n%s", uri, e.getMessage()), withTitlePrefix("Open External Link"), JOptionPane.ERROR_MESSAGE);
             }
         } catch (URISyntaxException | IOException e) {
-            PWGUI.LOGGER.exception(e);
+            PWGUI.LOGGER.error("", e);
             JOptionPane.showMessageDialog(null, String.format("Failed to open link \"%s\":\n%s", uri, e.getMessage()), withTitlePrefix("Open External Link"), JOptionPane.ERROR_MESSAGE);
         }
     }
@@ -163,10 +163,10 @@ public class Util {
             Path sourcePath = sourceDirectory.resolve(modInfo.fileName());
             Path destinationPath = cacheDirectory.resolve(modInfo.fileName());
             try {
-                PWGUI.LOGGER.info(String.format("Moving manually downloaded file from \"%s\" to \"%s\"", sourcePath, destinationPath));
+                PWGUI.LOGGER.info("Moving manually downloaded file from \"{}\" to \"{}\"", sourcePath, destinationPath);
                 Files.move(sourcePath, destinationPath, StandardCopyOption.REPLACE_EXISTING);
             } catch (IOException e) {
-                PWGUI.LOGGER.exception(e);
+                PWGUI.LOGGER.error("", e);
                 JOptionPane.showMessageDialog(parent, String.format("An error occured while moving manually downloaded files:\n%s\nPlease move %s manually to %s", e.getMessage(), modInfo.fileName(), cacheDirectory), Util.withTitlePrefix("Failed to Move Files!"), JOptionPane.ERROR_MESSAGE);
             }
         }

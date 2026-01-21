@@ -1,6 +1,6 @@
 package com.lx862.pwgui.gui.frame;
 
-import com.lx862.pwgui.PWGUI;
+import com.lx862.pwgui.core.Config;
 import com.lx862.pwgui.gui.components.kui.KRootContentPanel;
 import com.lx862.pwgui.pwcore.Modpack;
 import com.lx862.pwgui.executable.Executables;
@@ -32,7 +32,7 @@ public class EditFrame extends BaseFrame {
         setSize(900, 650);
         setLocationRelativeTo(parent);
 
-        PWGUI.getConfig().setLastModpackPath(modpack.getPackFilePath());
+        Config.getInstance().setLastModpackPath(modpack.getPackFilePath());
         Executables.packwiz.setPackFileLocation(modpack.getRootPath().relativize(modpack.getPackFilePath()).toString());
         Executables.packwiz.changeWorkingDirectory(modpack.getRootPath());
 

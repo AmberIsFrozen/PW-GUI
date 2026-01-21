@@ -1,7 +1,7 @@
 package com.lx862.pwgui.gui.components.kui;
 
 import com.formdev.flatlaf.util.UIScale;
-import com.lx862.pwgui.gui.components.DocumentChangedListener;
+import com.lx862.pwgui.gui.listener.DocumentChangedListener;
 
 import javax.swing.*;
 import java.awt.*;

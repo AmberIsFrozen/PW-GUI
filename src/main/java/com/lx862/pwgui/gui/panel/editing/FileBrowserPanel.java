@@ -78,7 +78,7 @@ class FileBrowserPanel extends JPanel {
                 return new DirectoryModel(file);
             }
         } catch (Exception e) {
-            PWGUI.LOGGER.exception(e);
+            PWGUI.LOGGER.error("", e);
             return null;
         }
     }

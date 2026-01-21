@@ -1,4 +1,4 @@
-package com.lx862.pwgui.gui.components;
+package com.lx862.pwgui.gui.listener;
 
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;

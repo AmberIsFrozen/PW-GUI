@@ -32,7 +32,7 @@ public class SettingsDialog extends BaseDialog {
 
     public SettingsDialog(Config config, Window parent) {
         super(parent, Util.withTitlePrefix("Settings"), ModalityType.DOCUMENT_MODAL);
-        this.config = PWGUI.getConfig();
+        this.config = Config.getInstance();
 
         this.initialTheme = config.applicationTheme.getValue();
 
@@ -81,7 +81,7 @@ public class SettingsDialog extends BaseDialog {
             config.write(Strings.REASON_TRIGGERED_BY_USER);
             dispose();
         } catch (IOException e) {
-            PWGUI.LOGGER.exception(e);
+            PWGUI.LOGGER.error("", e);
             JOptionPane.showMessageDialog(this, String.format("Failed to save config:\n%s", e.getMessage()), Util.withTitlePrefix("Config Saving Failed!"), JOptionPane.ERROR_MESSAGE);
         }
     }
@@ -198,7 +198,7 @@ public class SettingsDialog extends BaseDialog {
             this.packwizLocationLabel = new JLabel("Location: ???");
 
             KButton changePackwizLocationButton = new KButton(new LocatePackwizAction("Change...", SettingsDialog.this, () -> {
-                Path newPath = PWGUI.getConfig().packwizExecutablePath.getValue();
+                Path newPath = Config.getInstance().packwizExecutablePath.getValue();
                 packwizLocationLabel.setText(String.format("Location: %s", newPath.toString()));
                 packwizLocationLabel.setToolTipText(newPath.toString());
             }));
@@ -256,7 +256,7 @@ public class SettingsDialog extends BaseDialog {
                 try {
                     FileUtils.deleteDirectory(Config.CONFIG_DIR_PATH.toFile());
                 } catch (IOException e) {
-                    PWGUI.LOGGER.exception(e);
+                    PWGUI.LOGGER.error("", e);
                     JOptionPane.showMessageDialog(parents[0], String.format("Failed to delete folder %s!\nCannot reset program!", Config.CONFIG_DIR_PATH), Util.withTitlePrefix("Reset Failed!"), JOptionPane.ERROR_MESSAGE);
                     return;
                 }

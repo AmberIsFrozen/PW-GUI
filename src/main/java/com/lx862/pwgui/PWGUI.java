@@ -3,7 +3,8 @@ package com.lx862.pwgui;
 import com.formdev.flatlaf.util.UIScale;
 import com.lx862.pwgui.core.BuildMetadata;
 import com.lx862.pwgui.core.Config;
-import com.lx862.pwgui.core.Logger;
+import com.lx862.pwgui.core.log.LogEntry;
+import com.lx862.pwgui.core.log.Logger;
 import com.lx862.pwgui.executable.Executables;
 import com.lx862.pwgui.gui.frame.EditFrame;
 import com.lx862.pwgui.gui.frame.SetupFrame;
@@ -18,7 +19,10 @@ import java.io.FileNotFoundException;
 
 public class PWGUI {
     public static final Logger LOGGER = new Logger();
-    private static final Config config = new Config();
+
+    static {
+        appendStdoutLogger(LOGGER);
+    }
 
     /**
      * Initialize/re-initialize the program
@@ -28,17 +32,12 @@ public class PWGUI {
         BuildMetadata.init();
 
         try {
-            config.read();
+            Config.init();
         } catch (Exception e) {
-            if(e instanceof FileNotFoundException) {
-                LOGGER.info("Config file does not exist.");
-            } else {
-                LOGGER.exception(e);
-                LOGGER.warn("Failed to read config file, using default!");
-            }
+            LOGGER.error("Failed to read config file!", e);
         }
 
-        String packFilePath = config.openLastModpackOnLaunch.getValue() ? config.lastModpackPath.getValue() == null ? null : config.lastModpackPath.getValue().toString() : null;
+        String packFilePath = Config.getInstance().openLastModpackOnLaunch.getValue() ? Config.getInstance().lastModpackPath.getValue() == null ? null : Config.getInstance().lastModpackPath.getValue().toString() : null;
         boolean packwizLocated;
 
         if(commandLine != null) {
@@ -54,7 +53,7 @@ public class PWGUI {
     }
 
     private static void launchGUI(String packFilePath, boolean packwizLocated) {
-        Config config = getConfig();
+        Config config = Config.getInstance();
         GUIHelper.setupApplicationTheme(config.applicationTheme.getValue(), config.useWindowDecoration.getValue(), null); // Initialize FlatLaf and it's config
         UIScale.setZoomFactor(config.zoomFactor.getValue());
 
@@ -84,7 +83,7 @@ public class PWGUI {
         if(path == null) return null;
 
         File packFile = new File(path);
-        LOGGER.info(String.format("Pack File is specified at: %s", path));
+        LOGGER.info("Pack File is specified at: {}", path);
         try {
             return new Modpack(packFile.toPath());
         } catch (FileNotFoundException e) {
@@ -93,7 +92,13 @@ public class PWGUI {
         }
     }
 
-    public static Config getConfig() {
-        return config;
+    private static void appendStdoutLogger(Logger logger) {
+        logger.addListener(((entry, isRealtime) -> {
+            if(entry.logLevel() == LogEntry.LogLevel.ERROR) {
+                System.err.println(entry.message());
+            } else if(entry.logLevel() != LogEntry.LogLevel.DEBUG || Config.getInstance().debugMode.getValue()) {
+                System.out.println(entry.message());
+            }
+        }));
     }
 }

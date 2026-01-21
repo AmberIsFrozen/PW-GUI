@@ -30,7 +30,7 @@ public class FileSavedDialog extends BaseDialog {
         contentPanel.add(descriptionLabel);
 
         JLabel pathLabel = new JLabel(file.toPath().toString());
-        pathLabel.setFont(getFont().deriveFont(Font.BOLD));
+        pathLabel.setFont(UIManager.getFont("defaultFont").deriveFont(Font.BOLD));
         pathLabel.setAlignmentX(Component.LEFT_ALIGNMENT);
         contentPanel.add(pathLabel);
 
@@ -53,7 +53,10 @@ public class FileSavedDialog extends BaseDialog {
         add(contentPanel);
         pack();
         setLocationRelativeTo(parentDialog);
-        finishButton.requestFocusInWindow(); // Default to focus on the finish button
+
+        // Default to finish button
+        getRootPane().setDefaultButton(finishButton);
+        finishButton.requestFocusInWindow();
     }
 
     class OpenFileAction extends AbstractAction {

@@ -3,7 +3,7 @@ package com.lx862.pwgui.gui.panel.editing;
 import com.lx862.pwgui.PWGUI;
 import com.lx862.pwgui.core.BuildMetadata;
 import com.lx862.pwgui.executable.Executables;
-import com.lx862.pwgui.gui.components.NameTabPair;
+import com.lx862.pwgui.gui.NameTabPair;
 import com.lx862.pwgui.gui.components.kui.KButton;
 import com.lx862.pwgui.gui.components.kui.KTabbedPane;
 import com.lx862.pwgui.gui.panel.editing.filetype.*;
@@ -82,7 +82,7 @@ public class FileDetailPanel extends JPanel {
             try {
                 fileTypePanel.save();
             } catch (IOException e) {
-                PWGUI.LOGGER.exception(e);
+                PWGUI.LOGGER.error("", e);
                 JOptionPane.showMessageDialog(this, String.format("Failed to save file!\n%s", e.getMessage()), Util.withTitlePrefix("Failed to Save!"), JOptionPane.ERROR_MESSAGE);
                 return;
             }

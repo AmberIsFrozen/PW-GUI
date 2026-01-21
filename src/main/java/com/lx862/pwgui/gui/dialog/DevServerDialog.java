@@ -77,7 +77,7 @@ public class DevServerDialog extends BaseDialog {
             try {
                 packwizServeProgram.run("Launched by user", serverExecutor);
             } catch (Exception e) {
-                PWGUI.LOGGER.exception(e);
+                PWGUI.LOGGER.error("", e);
                 logTextArea.append(Util.withBracketPrefix(String.format("ERROR: %s", e.getMessage())));
             }
         }

@@ -17,7 +17,7 @@ public class KImageDisplayPanel extends JPanel {
         try {
             image = ImageIO.read(file);
         } catch (IOException e) {
-            PWGUI.LOGGER.exception(e);
+            PWGUI.LOGGER.error("", e);
             add(new JLabel(String.format("Error while reading the image: %s", e.getMessage())));
         }
     }

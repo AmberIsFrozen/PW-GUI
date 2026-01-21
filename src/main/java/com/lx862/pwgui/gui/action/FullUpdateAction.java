@@ -31,7 +31,7 @@ public class FullUpdateAction extends UpdateAction {
     }
 
     @Override
-    public void actionPerformed(ActionEvent e) {
+    public void actionPerformed(ActionEvent event) {
         Window parent = getParent.get();
         ProgramExecution updateExecution = getProgramExecution(parent);
 
@@ -56,8 +56,8 @@ public class FullUpdateAction extends UpdateAction {
 
                     try {
                         Files.createDirectories(tempDirectory);
-                    } catch (Exception ex) {
-                        PWGUI.LOGGER.exception(ex);
+                    } catch (Exception e) {
+                        PWGUI.LOGGER.error("", e);
                         JOptionPane.showMessageDialog(parent, "Failed to create a temporary folder to check for version compatibility!\nNote that some content may not have a version that supports the current modloader/minecraft version.", Util.withTitlePrefix("Compatibility checking failed!"), JOptionPane.ERROR_MESSAGE);
                         return;
                     }
@@ -92,12 +92,12 @@ public class FullUpdateAction extends UpdateAction {
                     }
 
                     batchedProgramExecution.onExit(programErrored -> {
-                        PWGUI.LOGGER.info(String.format("Found %s incompatible item(s) under the current modpack configuration.", filesWithoutSuitableVersion.size()));
+                        PWGUI.LOGGER.info("Found {} incompatible item(s) under the current modpack configuration.", filesWithoutSuitableVersion.size());
 
                         try {
                             FileUtils.deleteDirectory(tempDirectory.toFile());
-                        } catch (Exception ex) {
-                            PWGUI.LOGGER.exception(ex);
+                        } catch (Exception e) {
+                            PWGUI.LOGGER.error("", e);
                             PWGUI.LOGGER.warn("Failed to remove temporary folder for compatibility check!");
                         }
 

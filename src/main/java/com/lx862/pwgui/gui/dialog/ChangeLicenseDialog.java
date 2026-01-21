@@ -7,9 +7,10 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.stream.JsonReader;
 import com.lx862.pwgui.PWGUI;
+import com.lx862.pwgui.core.Config;
 import com.lx862.pwgui.gui.action.CloseWindowAction;
 import com.lx862.pwgui.gui.action.OKAction;
-import com.lx862.pwgui.gui.components.DocumentChangedListener;
+import com.lx862.pwgui.gui.listener.DocumentChangedListener;
 import com.lx862.pwgui.gui.components.kui.*;
 import com.lx862.pwgui.util.GUIHelper;
 import com.lx862.pwgui.util.Util;
@@ -62,7 +63,7 @@ public class ChangeLicenseDialog extends BaseDialog {
         placeholdersPanel.setAlignmentX(Component.LEFT_ALIGNMENT);
         JLabel nameLabel = new JLabel("Your name: ");
         JTextField nameTextField = new KTextField();
-        nameTextField.setText(PWGUI.getConfig().authorName.getValue() == null ? "<Your name>" : PWGUI.getConfig().authorName.getValue());
+        nameTextField.setText(Config.getInstance().authorName.getValue() == null ? "<Your name>" : Config.getInstance().authorName.getValue());
 
         JLabel yearLabel = new JLabel("Copyright year: ");
         JTextField yearTextField = new KTextField();
@@ -163,7 +164,7 @@ public class ChangeLicenseDialog extends BaseDialog {
                     try(InputStream licenseIS = Util.getAssets(String.format("/assets/licenses/%s", file))) {
                         content = new String(licenseIS.readAllBytes());
                     } catch (NullPointerException | IOException e) {
-                        PWGUI.LOGGER.exception(e);
+                        PWGUI.LOGGER.error("", e);
                         content = String.format("Failed to read license file %s:\n%s", file, e.getMessage());
                     }
 
@@ -174,7 +175,7 @@ public class ChangeLicenseDialog extends BaseDialog {
                 licenses.add(new LicenseModel("Error!", "Failed to find available licenses for display!\nThis is either a bug or a semi-corrupted installation of the program!", null, false));
             }
         } catch (IOException e) {
-            PWGUI.LOGGER.exception(e);
+            PWGUI.LOGGER.error("", e);
             licenses.add(new LicenseModel("Error!", "Failed to read available licenses!\nThis is either a bug or a semi-corrupted installation of the program!", null, false));
         }
         return licenses;
@@ -252,7 +253,7 @@ public class ChangeLicenseDialog extends BaseDialog {
                 FileUtils.write(licenseFile, licenseContent, StandardCharsets.UTF_8);
                 JOptionPane.showMessageDialog(ChangeLicenseDialog.this, String.format("License changed to %s!", selectedLicenseModel), Util.withTitlePrefix("Change License"), JOptionPane.INFORMATION_MESSAGE);
             } catch (IOException e) {
-                PWGUI.LOGGER.exception(e);
+                PWGUI.LOGGER.error("", e);
                 JOptionPane.showMessageDialog(ChangeLicenseDialog.this, "Failed to save new license, see program logs for detail!", Util.withTitlePrefix("Change License"), JOptionPane.ERROR_MESSAGE);
             }
             dispose();

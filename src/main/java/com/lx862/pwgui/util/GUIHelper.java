@@ -117,7 +117,7 @@ public class GUIHelper {
         try {
             return ImageIO.read(is);
         } catch (Exception e) {
-            PWGUI.LOGGER.exception(e);
+            PWGUI.LOGGER.error("", e);
             return MISSING_TEXTURE;
         }
     }

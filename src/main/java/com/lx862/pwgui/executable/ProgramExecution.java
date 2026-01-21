@@ -15,13 +15,13 @@ public class ProgramExecution extends Task {
         this.processBuilder = processBuilder;
 
         onOutput((stdout) -> { // Display log when we got a new line
-            PWGUI.LOGGER.info("[" + taskName + "]", stdout.content());
+            PWGUI.LOGGER.infoRaw(taskName, stdout.content());
         });
     }
 
     @Override
     public void run(String reason, ExecutorService executor) {
-        PWGUI.LOGGER.info(String.format("Running command \"%s\" due to \"%s\"", String.join(" ", processBuilder.command()), reason));
+        PWGUI.LOGGER.info("Running command \"{}\" due to \"{}\"", String.join(" ", processBuilder.command()), reason);
 
         executor.submit(() -> {
             try {
@@ -49,7 +49,7 @@ public class ProgramExecution extends Task {
                 int exitValue = this.process.exitValue();
                 callExitListeners(exitValue);
             } catch (IOException e) {
-                PWGUI.LOGGER.exception(e);
+                PWGUI.LOGGER.error("", e);
                 callOutputListeners(new OutputMessage(Util.withBracketPrefix(String.format("Failed to execute %s:\n%s", getTaskName(), e.getMessage())), false));
                 callExitListeners(-2);
             } catch (InterruptedException ignored) {
@@ -67,7 +67,7 @@ public class ProgramExecution extends Task {
             PrintWriter pw = new PrintWriter(process.getOutputStream());
             pw.write(input + "\n");
             pw.flush();
-            PWGUI.LOGGER.info(String.format("Input %s to %s", input, getTaskName()));
+            PWGUI.LOGGER.info("Input {} to {}", input, getTaskName());
         }
     }
 }

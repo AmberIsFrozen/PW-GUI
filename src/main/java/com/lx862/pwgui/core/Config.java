@@ -21,6 +21,7 @@ import java.util.function.Function;
 public class Config extends WritableFile {
     public static final Path CONFIG_DIR_PATH = GoUtil.getUserConfigDir().resolve("pwgui");
     private static final Path CONFIG_PATH = CONFIG_DIR_PATH.resolve("config.json");
+    private static Config INSTANCE;
 
     public final Map<String, Path> fileChooserLastPath = new HashMap<>();
 
@@ -38,34 +39,43 @@ public class Config extends WritableFile {
         super(CONFIG_PATH);
     }
 
+    public static void init() throws IOException {
+        INSTANCE = new Config();
+        INSTANCE.read();
+    }
+
+    public static Config getInstance() {
+        return INSTANCE;
+    }
+
     public void read() throws IOException {
-        if(!Files.exists(CONFIG_PATH)) throw new FileNotFoundException();
-
-        JsonObject configJson = JsonParser.parseString(FileUtils.readFileToString(CONFIG_PATH.toFile(), StandardCharsets.UTF_8)).getAsJsonObject();
-        if(configJson.has("executables")) {
-            JsonObject executableObject = configJson.getAsJsonObject("executables");
-            this.packwizExecutablePath.read(executableObject);
-        }
-
-        if(configJson.has("lastPickedFiles")) {
-            JsonArray lastPickedFiles = configJson.getAsJsonArray("lastPickedFiles");
-
-            for(int i = 0; i < lastPickedFiles.size(); i++) {
-                JsonObject entry = lastPickedFiles.get(i).getAsJsonObject();
-                String contextName = entry.get("context").getAsString();
-                String path = entry.get("path").getAsString();
-                fileChooserLastPath.put(contextName, Paths.get(path));
+        if(Files.exists(CONFIG_PATH)) {
+            JsonObject configJson = JsonParser.parseString(FileUtils.readFileToString(CONFIG_PATH.toFile(), StandardCharsets.UTF_8)).getAsJsonObject();
+            if(configJson.has("executables")) {
+                JsonObject executableObject = configJson.getAsJsonObject("executables");
+                this.packwizExecutablePath.read(executableObject);
             }
-        }
 
-        this.applicationTheme.read(configJson);
-        this.authorName.read(configJson);
-        this.debugMode.read(configJson);
-        this.openLastModpackOnLaunch.read(configJson);
-        this.useWindowDecoration.read(configJson);
-        this.showMetaFileName.read(configJson);
-        this.lastModpackPath.read(configJson);
-        this.zoomFactor.read(configJson);
+            if(configJson.has("lastPickedFiles")) {
+                JsonArray lastPickedFiles = configJson.getAsJsonArray("lastPickedFiles");
+
+                for(int i = 0; i < lastPickedFiles.size(); i++) {
+                    JsonObject entry = lastPickedFiles.get(i).getAsJsonObject();
+                    String contextName = entry.get("context").getAsString();
+                    String path = entry.get("path").getAsString();
+                    fileChooserLastPath.put(contextName, Paths.get(path));
+                }
+            }
+
+            this.applicationTheme.read(configJson);
+            this.authorName.read(configJson);
+            this.debugMode.read(configJson);
+            this.openLastModpackOnLaunch.read(configJson);
+            this.useWindowDecoration.read(configJson);
+            this.showMetaFileName.read(configJson);
+            this.lastModpackPath.read(configJson);
+            this.zoomFactor.read(configJson);
+        }
     }
 
     public void write(String reason) throws IOException {
@@ -110,8 +120,7 @@ public class Config extends WritableFile {
             try { // Write if changed
                 write("Save last opened modpack path");
             } catch (IOException e) {
-                PWGUI.LOGGER.error("Failed to save last opened modpack path!");
-                PWGUI.LOGGER.exception(e);
+                PWGUI.LOGGER.error("Failed to save last opened modpack path!", e);
             }
         }
     }
@@ -132,7 +141,7 @@ public class Config extends WritableFile {
                 try {
                     this.value = valueSupplier.apply(jsonObject.get(configName));
                 } catch (IllegalArgumentException e) {
-                    PWGUI.LOGGER.exception(e);
+                    PWGUI.LOGGER.error("", e);
                 }
             }
         }

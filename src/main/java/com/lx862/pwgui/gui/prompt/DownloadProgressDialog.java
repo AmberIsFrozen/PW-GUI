@@ -19,7 +19,7 @@ public class DownloadProgressDialog extends ProgressDialog {
     public DownloadProgressDialog(Window window, String title, String itemName, URL url, Path destination, DownloadFinishCallback callback) {
         super(window, title);
 
-        PWGUI.LOGGER.info(String.format("Downloading %s from %s", itemName, url));
+        PWGUI.LOGGER.info("Downloading {} from {}", itemName, url);
         setStatus(String.format("URL is %s", url.toString()));
         setStatus(String.format("Initiating download for %s...", itemName));
 
@@ -58,10 +58,10 @@ public class DownloadProgressDialog extends ProgressDialog {
             protected void done() {
                 try {
                     get();
-                    PWGUI.LOGGER.info(String.format("Finished downloading %s", itemName));
+                    PWGUI.LOGGER.info("Finished downloading {}", itemName);
                     callback.finishedDownloading(true);
                 } catch (ExecutionException | InterruptedException e) {
-                    PWGUI.LOGGER.exception(e);
+                    PWGUI.LOGGER.error("", e);
                     boolean errorHandled = callback.finishedDownloading(false);
 
                     if(!errorHandled) {

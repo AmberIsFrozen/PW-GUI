@@ -1,6 +1,6 @@
 package com.lx862.pwgui.gui.components.kui;
 
-import com.lx862.pwgui.gui.components.NameTabPair;
+import com.lx862.pwgui.gui.NameTabPair;
 
 import javax.swing.*;
 import java.util.ArrayList;

@@ -69,7 +69,7 @@ public class AboutDialog extends BaseDialog {
                 try {
                     textToShow = Processor.process(Util.getAssets("/assets/about/" + resource));
                 } catch (IOException e) {
-                    PWGUI.LOGGER.exception(e);
+                    PWGUI.LOGGER.error("", e);
                     textToShow = String.format("Error trying to read file: %s", e.getMessage());
                 }
                 setInitialContent(textToShow);

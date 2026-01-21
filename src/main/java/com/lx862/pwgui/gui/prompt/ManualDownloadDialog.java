@@ -95,7 +95,7 @@ public class ManualDownloadDialog extends BaseDialog {
     }
 
     private void startWatchDirectory(Path path) {
-        PWGUI.LOGGER.info(String.format("Watching for manually downloaded mods in %s", path));
+        PWGUI.LOGGER.info("Watching for manually downloaded mods in {}", path);
         if(this.fileWatcherThread != null) {
             this.fileWatcherThread.interrupt();
         }

@@ -45,7 +45,7 @@ public class DownloadPackwizAction extends AbstractAction {
         try {
             tempDirectory = Files.createTempDirectory("pwgui");
         } catch (IOException e) {
-            PWGUI.LOGGER.exception(e);
+            PWGUI.LOGGER.error("", e);
             JOptionPane.showMessageDialog(parent, "Failed to create temporary folder, see program logs for detail!", Util.withTitlePrefix("Download Failed"), JOptionPane.ERROR_MESSAGE);
             return;
         }
@@ -81,7 +81,7 @@ public class DownloadPackwizAction extends AbstractAction {
                 try {
                     Files.createDirectories(binDirectory);
                 } catch (IOException e) {
-                    PWGUI.LOGGER.exception(e);
+                    PWGUI.LOGGER.error("", e);
                     JOptionPane.showMessageDialog(parent, "Failed to create the folder containing the packwiz executable, see program logs for detail!", Util.withTitlePrefix("Setup Failed"), JOptionPane.ERROR_MESSAGE);
                     return false;
                 }
@@ -96,7 +96,7 @@ public class DownloadPackwizAction extends AbstractAction {
                         }
                     }
                 } catch (Exception e) {
-                    PWGUI.LOGGER.exception(e);
+                    PWGUI.LOGGER.error("", e);
                     JOptionPane.showMessageDialog(parent, String.format("Failed to extract packwiz from zip file:\n%s\nSee program logs for detail!", e.getMessage()), Util.withTitlePrefix("Setup Failed"), JOptionPane.ERROR_MESSAGE);
                     return false;
                 }
@@ -144,7 +144,7 @@ public class DownloadPackwizAction extends AbstractAction {
     }
 
     private boolean configurePackwiz(Path path) {
-        PWGUI.getConfig().packwizExecutablePath.setValue(path);
+        Config.getInstance().packwizExecutablePath.setValue(path);
 
         try {
             try { // We want executable permission on *nix
@@ -158,10 +158,10 @@ public class DownloadPackwizAction extends AbstractAction {
                 return false;
             }
 
-            PWGUI.getConfig().write("Update packwiz executable path");
+            Config.getInstance().write("Update packwiz executable path");
             return true;
         } catch (IOException e) {
-            PWGUI.LOGGER.exception(e);
+            PWGUI.LOGGER.error("", e);
             JOptionPane.showMessageDialog(parent, "Failed to save config file, see program logs for detail!", Util.withTitlePrefix("Setup Failed"), JOptionPane.INFORMATION_MESSAGE);
             return false;
         }

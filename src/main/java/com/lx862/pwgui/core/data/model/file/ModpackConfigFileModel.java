@@ -16,7 +16,7 @@ public class ModpackConfigFileModel extends PlainTextFileModel {
         try {
             packFile = new PackFile(file.toPath());
         } catch (Exception e) {
-            PWGUI.LOGGER.exception(e);
+            PWGUI.LOGGER.error("", e);
         }
     }
 

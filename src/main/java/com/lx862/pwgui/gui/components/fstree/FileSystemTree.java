@@ -118,7 +118,7 @@ public class FileSystemTree extends JTree {
                     int insertedIndex = node.getIndex(newNode);
                     ((DefaultTreeModel)getModel()).nodesWereInserted(node, new int[]{insertedIndex});
                 } else {
-                    PWGUI.LOGGER.warn(String.format("[FileSystemTree] Node %s already exists in tree!", newNode.path));
+                    PWGUI.LOGGER.warn("[FileSystemTree] Node {} already exists in tree!", newNode.path);
                 }
             }
         });

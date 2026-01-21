@@ -42,7 +42,7 @@ public interface VersionGetter {
                 callback.accept(metadatas);
             } catch (IOException e) {
                 callback.accept(null);
-                PWGUI.LOGGER.exception(e);
+                PWGUI.LOGGER.error("", e);
             }
         });
     }
@@ -78,7 +78,7 @@ public interface VersionGetter {
                 }
                 callback.accept(metadatas);
             } catch (Exception e) {
-                PWGUI.LOGGER.exception(e);
+                PWGUI.LOGGER.error("", e);
                 callback.accept(null);
             }
         });
@@ -103,7 +103,7 @@ public interface VersionGetter {
                 }
                 callback.accept(metadatas);
             } catch (Exception e) {
-                PWGUI.LOGGER.exception(e);
+                PWGUI.LOGGER.error("", e);
                 callback.accept(null);
             }
         });
@@ -121,7 +121,7 @@ public interface VersionGetter {
                     callback.accept(metadatas);
                 }, false);
             } catch (MalformedURLException e) {
-                PWGUI.LOGGER.exception(e);
+                PWGUI.LOGGER.error("", e);
                 callback.accept(null);
             }
         }, true);
@@ -153,7 +153,7 @@ public interface VersionGetter {
                 }
                 callback.accept(metadatas);
             } catch (Exception e) {
-                PWGUI.LOGGER.exception(e);
+                PWGUI.LOGGER.error("", e);
                 callback.accept(null);
             }
         });

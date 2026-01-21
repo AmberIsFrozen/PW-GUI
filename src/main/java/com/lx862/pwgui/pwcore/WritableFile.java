@@ -17,6 +17,6 @@ public abstract class WritableFile {
     }
 
     public void write(String reason) throws IOException {
-        PWGUI.LOGGER.info(String.format("Writing file to \"%s\" due to \"%s\"", path.toString(), reason));
+        PWGUI.LOGGER.info("Writing file to \"{}\" due to \"{}\"", path.toString(), reason);
     }
 }

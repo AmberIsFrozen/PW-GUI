@@ -20,7 +20,7 @@ public class Main {
             CommandLine cmd = cliParser.parse(cliOptions, args);
             PWGUI.init(cmd);
         } catch (Exception e) {
-            PWGUI.LOGGER.exception(e);
+            PWGUI.LOGGER.error("Failed to start program!", e);
             System.exit(1);
         }
     }

@@ -12,9 +12,9 @@ public class NetworkHelper {
     public static String getFromURL(URL url) throws IOException {
         HttpURLConnection connection = (HttpURLConnection) url.openConnection();
         connection.setRequestMethod("GET");
-        PWGUI.LOGGER.info(String.format("%s request to %s", connection.getRequestMethod(), url));
+        PWGUI.LOGGER.info("{} request to {}", connection.getRequestMethod(), url);
         int responseCode = connection.getResponseCode();
-        PWGUI.LOGGER.info(String.format("Got HTTP %d for %s", responseCode, url));
+        PWGUI.LOGGER.info("Got HTTP {} for {}", responseCode, url);
         BufferedReader br = new BufferedReader(new InputStreamReader(connection.getInputStream()));
         StringBuilder resp = new StringBuilder();
         String line;

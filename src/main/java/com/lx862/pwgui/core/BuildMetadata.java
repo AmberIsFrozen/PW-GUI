@@ -24,7 +24,7 @@ public class BuildMetadata {
             }
         } catch (Exception e) {
             INSTANCE = new BuildMetadata();
-            PWGUI.LOGGER.exception(e);
+            PWGUI.LOGGER.error("Failed to read build metadata!", e);
         }
     }
 }

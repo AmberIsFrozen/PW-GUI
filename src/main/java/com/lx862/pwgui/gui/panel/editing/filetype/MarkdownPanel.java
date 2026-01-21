@@ -22,7 +22,7 @@ public class MarkdownPanel extends FileTypePanel {
             String html = Processor.process(content, Configuration.builder().forceExtentedProfile().build());
             editorPane.setInitialContent(html);
         } catch (Exception e) {
-            PWGUI.LOGGER.exception(e);
+            PWGUI.LOGGER.error("", e);
             editorPane.setText(Util.withBracketPrefix(String.format("Error trying to read file: %s", e.getMessage())));
         }
 

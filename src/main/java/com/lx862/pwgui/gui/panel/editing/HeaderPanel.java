@@ -37,7 +37,7 @@ public class HeaderPanel extends JPanel {
                 }
             } catch (Exception e) {
                 PWGUI.LOGGER.error("Failed to read pack icon image!");
-                PWGUI.LOGGER.exception(e);
+                PWGUI.LOGGER.error("", e);
             }
         }
 

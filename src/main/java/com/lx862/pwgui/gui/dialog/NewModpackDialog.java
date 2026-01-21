@@ -129,7 +129,7 @@ public class NewModpackDialog extends BaseDialog {
                 new TaskProgressDialog(this, "Creating Modpack...", Strings.REASON_TRIGGERED_BY_USER, processExecution).setVisible(true);
             }
         } catch (Exception e) {
-            PWGUI.LOGGER.exception(e);
+            PWGUI.LOGGER.error("", e);
             JOptionPane.showMessageDialog(this, String.format("Failed to create modpack:\n%s", e.getMessage()), Util.withTitlePrefix("Create Modpack"), JOptionPane.ERROR_MESSAGE);
         }
     }

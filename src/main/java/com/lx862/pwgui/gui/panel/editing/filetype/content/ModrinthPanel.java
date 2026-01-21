@@ -1,6 +1,6 @@
 package com.lx862.pwgui.gui.panel.editing.filetype.content;
 
-import com.lx862.pwgui.gui.components.DocumentChangedListener;
+import com.lx862.pwgui.gui.listener.DocumentChangedListener;
 import com.lx862.pwgui.core.data.model.file.ContentDirectoryModel;
 import com.lx862.pwgui.gui.components.kui.KButton;
 import com.lx862.pwgui.gui.components.kui.KGridBagLayoutPanel;

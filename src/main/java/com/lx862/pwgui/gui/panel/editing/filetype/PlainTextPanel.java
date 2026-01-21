@@ -3,8 +3,7 @@ package com.lx862.pwgui.gui.panel.editing.filetype;
 import com.formdev.flatlaf.util.UIScale;
 import com.lx862.pwgui.PWGUI;
 import com.lx862.pwgui.core.data.model.file.GenericFileModel;
-import com.lx862.pwgui.gui.components.DocumentChangedListener;
-import com.lx862.pwgui.gui.components.kui.KTextArea;
+import com.lx862.pwgui.gui.listener.DocumentChangedListener;
 import com.lx862.pwgui.util.Util;
 import com.lx862.pwgui.core.data.model.file.PlainTextFileModel;
 import org.fife.ui.rsyntaxtextarea.*;
@@ -30,7 +29,7 @@ public class PlainTextPanel extends FileTypePanel {
         try {
             content = fileEntry.getContent();
         } catch (Exception e) {
-            PWGUI.LOGGER.exception(e);
+            PWGUI.LOGGER.error("", e);
             content = Util.withBracketPrefix(String.format("Error trying to read file: %s", e.getMessage()));
         }
         this.initialContent = content;

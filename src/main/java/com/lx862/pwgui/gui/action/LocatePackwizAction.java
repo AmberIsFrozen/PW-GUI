@@ -1,6 +1,7 @@
 package com.lx862.pwgui.gui.action;
 
 import com.lx862.pwgui.PWGUI;
+import com.lx862.pwgui.core.Config;
 import com.lx862.pwgui.executable.Executables;
 import com.lx862.pwgui.gui.components.filepicker.PackwizExecutableFileFilter;
 import com.lx862.pwgui.gui.components.kui.KFileChooser;
@@ -44,7 +45,7 @@ public class LocatePackwizAction extends AbstractAction {
                 }
             }
 
-            PWGUI.getConfig().packwizExecutablePath.setValue(selectedFile.toPath());
+            Config.getInstance().packwizExecutablePath.setValue(selectedFile.toPath());
             String newProbedPath = Executables.packwiz.probe(null);
             if(newProbedPath == null) {
                 JOptionPane.showMessageDialog(parent, "The selected executable is not valid!\nPlease confirm that you can run the executable?", Util.withTitlePrefix("Invalid Executable"), JOptionPane.ERROR_MESSAGE);
@@ -52,9 +53,9 @@ public class LocatePackwizAction extends AbstractAction {
             }
 
             try {
-                PWGUI.getConfig().write("Update packwiz executable path");
+                Config.getInstance().write("Update packwiz executable path");
             } catch (IOException e) {
-                PWGUI.LOGGER.exception(e);
+                PWGUI.LOGGER.error("", e);
                 JOptionPane.showMessageDialog(parent, String.format("Failed to write configuration file:\n%s\nSee program logs for detail!", e.getMessage()), Util.withTitlePrefix("Failed to Write Config"), JOptionPane.ERROR_MESSAGE);
                 return;
             }

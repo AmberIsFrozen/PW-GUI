@@ -3,7 +3,7 @@ package com.lx862.pwgui.gui.panel.editing.filetype;
 import com.lx862.pwgui.PWGUI;
 import com.lx862.pwgui.pwcore.Modpack;
 import com.lx862.pwgui.core.data.model.GitIgnoreRules;
-import com.lx862.pwgui.gui.components.DocumentChangedListener;
+import com.lx862.pwgui.gui.listener.DocumentChangedListener;
 import com.lx862.pwgui.core.data.model.file.GenericFileModel;
 import com.lx862.pwgui.core.data.model.file.PackwizIgnoreFileModel;
 
@@ -36,7 +36,7 @@ public class PackwizIgnorePanel extends FileTypePanel {
             this.initialContent = content;
             textArea.setText(content);
         } catch (Exception e) {
-            PWGUI.LOGGER.exception(e);
+            PWGUI.LOGGER.error("", e);
         }
         textArea.getDocument().addDocumentListener(new DocumentChangedListener(() -> {
             updateIgnore(textArea.getText());

@@ -1,5 +1,6 @@
 package com.lx862.pwgui.gui.components.kui;
 
+import com.formdev.flatlaf.FlatSystemProperties;
 import com.formdev.flatlaf.util.SystemFileChooser;
 import com.lx862.pwgui.PWGUI;
 import com.lx862.pwgui.gui.components.filepicker.ConfigBackedFilePickerState;
@@ -39,8 +40,8 @@ public class KFileChooser extends SystemFileChooser {
     /** Open the Save As dialog. User will be prompted if the file would get overwritten */
     public int openSaveAsDialog(Component component) {
         int showDialogResult = showSaveDialog(component);
-        if(showDialogResult == APPROVE_OPTION) {
-            if(Files.exists(getSelectedFile().toPath())) { // Promot for overwrite
+        if(showDialogResult == APPROVE_OPTION && !isNativeFilePicker()) {
+            if(Files.exists(getSelectedFile().toPath())) { // Prompt for overwrite
                 int replaceResult = JOptionPane.showConfirmDialog(component, String.format("File \"%s\" already exist,\nAre you sure you want to replace the file?", getSelectedFile().getName()), Util.withTitlePrefix("Replace File?"), JOptionPane.YES_NO_OPTION);
                 if(replaceResult != JOptionPane.YES_OPTION) {
                     return openSaveAsDialog(component); // Ask again
@@ -60,8 +61,8 @@ public class KFileChooser extends SystemFileChooser {
                         return openSaveDirectoryDialog(component);
                     }
                 }
-            } catch (IOException ex) {
-                PWGUI.LOGGER.exception(ex);
+            } catch (IOException e) {
+                PWGUI.LOGGER.error("", e);
             }
             return APPROVE_OPTION;
         });
@@ -82,5 +83,9 @@ public class KFileChooser extends SystemFileChooser {
         // We don't want that as we only care about the file name, so let's resolve the file path to be underneath our current dir.
         super.setSelectedFile(originalRootDirectory.toPath().resolve(fileName).toFile());
         setCurrentDirectory(originalRootDirectory);
+    }
+
+    private static boolean isNativeFilePicker() {
+        return FlatSystemProperties.getBoolean(FlatSystemProperties.USE_SYSTEM_FILE_CHOOSER, true);
     }
 }

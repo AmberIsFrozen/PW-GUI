@@ -1,4 +1,4 @@
-package com.lx862.pwgui.gui.components;
+package com.lx862.pwgui.gui;
 
 import java.awt.*;
 

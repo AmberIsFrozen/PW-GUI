@@ -3,7 +3,7 @@ package com.lx862.pwgui.gui.panel.editing.filetype;
 import com.formdev.flatlaf.ui.*;
 import com.lx862.pwgui.core.data.model.file.PackMetadataFileModel;
 import com.lx862.pwgui.executable.Executables;
-import com.lx862.pwgui.gui.components.DocumentChangedListener;
+import com.lx862.pwgui.gui.listener.DocumentChangedListener;
 import com.lx862.pwgui.gui.components.kui.*;
 import com.lx862.pwgui.util.Strings;
 import com.lx862.pwgui.executable.ProgramExecution;

@@ -38,24 +38,24 @@ public abstract class Executable {
     public String probe(String executableOverride) {
         if(executableOverride != null) {
             if(isOurIntendedProgram(executableOverride)) {
-                PWGUI.LOGGER.info(String.format("%s executable is specified at %s", programName, executableOverride));
+                PWGUI.LOGGER.info("{} executable is specified at {}", programName, executableOverride);
                 return executableOverride;
             } else {
-                PWGUI.LOGGER.info(String.format("%s executable specified at %s is not valid!", programName, executableOverride));
+                PWGUI.LOGGER.info("{} executable specified at {} is not valid!", programName, executableOverride);
             }
         }
 
         if(executableLocation == null) {
-            PWGUI.LOGGER.info(String.format("Probing for %s executable...", programName));
+            PWGUI.LOGGER.info("Probing for {} executable...", programName);
             for(String potentialPath : potentialPaths) {
                 if(isOurIntendedProgram(potentialPath)) {
-                    PWGUI.LOGGER.info(String.format("Found %s executable at %s", programName, potentialPath));
+                    PWGUI.LOGGER.info("Found {} executable at {}", programName, potentialPath);
                     return potentialPath;
                 }
             }
         }
 
-        PWGUI.LOGGER.info(String.format("Cannot probe %s executable!", programName));
+        PWGUI.LOGGER.info("Cannot probe {} executable!", programName);
         return null;
     }
 
@@ -84,7 +84,7 @@ public abstract class Executable {
     }
 
     public void changeWorkingDirectory(Path newPath) {
-        PWGUI.LOGGER.info(String.format("Working directory for %s changed to %s", programName, newPath.toString()));
+        PWGUI.LOGGER.info("Working directory for {} changed to {}", programName, newPath.toString());
         this.workingDirectory = newPath;
     }
 

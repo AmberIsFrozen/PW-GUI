@@ -2,6 +2,7 @@ package com.lx862.pwgui.gui.frame;
 
 import com.lx862.pwgui.PWGUI;
 import com.lx862.pwgui.core.BuildMetadata;
+import com.lx862.pwgui.core.Config;
 import com.lx862.pwgui.gui.components.kui.KRootContentPanel;
 import com.lx862.pwgui.pwcore.Modpack;
 import com.lx862.pwgui.executable.Executables;
@@ -28,7 +29,7 @@ public class WelcomeFrame extends BaseFrame {
         setLocationRelativeTo(parent);
 
         Executables.packwiz.setPackFileLocation(null);
-        PWGUI.getConfig().setLastModpackPath(null);
+        Config.getInstance().setLastModpackPath(null);
         jMenuBar.add(super.getViewMenu());
         jMenuBar.add(super.getHelpMenu());
 
@@ -90,7 +91,7 @@ public class WelcomeFrame extends BaseFrame {
                 editFrame.setVisible(true);
             } catch (Exception e) {
                 parent.setCursor(Cursor.getDefaultCursor());
-                PWGUI.LOGGER.exception(e);
+                PWGUI.LOGGER.error("", e);
                 JOptionPane.showMessageDialog(parent, String.format("Failed to open modpack:\n%s", e.getMessage()), Util.withTitlePrefix("Failed to open Modpack"), JOptionPane.ERROR_MESSAGE);
             }
         }

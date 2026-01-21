@@ -22,7 +22,7 @@ public class MinecraftOptionPanel extends FileTypePanel {
             String content = fileEntry.getContent();
             textPane.setText(syntaxHighlighting(content));
         } catch (Exception e) {
-            PWGUI.LOGGER.exception(e);
+            PWGUI.LOGGER.error("", e);
             textPane.setText(Util.withBracketPrefix(String.format("Error trying to read file: %s", e.getMessage())));
         }
         textPane.select(0, 0);

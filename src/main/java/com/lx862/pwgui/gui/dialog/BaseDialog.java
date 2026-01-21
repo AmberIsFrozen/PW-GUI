@@ -1,6 +1,6 @@
 package com.lx862.pwgui.gui.dialog;
 
-import com.lx862.pwgui.PWGUI;
+import com.lx862.pwgui.core.Config;
 
 import javax.swing.*;
 import java.awt.*;
@@ -24,7 +24,7 @@ public class BaseDialog extends JDialog {
 
     @Override
     public void setSize(int width, int height) {
-        float zoom = PWGUI.getConfig().zoomFactor.getValue();
+        float zoom = Config.getInstance().zoomFactor.getValue();
         super.setSize((int)(width * zoom), (int)(height * zoom));
     }
 }

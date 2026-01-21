@@ -41,10 +41,10 @@ public class DirectoryPanel extends FileTypePanel {
             if(shouldDelete) {
                 try {
                     FileUtils.deleteDirectory(fileEntry.path.toFile());
-                    PWGUI.LOGGER.info(String.format("Deleted folder %s", fileEntry.path));
+                    PWGUI.LOGGER.info("Deleted folder {}", fileEntry.path);
                     Executables.packwiz.refresh().build().run("Folder deleted by user");
                 } catch (IOException e) {
-                    PWGUI.LOGGER.error(String.format("Failed to deleted folder %s due to %s", fileEntry.path, e.getMessage()));
+                    PWGUI.LOGGER.error("Failed to deleted folder {} due to {}", fileEntry.path, e.getMessage());
                     JOptionPane.showMessageDialog(getTopLevelAncestor(), String.format("Sorry but we are unable to delete the folder, error as follows: \n%s\nYou might try doing it from an external file manager.", e.getMessage()));
                 }
             }

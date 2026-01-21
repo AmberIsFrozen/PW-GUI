@@ -8,7 +8,6 @@ import com.lx862.pwgui.util.Util;
 import com.lx862.pwgui.core.data.model.file.PlainTextFileModel;
 
 import javax.swing.*;
-import java.awt.*;
 
 public class LicenseFilePanel extends FileTypePanel {
     public LicenseFilePanel(FileEntryPaneContext context, PlainTextFileModel fileEntry) {
@@ -27,7 +26,7 @@ public class LicenseFilePanel extends FileTypePanel {
             String content = fileEntry.getContent();
             textArea.setText(content, true);
         } catch (Exception e) {
-            PWGUI.LOGGER.exception(e);
+            PWGUI.LOGGER.error("", e);
             textArea.setText(Util.withBracketPrefix(String.format("Error trying to read file: %s", e.getMessage())), true);
         }
 

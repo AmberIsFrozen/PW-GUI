@@ -90,7 +90,7 @@ public class IncompatibleSummaryDialog extends BaseDialog {
                     Files.delete(meta.getPath());
                     successfulRemoval++;
                 } catch (IOException e) {
-                    PWGUI.LOGGER.exception(e);
+                    PWGUI.LOGGER.error("", e);
                 }
             }
             if(successfulRemoval == metas.size()) {

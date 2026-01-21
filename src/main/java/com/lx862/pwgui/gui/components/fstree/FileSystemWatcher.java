@@ -51,7 +51,7 @@ public class FileSystemWatcher {
                 watchService.close();
             }
         } catch (IOException e) {
-            PWGUI.LOGGER.exception(e);
+            PWGUI.LOGGER.error("Failed to monitor file system!", e);
         }
     }
 
@@ -71,19 +71,19 @@ public class FileSystemWatcher {
                 Path filePath = parentDirectory.resolve(((WatchEvent<Path>)e).context());
 
                 if(recursive && kind == ENTRY_CREATE) {
-                    PWGUI.LOGGER.debug(String.format("[FileWatcher] [+] %s", filePath));
+                    PWGUI.LOGGER.debug("[FileWatcher] [+] {}", filePath);
                     if(Files.isDirectory(filePath)) {
-                        PWGUI.LOGGER.debug(String.format("[FileWatcher] Watching for path %s", filePath));
+                        PWGUI.LOGGER.debug("[FileWatcher] Watching for path {}", filePath);
                         watchKeys.put(filePath, filePath.register(watchService, watchKinds)); // Watch for our new folder
                     }
                 }
 
                 if(kind == ENTRY_DELETE) {
                     WatchKey existingWatchKey = watchKeys.get(filePath);
-                    PWGUI.LOGGER.debug(String.format("[FileWatcher] [-] %s", filePath));
+                    PWGUI.LOGGER.debug("[FileWatcher] [-] {}", filePath);
 
                     if(existingWatchKey != null) {
-                        PWGUI.LOGGER.debug(String.format("[FileWatcher] Unregistering path %s", filePath));
+                        PWGUI.LOGGER.debug("[FileWatcher] Unregistering path {}", filePath);
                         existingWatchKey.cancel(); // Unregister our old entry
                         watchKeys.remove(path);
                     }
