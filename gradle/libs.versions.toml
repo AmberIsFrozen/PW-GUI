@@ -6,7 +6,7 @@ common-io = "2.21.0"
 common-cli = "1.11.0"
 imageio = "3.13.0"
 gson = "2.13.2"
-txtmark = "0.13"
+commonmark = "0.27.1"
 rsyntaxtextarea = "3.6.1"
 
 [plugins]
@@ -21,9 +21,12 @@ common-io = { group = "commons-io", name = "commons-io", version.ref = "common-i
 common-cli = { group = "commons-cli", name = "commons-cli", version.ref = "common-cli" }
 imageio-bmp = { group = "com.twelvemonkeys.imageio", name = "imageio-bmp", version.ref = "imageio" }
 imageio-webp = { group = "com.twelvemonkeys.imageio", name = "imageio-webp", version.ref = "imageio" }
-txtmark = { group = "com.github.rjeschke", name = "txtmark", version.ref = "txtmark" }
+commonmark = { group = "org.commonmark", name = "commonmark", version.ref = "commonmark" }
+commonmark-ext-gfm-table = { group = "org.commonmark", name = "commonmark-ext-gfm-tables", version.ref = "commonmark" }
+commonmark-ext-gfm-strikethrough = { group = "org.commonmark", name = "commonmark-ext-gfm-strikethrough", version.ref = "commonmark" }
 rsyntaxtextarea = { group = "com.fifesoft", name = "rsyntaxtextarea", version.ref = "rsyntaxtextarea" }
 
 [bundles]
+commonmark = ["commonmark", "commonmark-ext-gfm-table", "commonmark-ext-gfm-strikethrough"]
 flatlaf = ["flatlaf", "flatlaf-ij-themes"]
 imageio-ext = ["imageio-bmp", "imageio-webp"]

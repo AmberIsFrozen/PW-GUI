@@ -1,6 +1,5 @@
 package com.lx862.pwgui.gui.dialog;
 
-import com.github.rjeschke.txtmark.Processor;
 import com.lx862.pwgui.PWGUI;
 import com.lx862.pwgui.gui.components.kui.KActionPanel;
 import com.lx862.pwgui.gui.components.kui.KRootContentPanel;
@@ -11,6 +10,7 @@ import com.lx862.pwgui.pwcore.PackwizMetaFile;
 import com.lx862.pwgui.gui.components.kui.KButton;
 import com.lx862.pwgui.gui.components.kui.KFileChooser;
 import com.lx862.pwgui.gui.panel.editing.filetype.MarkdownPanel;
+import com.lx862.pwgui.util.GUIHelper;
 import com.lx862.pwgui.util.Util;
 
 import javax.swing.*;
@@ -163,7 +163,7 @@ public class GenerateModListDialog extends BaseDialog {
     private void updateModlist() {
         boolean useMarkdown = markdownRadioButton.isSelected();
         plainTextModlist = getModlist(packFile, useMarkdown, projectLinkCheckBox.isSelected(), versionLinkCheckBox.isSelected(), separateSidesCheckBox.isSelected(), fileNameCheckBox.isSelected());
-        previewPane.setInitialContent(useMarkdown ? Processor.process(this.plainTextModlist) : this.plainTextModlist.replace("\n", "<br>"));
+        previewPane.setInitialContent(useMarkdown ? GUIHelper.markdownToHtml(this.plainTextModlist) : this.plainTextModlist.replace("\n", "<br>"));
     }
 
     private static String getModlist(PackFile packFile, boolean useMarkdown, boolean projectLink, boolean versionLink, boolean separateSides, boolean showFileName) {

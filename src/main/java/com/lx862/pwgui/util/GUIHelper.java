@@ -4,6 +4,10 @@ import com.formdev.flatlaf.FlatLaf;
 import com.formdev.flatlaf.util.UIScale;
 import com.lx862.pwgui.PWGUI;
 import com.lx862.pwgui.core.data.ApplicationTheme;
+import org.commonmark.ext.gfm.strikethrough.StrikethroughExtension;
+import org.commonmark.ext.gfm.tables.TablesExtension;
+import org.commonmark.parser.Parser;
+import org.commonmark.renderer.html.HtmlRenderer;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
@@ -14,9 +18,13 @@ import javax.swing.border.MatteBorder;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.InputStream;
+import java.util.List;
 
 public class GUIHelper {
     public static final Image MISSING_TEXTURE = getTextureMissingImage();
+    private static final Parser MARKDOWN_PASER = new Parser.Builder().extensions(List.of(StrikethroughExtension.create(), TablesExtension.create())).build();
+    private static final HtmlRenderer HTML_RENDERER = new HtmlRenderer.Builder().extensions(List.of(StrikethroughExtension.create(), TablesExtension.create())).build();
+
     /**
      * Change the application theme for the window
      * @param applicationTheme The application theme to change to
@@ -138,5 +146,9 @@ public class GUIHelper {
         g.fillRect(0, 8, 8, 8);
         g.dispose();
         return image;
+    }
+
+    public static String markdownToHtml(String md) {
+        return HTML_RENDERER.render(MARKDOWN_PASER.parse(md));
     }
 }

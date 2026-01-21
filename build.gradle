@@ -18,7 +18,7 @@ dependencies {
     implementation libs.common.cli
     implementation libs.common.io
     implementation libs.bundles.flatlaf
-    implementation libs.txtmark
+    implementation libs.bundles.commonmark
     implementation libs.gson
     implementation libs.toml4j
     implementation libs.bundles.imageio.ext

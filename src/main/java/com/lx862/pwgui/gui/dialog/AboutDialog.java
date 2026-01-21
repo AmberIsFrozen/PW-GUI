@@ -2,7 +2,6 @@ package com.lx862.pwgui.gui.dialog;
 
 import com.formdev.flatlaf.FlatClientProperties;
 import com.formdev.flatlaf.ui.FlatUIUtils;
-import com.github.rjeschke.txtmark.Processor;
 import com.lx862.pwgui.PWGUI;
 import com.lx862.pwgui.core.BuildMetadata;
 import com.lx862.pwgui.gui.components.kui.KRootContentPanel;
@@ -10,10 +9,13 @@ import com.lx862.pwgui.gui.components.kui.KTabbedPane;
 import com.lx862.pwgui.gui.panel.editing.filetype.MarkdownPanel;
 import com.lx862.pwgui.util.GUIHelper;
 import com.lx862.pwgui.util.Util;
+import org.apache.commons.io.IOUtils;
 
 import javax.swing.*;
 import java.awt.*;
 import java.io.IOException;
+import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 
 public class AboutDialog extends BaseDialog {
     public AboutDialog(Window parent) {
@@ -68,8 +70,9 @@ public class AboutDialog extends BaseDialog {
         static class FileTabPane extends MarkdownPanel.MarkdownPane {
             public FileTabPane(String resource) {
                 String textToShow;
-                try {
-                    textToShow = Processor.process(Util.getAssets("/assets/about/" + resource));
+                try(InputStream is = Util.getAssets("/assets/about/" + resource)) {
+                    String content = IOUtils.toString(is, StandardCharsets.UTF_8);
+                    textToShow = GUIHelper.markdownToHtml(content);
                 } catch (IOException e) {
                     PWGUI.LOGGER.error("", e);
                     textToShow = String.format("Error trying to read file: %s", e.getMessage());
