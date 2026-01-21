@@ -1,6 +1,7 @@
 package com.lx862.pwgui.gui.frame;
 
 import com.lx862.pwgui.PWGUI;
+import com.lx862.pwgui.core.BuildMetadata;
 import com.lx862.pwgui.gui.components.kui.KRootContentPanel;
 import com.lx862.pwgui.pwcore.Modpack;
 import com.lx862.pwgui.executable.Executables;
@@ -11,7 +12,6 @@ import com.lx862.pwgui.gui.components.kui.KFileChooser;
 import com.lx862.pwgui.gui.dialog.NewModpackDialog;
 import com.lx862.pwgui.util.GUIHelper;
 import com.lx862.pwgui.util.Util;
-import com.lx862.pwgui.core.Constants;
 
 import javax.swing.*;
 import java.awt.*;
@@ -22,7 +22,7 @@ import java.nio.file.Path;
 /** The welcome splash screen after packwiz executable is found */
 public class WelcomeFrame extends BaseFrame {
     public WelcomeFrame(Component parent) {
-        super(String.format("Welcome to %s!", Constants.PROGRAM_NAME));
+        super(String.format("Welcome to %s!", BuildMetadata.INSTANCE.name));
 
         setSize(400, 525);
         setLocationRelativeTo(parent);
@@ -52,11 +52,11 @@ public class WelcomeFrame extends BaseFrame {
             setLayout(new BoxLayout(this, BoxLayout.PAGE_AXIS));
             add(Box.createVerticalGlue());
 
-            JLabel logoLabel = new JLabel(new ImageIcon(GUIHelper.convertImage(Util.getAssets("/assets/logo.png"), LOGO_SIZE), String.format("%s Logo", Constants.PROGRAM_NAME)));
+            JLabel logoLabel = new JLabel(new ImageIcon(GUIHelper.convertImage(Util.getAssets("/assets/logo.png"), LOGO_SIZE), "Application Logo"));
             logoLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
             add(logoLabel);
 
-            JLabel versionLabel = new JLabel(String.format("Version %s", Constants.VERSION));
+            JLabel versionLabel = new JLabel(String.format("Version %s", BuildMetadata.INSTANCE.version));
             versionLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
             add(versionLabel);
 

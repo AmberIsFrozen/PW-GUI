@@ -1,8 +1,8 @@
 package com.lx862.pwgui.util;
 
 import com.lx862.pwgui.PWGUI;
-import com.lx862.pwgui.core.Constants;
 import com.lx862.pwgui.Main;
+import com.lx862.pwgui.core.BuildMetadata;
 import com.lx862.pwgui.core.data.model.ManualModInfo;
 import com.lx862.pwgui.executable.ProgramExecution;
 import com.lx862.pwgui.gui.prompt.TaskProgressDialog;
@@ -32,12 +32,12 @@ public class Util {
     private static final Pattern MANUAL_DOWNLOAD_FILENAME_PATTERN = Pattern.compile("\\(([^()]*|\\((?:[^()]*|\\([^()]*\\))*\\))*\\)");
     /** Returns a String with the format "PROGRAM_NAME - TEXT" */
     public static String withTitlePrefix(String str) {
-        return String.format("%s - %s", Constants.PROGRAM_NAME, str);
+        return String.format("%s - %s", BuildMetadata.INSTANCE.name, str);
     }
 
     /** Returns a String with the format "[PROGRAM_NAME] TEXT" */
     public static String withBracketPrefix(String str) {
-        return String.format("[%s] %s", Constants.PROGRAM_NAME, str);
+        return String.format("[%s] %s", BuildMetadata.INSTANCE.name, str);
     }
 
     /** Get resources from jar */

@@ -31,7 +31,7 @@ tasks.withType(JavaCompile).configureEach {
 
 jar {
     enabled = false
-    archiveFileName = "${rootProject.name}-v${project.version}-nodep.jar"
+    archiveFileName = "${rootProject.name}-v${rootProject.version}-nodep.jar"
     manifest {
         attributes(
             'Main-Class': 'com.lx862.pwgui.Main'
@@ -55,8 +55,22 @@ build {
     dependsOn(shadowJar)
 }
 
+processResources {
+    inputs.property "name", rootProject.name
+    inputs.property "version", rootProject.version
+    inputs.property "author", rootProject.properties.author
+
+    filesMatching("build.json") {
+        expand(
+            "name": inputs.properties.name,
+            "version": inputs.properties.version,
+            "author": inputs.properties.author
+        )
+    }
+}
+
 shadowJar {
-    archiveFileName = "${rootProject.name}-v${project.version}.jar"
+    archiveFileName = "${rootProject.name}-v${rootProject.version}.jar"
 }
 
 test {

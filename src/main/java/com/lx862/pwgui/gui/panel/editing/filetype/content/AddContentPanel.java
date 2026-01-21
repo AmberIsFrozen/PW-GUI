@@ -1,6 +1,6 @@
 package com.lx862.pwgui.gui.panel.editing.filetype.content;
 
-import com.lx862.pwgui.core.Constants;
+import com.lx862.pwgui.util.Strings;
 import com.lx862.pwgui.pwcore.Modpack;
 import com.lx862.pwgui.executable.Executables;
 import com.lx862.pwgui.executable.ProgramExecution;
@@ -35,7 +35,7 @@ public class AddContentPanel extends FileTypePanel {
 
     public static void addProjectFromContentPlatform(Window parent, Modpack modpack, String... args) {
         ProgramExecution programExecution = Executables.packwiz.buildCommand(args).build();
-        TaskProgressDialog dialog = new TaskProgressDialog(parent, "Adding mod...", Constants.REASON_TRIGGERED_BY_USER, programExecution);
+        TaskProgressDialog dialog = new TaskProgressDialog(parent, "Adding mod...", Strings.REASON_TRIGGERED_BY_USER, programExecution);
 
         List<String> recordedOutputs = new ArrayList<>();
 

@@ -3,7 +3,7 @@ package com.lx862.pwgui.gui.dialog;
 import com.formdev.flatlaf.ui.FlatUIUtils;
 import com.github.rjeschke.txtmark.Processor;
 import com.lx862.pwgui.PWGUI;
-import com.lx862.pwgui.core.Constants;
+import com.lx862.pwgui.core.BuildMetadata;
 import com.lx862.pwgui.gui.components.kui.KRootContentPanel;
 import com.lx862.pwgui.gui.components.kui.KTabbedPane;
 import com.lx862.pwgui.gui.panel.editing.filetype.MarkdownPanel;
@@ -16,7 +16,7 @@ import java.io.IOException;
 
 public class AboutDialog extends BaseDialog {
     public AboutDialog(Window parent) {
-        super(parent, String.format("About %s", Constants.PROGRAM_NAME), ModalityType.DOCUMENT_MODAL);
+        super(parent, String.format("About %s", BuildMetadata.INSTANCE.name), ModalityType.DOCUMENT_MODAL);
         setSize(325, 500);
         setLocationRelativeTo(parent);
 
@@ -30,12 +30,12 @@ public class AboutDialog extends BaseDialog {
         public MainPanel() {
             setLayout(new BoxLayout(this, BoxLayout.PAGE_AXIS));
 
-            JLabel logoLabel = new JLabel(new ImageIcon(GUIHelper.convertImage(Util.getAssets("/assets/logo.png"), 200), String.format("%s Logo", Constants.PROGRAM_NAME)));
+            JLabel logoLabel = new JLabel(new ImageIcon(GUIHelper.convertImage(Util.getAssets("/assets/logo.png"), 200), "Application Logo"));
             logoLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
 
             add(logoLabel);
 
-            JLabel titleLabel = new JLabel(Constants.PROGRAM_NAME);
+            JLabel titleLabel = new JLabel(BuildMetadata.INSTANCE.name);
             titleLabel.setFont(FlatUIUtils.nonUIResource(UIManager.getFont("h2.font")));
             titleLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
             add(titleLabel);
@@ -44,7 +44,7 @@ public class AboutDialog extends BaseDialog {
             descriptionLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
             add(descriptionLabel);
 
-            JLabel versionLabel = new JLabel(Constants.VERSION);
+            JLabel versionLabel = new JLabel(BuildMetadata.INSTANCE.version);
             versionLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
             add(versionLabel);
 
@@ -58,7 +58,7 @@ public class AboutDialog extends BaseDialog {
 
             add(tabbedPane);
 
-            JLabel footerLabel = new JLabel(String.format("%s 2026 <3", Constants.AUTHOR));
+            JLabel footerLabel = new JLabel(String.format("%s 2026 <3", BuildMetadata.INSTANCE.author));
             footerLabel.setAlignmentX(CENTER_ALIGNMENT);
             add(footerLabel);
         }

@@ -1,7 +1,7 @@
 package com.lx862.pwgui.gui.frame;
 
 import com.formdev.flatlaf.ui.FlatUIUtils;
-import com.lx862.pwgui.core.Constants;
+import com.lx862.pwgui.core.BuildMetadata;
 import com.lx862.pwgui.gui.action.DownloadPackwizAction;
 import com.lx862.pwgui.gui.action.LocatePackwizAction;
 import com.lx862.pwgui.gui.components.kui.KButton;
@@ -21,7 +21,7 @@ public class SetupFrame extends BaseFrame {
     private static final int LOGO_SIZE = 200;
 
     public SetupFrame(Component parent) {
-        super(String.format("Welcome to %s!", Constants.PROGRAM_NAME));
+        super(String.format("Welcome to %s!", BuildMetadata.INSTANCE.name));
 
         setSize(400, 550);
         setLocationRelativeTo(parent);
@@ -39,20 +39,20 @@ public class SetupFrame extends BaseFrame {
             setLayout(new BoxLayout(this, BoxLayout.PAGE_AXIS));
             add(Box.createVerticalGlue());
 
-            JLabel logoLabel = new JLabel(new ImageIcon(GUIHelper.convertImage(Util.getAssets("/assets/logo.png"), LOGO_SIZE), String.format("%s Logo", Constants.PROGRAM_NAME)));
+            JLabel logoLabel = new JLabel(new ImageIcon(GUIHelper.convertImage(Util.getAssets("/assets/logo.png"), LOGO_SIZE), "Application Logo"));
             logoLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
             add(logoLabel);
 
             add(GUIHelper.createVerticalPadding(8));
 
-            JLabel titleLabel = new JLabel(String.format("Heya! Welcome to %s!", Constants.PROGRAM_NAME));
+            JLabel titleLabel = new JLabel(String.format("Heya! Welcome to %s!", BuildMetadata.INSTANCE.name));
             titleLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
             titleLabel.setFont(FlatUIUtils.nonUIResource(UIManager.getFont("h2.font")));
             add(titleLabel);
 
             add(GUIHelper.createVerticalPadding(8));
 
-            JLabel descriptionLabel = new JLabel(String.format("<html><div style=\"text-align:center\">%s aims to simplify modpack management by providing a GUI around the command-line program packwiz.</div></html>", Constants.PROGRAM_NAME), SwingConstants.CENTER);
+            JLabel descriptionLabel = new JLabel(String.format("<html><div style=\"text-align:center\">%s aims to simplify modpack management by providing a GUI around the command-line program packwiz.</div></html>", BuildMetadata.INSTANCE.name), SwingConstants.CENTER);
             descriptionLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
             add(descriptionLabel);
 

@@ -9,7 +9,7 @@ import com.lx862.pwgui.pwcore.Modpack;
 import com.lx862.pwgui.executable.Executables;
 import com.lx862.pwgui.gui.components.kui.KButton;
 import com.lx862.pwgui.util.GUIHelper;
-import com.lx862.pwgui.core.Constants;
+import com.lx862.pwgui.util.Strings;
 import com.lx862.pwgui.pwcore.data.IconNamePair;
 import com.lx862.pwgui.gui.components.kui.KFileChooser;
 import com.lx862.pwgui.executable.ProgramExecution;
@@ -81,7 +81,7 @@ public class ExportModpackDialog extends BaseDialog {
             if(refreshExitCode != 0) return;
 
             ProgramExecution program = Executables.packwiz.buildCommand(args.toArray(new String[0])).build();
-            TaskProgressDialog dialog = new TaskProgressDialog(this, "Exporting Modpack...", Constants.REASON_TRIGGERED_BY_USER, program);
+            TaskProgressDialog dialog = new TaskProgressDialog(this, "Exporting Modpack...", Strings.REASON_TRIGGERED_BY_USER, program);
             Util.addManualDownloadPrompt(this, program, dialog, () -> {
                 exportModpack(args, destination);
             });

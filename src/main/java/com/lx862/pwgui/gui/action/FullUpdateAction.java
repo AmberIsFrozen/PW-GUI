@@ -1,7 +1,7 @@
 package com.lx862.pwgui.gui.action;
 
 import com.lx862.pwgui.PWGUI;
-import com.lx862.pwgui.core.Constants;
+import com.lx862.pwgui.util.Strings;
 import com.lx862.pwgui.pwcore.*;
 import com.lx862.pwgui.executable.BatchedProgramExecution;
 import com.lx862.pwgui.executable.Executables;
@@ -115,7 +115,7 @@ public class FullUpdateAction extends UpdateAction {
                 }
             }
         });
-        TaskProgressDialog updateProgressDialog = new TaskProgressDialog(parent, "Checking for update...", Constants.REASON_TRIGGERED_BY_USER, updateExecution);
+        TaskProgressDialog updateProgressDialog = new TaskProgressDialog(parent, "Checking for update...", Strings.REASON_TRIGGERED_BY_USER, updateExecution);
         updateProgressDialog.setVisible(true);
     }
 }

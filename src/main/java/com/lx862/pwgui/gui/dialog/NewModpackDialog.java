@@ -2,7 +2,7 @@ package com.lx862.pwgui.gui.dialog;
 
 import com.formdev.flatlaf.ui.FlatUIUtils;
 import com.lx862.pwgui.PWGUI;
-import com.lx862.pwgui.core.Constants;
+import com.lx862.pwgui.util.Strings;
 import com.lx862.pwgui.executable.Executables;
 import com.lx862.pwgui.executable.PackwizExecutable;
 import com.lx862.pwgui.gui.components.kui.*;
@@ -20,8 +20,6 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.function.Consumer;
 
 public class NewModpackDialog extends BaseDialog {
@@ -128,7 +126,7 @@ public class NewModpackDialog extends BaseDialog {
                     }
                 });
 
-                new TaskProgressDialog(this, "Creating Modpack...", Constants.REASON_TRIGGERED_BY_USER, processExecution).setVisible(true);
+                new TaskProgressDialog(this, "Creating Modpack...", Strings.REASON_TRIGGERED_BY_USER, processExecution).setVisible(true);
             }
         } catch (Exception e) {
             PWGUI.LOGGER.exception(e);

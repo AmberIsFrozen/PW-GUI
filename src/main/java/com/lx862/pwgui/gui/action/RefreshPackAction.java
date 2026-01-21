@@ -1,6 +1,6 @@
 package com.lx862.pwgui.gui.action;
 
-import com.lx862.pwgui.core.Constants;
+import com.lx862.pwgui.util.Strings;
 import com.lx862.pwgui.executable.Executables;
 import com.lx862.pwgui.util.Util;
 
@@ -34,6 +34,6 @@ public class RefreshPackAction extends AbstractAction {
                     JOptionPane.showMessageDialog(parent, String.format("Packwiz exited with exit code %d:\n%s", exitCode, lastLine.get()), Util.withTitlePrefix("Refresh Modpack Index"), JOptionPane.ERROR_MESSAGE);
                 }
             })
-        .run(Constants.REASON_TRIGGERED_BY_USER);
+        .run(Strings.REASON_TRIGGERED_BY_USER);
     }
 }

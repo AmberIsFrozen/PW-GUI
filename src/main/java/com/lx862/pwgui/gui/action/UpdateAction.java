@@ -1,6 +1,6 @@
 package com.lx862.pwgui.gui.action;
 
-import com.lx862.pwgui.core.Constants;
+import com.lx862.pwgui.util.Strings;
 import com.lx862.pwgui.executable.Executables;
 import com.lx862.pwgui.executable.ProgramExecution;
 import com.lx862.pwgui.gui.prompt.TaskProgressDialog;
@@ -43,7 +43,7 @@ public class UpdateAction extends AbstractAction {
                 }
             }
         });
-        TaskProgressDialog taskProgressDialog = new TaskProgressDialog(parent, "Checking for update...", Constants.REASON_TRIGGERED_BY_USER, programExecution);
+        TaskProgressDialog taskProgressDialog = new TaskProgressDialog(parent, "Checking for update...", Strings.REASON_TRIGGERED_BY_USER, programExecution);
         taskProgressDialog.setVisible(true);
     }
 

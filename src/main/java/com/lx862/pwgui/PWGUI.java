@@ -1,6 +1,7 @@
 package com.lx862.pwgui;
 
 import com.formdev.flatlaf.util.UIScale;
+import com.lx862.pwgui.core.BuildMetadata;
 import com.lx862.pwgui.core.Config;
 import com.lx862.pwgui.core.Logger;
 import com.lx862.pwgui.executable.Executables;
@@ -24,11 +25,13 @@ public class PWGUI {
      * @param commandLine The CommandLine parsed from the CLI. Null if this is a reinitialization process.
      */
     public static void init(CommandLine commandLine) {
+        BuildMetadata.init();
+
         try {
             config.read();
         } catch (Exception e) {
             if(e instanceof FileNotFoundException) {
-                LOGGER.info("Config file does not exists.");
+                LOGGER.info("Config file does not exist.");
             } else {
                 LOGGER.exception(e);
                 LOGGER.warn("Failed to read config file, using default!");

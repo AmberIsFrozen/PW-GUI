@@ -2,7 +2,7 @@ package com.lx862.pwgui.gui.dialog;
 
 import com.formdev.flatlaf.ui.FlatUIUtils;
 import com.lx862.pwgui.core.data.Caches;
-import com.lx862.pwgui.core.Constants;
+import com.lx862.pwgui.util.Strings;
 import com.lx862.pwgui.gui.components.kui.KActionPanel;
 import com.lx862.pwgui.gui.components.kui.KRootContentPanel;
 import com.lx862.pwgui.pwcore.data.PackComponent;
@@ -124,7 +124,7 @@ public class ChangeAcceptableGameVersionDialog extends BaseDialog {
         }
 
         batchedProgramExecution.onExit(callback);
-        batchedProgramExecution.execute(Constants.REASON_TRIGGERED_BY_USER);
+        batchedProgramExecution.execute(Strings.REASON_TRIGGERED_BY_USER);
     }
 
     private void refreshVersionList(JList<String> jList, List<String> selected, JCheckBox snapshotCheckBox) {

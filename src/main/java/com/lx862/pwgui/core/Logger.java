@@ -32,7 +32,7 @@ public class Logger {
     }
 
     public void error(String str) {
-        error("[" + Constants.PROGRAM_NAME + "]", str);
+        error("[" + BuildMetadata.INSTANCE.name + "]", str);
     }
 
     public void error(String prefix, String str) {
@@ -40,7 +40,7 @@ public class Logger {
     }
 
     public void warn(String str) {
-        warn("[" + Constants.PROGRAM_NAME + "]", str);
+        warn("[" + BuildMetadata.INSTANCE.name + "]", str);
     }
 
     public void warn(String prefix, String str) {
@@ -54,7 +54,7 @@ public class Logger {
     }
 
     public void info(String str) {
-        info("[" + Constants.PROGRAM_NAME + "]", str);
+        info("[" + BuildMetadata.INSTANCE.name + "]", str);
     }
 
     public void info(String prefix, String str) {
@@ -62,7 +62,7 @@ public class Logger {
     }
 
     public void debug(String str) {
-        debug("[" + Constants.PROGRAM_NAME + "]", str);
+        debug("[" + BuildMetadata.INSTANCE.name + "]", str);
     }
 
     public void debug(String prefix, String str) {

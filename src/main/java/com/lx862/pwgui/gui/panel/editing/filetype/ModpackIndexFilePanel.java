@@ -1,6 +1,6 @@
 package com.lx862.pwgui.gui.panel.editing.filetype;
 
-import com.lx862.pwgui.core.Constants;
+import com.lx862.pwgui.core.BuildMetadata;
 import com.lx862.pwgui.core.data.model.file.ModpackIndexFileModel;
 import com.lx862.pwgui.gui.action.RefreshPackAction;
 import com.lx862.pwgui.gui.components.kui.KButton;
@@ -25,7 +25,7 @@ public class ModpackIndexFilePanel extends FileTypePanel {
 
         add(GUIHelper.createVerticalPadding(10));
 
-        JLabel description3Label = new JLabel(String.format("<html>If you have added files outside of %s, you can press the refresh button below to keep the index up to date.</html>", Constants.PROGRAM_NAME));
+        JLabel description3Label = new JLabel(String.format("<html>If you have added files outside of %s, you can press the refresh button below to keep the index up to date.</html>", BuildMetadata.INSTANCE.name));
         description3Label.setAlignmentX(LEFT_ALIGNMENT);
         add(description3Label);
 

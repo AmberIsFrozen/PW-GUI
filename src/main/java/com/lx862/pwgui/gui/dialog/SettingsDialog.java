@@ -2,8 +2,9 @@ package com.lx862.pwgui.gui.dialog;
 
 import com.formdev.flatlaf.ui.FlatUIUtils;
 import com.lx862.pwgui.PWGUI;
+import com.lx862.pwgui.core.BuildMetadata;
 import com.lx862.pwgui.core.Config;
-import com.lx862.pwgui.core.Constants;
+import com.lx862.pwgui.util.Strings;
 import com.lx862.pwgui.core.data.ApplicationTheme;
 import com.lx862.pwgui.executable.Executables;
 import com.lx862.pwgui.gui.action.DownloadPackwizAction;
@@ -77,7 +78,7 @@ public class SettingsDialog extends BaseDialog {
         Executables.packwiz.updateExecutableLocation(null);
 
         try {
-            config.write(Constants.REASON_TRIGGERED_BY_USER);
+            config.write(Strings.REASON_TRIGGERED_BY_USER);
             dispose();
         } catch (IOException e) {
             PWGUI.LOGGER.exception(e);
@@ -105,7 +106,7 @@ public class SettingsDialog extends BaseDialog {
 
         public ProgramPanel(Config config, Window windowParent) {
             setLayout(new BoxLayout(this, BoxLayout.PAGE_AXIS));
-            setBorder(BorderFactory.createTitledBorder(Constants.PROGRAM_NAME));
+            setBorder(BorderFactory.createTitledBorder(BuildMetadata.INSTANCE.name));
 
             JPanel themePanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 6, 0));
             themePanel.setAlignmentX(Component.LEFT_ALIGNMENT);
@@ -249,8 +250,8 @@ public class SettingsDialog extends BaseDialog {
 
         @Override
         public void actionPerformed(ActionEvent actionEvent) {
-            if(JOptionPane.showConfirmDialog(parents[0], String.format("This will reset %s to it's initial state as if it's the first time the program is launched.\nAre you sure you want to continue?", Constants.PROGRAM_NAME), Util.withTitlePrefix("Reset Program?"), JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
-                PWGUI.LOGGER.info(String.format("Resetting %s!", Constants.PROGRAM_NAME));
+            if(JOptionPane.showConfirmDialog(parents[0], String.format("This will reset %s to it's initial state as if it's the first time the program is launched.\nAre you sure you want to continue?", BuildMetadata.INSTANCE.name), Util.withTitlePrefix("Reset Program?"), JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
+                PWGUI.LOGGER.info("Resetting program!");
 
                 try {
                     FileUtils.deleteDirectory(Config.CONFIG_DIR_PATH.toFile());

@@ -1,7 +1,7 @@
 package com.lx862.pwgui.gui.dialog;
 
 import com.formdev.flatlaf.ui.FlatUIUtils;
-import com.lx862.pwgui.core.Constants;
+import com.lx862.pwgui.util.Strings;
 import com.lx862.pwgui.executable.Executables;
 import com.lx862.pwgui.executable.ProgramExecution;
 import com.lx862.pwgui.gui.components.filepicker.CurseForgeModpackFilter;
@@ -111,7 +111,7 @@ public class ImportModpackDialog extends BaseDialog {
                 }
             });
 
-            new TaskProgressDialog(parent, "Importing Modpack...", Constants.REASON_TRIGGERED_BY_USER, programExecution).setVisible(true);
+            new TaskProgressDialog(parent, "Importing Modpack...", Strings.REASON_TRIGGERED_BY_USER, programExecution).setVisible(true);
         }
     }
 }

@@ -1,7 +1,7 @@
 package com.lx862.pwgui.gui.panel.editing.filetype;
 
 import com.lx862.pwgui.PWGUI;
-import com.lx862.pwgui.core.Constants;
+import com.lx862.pwgui.util.Strings;
 import com.lx862.pwgui.pwcore.PackIndexFile;
 import com.lx862.pwgui.core.data.model.file.GenericFileModel;
 import com.lx862.pwgui.executable.Executables;
@@ -106,7 +106,7 @@ public class FilePanel extends FileTypePanel {
             super.save();
             indexEntry.preserve = preserveCheckBox.isSelected();
             indexFile.updateEntry(indexEntry);
-            indexFile.write(Constants.REASON_TRIGGERED_BY_USER);
+            indexFile.write(Strings.REASON_TRIGGERED_BY_USER);
             initialPreserve = indexEntry.preserve;
         }
     }

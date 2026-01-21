@@ -1,6 +1,6 @@
 package com.lx862.pwgui.gui.dialog;
 
-import com.lx862.pwgui.core.Constants;
+import com.lx862.pwgui.util.Strings;
 import com.lx862.pwgui.executable.Executable;
 import com.lx862.pwgui.executable.Executables;
 import com.lx862.pwgui.executable.ProgramExecution;
@@ -122,7 +122,7 @@ public class ConsoleDialog extends BaseDialog {
                 }
                 currentExecution = null;
             });
-            programExecution.run(helpMessage ? "Display help message" : Constants.REASON_TRIGGERED_BY_USER);
+            programExecution.run(helpMessage ? "Display help message" : Strings.REASON_TRIGGERED_BY_USER);
         }
     }
 
