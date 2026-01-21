@@ -76,11 +76,13 @@ public class ManualDownloadDialog extends BaseDialog {
 
         contentPanel.add(monitorLocationPanel);
 
-        JLabel afterMathLabel = new JLabel("Once all files are downloaded, you can then click \"OK\" and we'll take care the rest!");
+        JLabel afterMathLabel = new JLabel("Once all files are downloaded, you can then click \"Continue >\" and we'll take care the rest!");
         afterMathLabel.setAlignmentX(Component.LEFT_ALIGNMENT);
         contentPanel.add(afterMathLabel);
 
-        this.okButton = new KButton(new ContinueExportAction(finishCallback));
+        this.okButton = new KButton(new ContinueExportAction("Continue >", finishCallback));
+        getRootPane().setDefaultButton(this.okButton);
+
         KButton cancelButton = new KButton(new AbortAction());
 
         KActionPanel actionPanel = new KActionPanel.Builder().setPositiveButton(okButton).setNegativeButton(cancelButton).build();
@@ -140,12 +142,13 @@ public class ManualDownloadDialog extends BaseDialog {
         if(this.fileWatcherThread != null) this.fileWatcherThread.interrupt();
     }
 
-    class ContinueExportAction extends OKAction {
+    class ContinueExportAction extends AbstractAction {
         private final Consumer<Path> callback;
 
-        public ContinueExportAction(Consumer<Path> callback) {
-            super(() -> {});
+        public ContinueExportAction(String title, Consumer<Path> callback) {
+            super(title);
             this.callback = callback;
+            putValue(MNEMONIC_KEY, KeyEvent.VK_O);
         }
 
         @Override
