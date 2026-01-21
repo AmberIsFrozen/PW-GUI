@@ -1,5 +1,6 @@
 package com.lx862.pwgui.gui.dialog;
 
+import com.formdev.flatlaf.FlatClientProperties;
 import com.formdev.flatlaf.ui.FlatUIUtils;
 import com.github.rjeschke.txtmark.Processor;
 import com.lx862.pwgui.PWGUI;
@@ -51,6 +52,7 @@ public class AboutDialog extends BaseDialog {
             add(GUIHelper.createVerticalPadding(8));
 
             KTabbedPane tabbedPane = new KTabbedPane();
+            tabbedPane.putClientProperty(FlatClientProperties.TABBED_PANE_TAB_AREA_ALIGNMENT, FlatClientProperties.TABBED_PANE_ALIGN_FILL );
             tabbedPane.addTab("External Links", new JScrollPane(new FileTabPane("links.md")));
             tabbedPane.addTab("Details", new JScrollPane(new FileTabPane("details.md")));
             tabbedPane.addTab("Credits", new JScrollPane(new FileTabPane("credits.md")));

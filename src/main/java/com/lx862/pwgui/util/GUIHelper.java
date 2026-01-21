@@ -34,7 +34,12 @@ public class GUIHelper {
             UIManager.put("ScrollBar.width", 14);
             UIManager.put("TabbedPane.showTabSeparators", true);
             UIManager.put("Button.arc", 9);
+            UIManager.put("ScrollPane.arc", 9);
             UIManager.put("TextComponent.arc", 6);
+            UIManager.put("List.selectionArc", 6);
+            UIManager.put("List.border", getPaddedBorder(3, 0, 3, 0));
+            UIManager.put("Tree.selectionArc", 6);
+            UIManager.put("Tree.border", getPaddedBorder(3, 0, 3, 0));
             UIManager.put("Component.arc", 6);
             UIManager.put("Component.hideMnemonics", false);
 
