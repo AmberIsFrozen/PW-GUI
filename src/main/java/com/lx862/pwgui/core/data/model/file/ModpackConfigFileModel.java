@@ -1,8 +1,8 @@
 package com.lx862.pwgui.core.data.model.file;
 
 import com.lx862.pwgui.PWGUI;
-import com.lx862.pwgui.pwcore.PackFile;
-import com.lx862.pwgui.util.GUIHelper;
+import com.lx862.pwgui.gui.ImageUtil;
+import com.lx862.pwgui.support.packwiz.PackFile;
 import com.lx862.pwgui.util.Util;
 
 import javax.swing.*;
@@ -32,6 +32,6 @@ public class ModpackConfigFileModel extends PlainTextFileModel {
 
     @Override
     public Icon getIcon() {
-        return new ImageIcon(GUIHelper.convertImage(Util.getAssets("/assets/ui/mime/settings.png"), 18));
+        return new ImageIcon(ImageUtil.convertImage(Util.getAssets("/assets/ui/mime/settings.png"), 18));
     }
 }

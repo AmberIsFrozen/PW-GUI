@@ -1,13 +1,14 @@
 package com.lx862.pwgui.gui.frame;
 
 import com.formdev.flatlaf.ui.FlatUIUtils;
-import com.lx862.pwgui.core.BuildMetadata;
+import com.lx862.pwgui.core.ApplicationInfo;
+import com.lx862.pwgui.gui.ImageUtil;
 import com.lx862.pwgui.gui.action.DownloadPackwizAction;
 import com.lx862.pwgui.gui.action.LocatePackwizAction;
 import com.lx862.pwgui.gui.components.kui.KButton;
 import com.lx862.pwgui.gui.components.kui.KRootContentPanel;
 import com.lx862.pwgui.gui.components.kui.KSeparator;
-import com.lx862.pwgui.util.GUIHelper;
+import com.lx862.pwgui.gui.GUIConfiguration;
 import com.lx862.pwgui.util.Util;
 
 import javax.swing.*;
@@ -21,7 +22,7 @@ public class SetupFrame extends BaseFrame {
     private static final int LOGO_SIZE = 200;
 
     public SetupFrame(Component parent) {
-        super(String.format("Welcome to %s!", BuildMetadata.INSTANCE.name));
+        super(String.format("Welcome to %s!", ApplicationInfo.INSTANCE.name));
 
         setSize(400, 550);
         setLocationRelativeTo(parent);
@@ -39,28 +40,28 @@ public class SetupFrame extends BaseFrame {
             setLayout(new BoxLayout(this, BoxLayout.PAGE_AXIS));
             add(Box.createVerticalGlue());
 
-            JLabel logoLabel = new JLabel(new ImageIcon(GUIHelper.convertImage(Util.getAssets("/assets/logo.png"), LOGO_SIZE), "Application Logo"));
+            JLabel logoLabel = new JLabel(new ImageIcon(ImageUtil.convertImage(Util.getAssets("/assets/logo.png"), LOGO_SIZE), "Application Logo"));
             logoLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
             add(logoLabel);
 
-            add(GUIHelper.createVerticalPadding(8));
+            add(GUIConfiguration.createVerticalPadding(8));
 
-            JLabel titleLabel = new JLabel(String.format("Heya! Welcome to %s!", BuildMetadata.INSTANCE.name));
+            JLabel titleLabel = new JLabel(String.format("Heya! Welcome to %s!", ApplicationInfo.INSTANCE.name));
             titleLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
             titleLabel.setFont(FlatUIUtils.nonUIResource(UIManager.getFont("h2.font")));
             add(titleLabel);
 
-            add(GUIHelper.createVerticalPadding(8));
+            add(GUIConfiguration.createVerticalPadding(8));
 
-            JLabel descriptionLabel = new JLabel(String.format("<html><div style=\"text-align:center\">%s aims to simplify modpack management by providing a GUI around the command-line program packwiz.</div></html>", BuildMetadata.INSTANCE.name), SwingConstants.CENTER);
+            JLabel descriptionLabel = new JLabel(String.format("<html><div style=\"text-align:center\">%s aims to simplify modpack management by providing a GUI around the command-line program packwiz.</div></html>", ApplicationInfo.INSTANCE.name), SwingConstants.CENTER);
             descriptionLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
             add(descriptionLabel);
 
-            add(GUIHelper.createVerticalPadding(10));
+            add(GUIConfiguration.createVerticalPadding(10));
 
             add(new KSeparator());
 
-            add(GUIHelper.createVerticalPadding(10));
+            add(GUIConfiguration.createVerticalPadding(10));
 
             JLabel whatToDoNextDescriptionLabel = new JLabel("<html><p style=\"text-align:center\">Don't have packwiz yet? Just click the download button below and we'll take care of it!</p><p style=\"margin-top:7px;text-align:center;\">Otherwise, please give me a favor by pointing me to the packwiz executable~</p></html>", SwingConstants.CENTER);
             whatToDoNextDescriptionLabel.setAlignmentY(Component.TOP_ALIGNMENT);

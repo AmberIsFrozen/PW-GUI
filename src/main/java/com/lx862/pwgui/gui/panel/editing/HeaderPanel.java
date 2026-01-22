@@ -2,9 +2,10 @@ package com.lx862.pwgui.gui.panel.editing;
 
 import com.formdev.flatlaf.ui.FlatUIUtils;
 import com.lx862.pwgui.PWGUI;
-import com.lx862.pwgui.pwcore.PackFile;
-import com.lx862.pwgui.pwcore.data.PackComponentVersion;
-import com.lx862.pwgui.util.GUIHelper;
+import com.lx862.pwgui.gui.ImageUtil;
+import com.lx862.pwgui.support.packwiz.PackFile;
+import com.lx862.pwgui.support.packwiz.data.PackComponentVersion;
+import com.lx862.pwgui.gui.GUIConfiguration;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
@@ -31,9 +32,9 @@ public class HeaderPanel extends JPanel {
                 BufferedImage iconImage = ImageIO.read(iconFile);
                 if(iconImage != null) {
                     int iconScaleMode = iconImage.getWidth() <= PACK_ICON_SIZE && iconImage.getHeight() <= PACK_ICON_SIZE ? Image.SCALE_FAST : Image.SCALE_SMOOTH;
-                    JLabel iconLabel = new JLabel(new ImageIcon(GUIHelper.resizeImage(iconImage, PACK_ICON_SIZE, PACK_ICON_SIZE, iconScaleMode), "icon.png from modpack"));
+                    JLabel iconLabel = new JLabel(new ImageIcon(ImageUtil.resizeImage(iconImage, PACK_ICON_SIZE, PACK_ICON_SIZE, iconScaleMode), "icon.png from modpack"));
                     add(iconLabel);
-                    add(GUIHelper.createHorizontalPadding(8));
+                    add(GUIConfiguration.createHorizontalPadding(8));
                 }
             } catch (Exception e) {
                 PWGUI.LOGGER.error("Failed to read pack icon image!");
@@ -76,7 +77,7 @@ public class HeaderPanel extends JPanel {
             setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 
             for (PackComponentVersion packComponentVersion : components) {
-                JLabel componentLabel = new JLabel(packComponentVersion.getComponent().iconName.name + " version: " + packComponentVersion.getVersion(), new ImageIcon(GUIHelper.clampImageSize(packComponentVersion.getComponent().iconName.image, 20)), SwingConstants.LEFT);
+                JLabel componentLabel = new JLabel(packComponentVersion.getComponent().iconName.name + " version: " + packComponentVersion.getVersion(), new ImageIcon(ImageUtil.clampImageSize(packComponentVersion.getComponent().iconName.image, 20)), SwingConstants.LEFT);
                 componentLabel.setAlignmentX(Component.RIGHT_ALIGNMENT);
                 add(componentLabel);
             }

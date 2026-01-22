@@ -3,13 +3,12 @@ package com.lx862.pwgui.gui.dialog;
 import com.formdev.flatlaf.ui.FlatUIUtils;
 import com.lx862.pwgui.PWGUI;
 import com.lx862.pwgui.util.Strings;
-import com.lx862.pwgui.executable.Executables;
-import com.lx862.pwgui.executable.PackwizExecutable;
+import com.lx862.pwgui.support.packwiz.executable.PackwizExecutable;
 import com.lx862.pwgui.gui.components.kui.*;
 import com.lx862.pwgui.gui.prompt.TaskProgressDialog;
 import com.lx862.pwgui.gui.panel.ModpackInfoPanel;
 import com.lx862.pwgui.gui.panel.ModpackVersionPanel;
-import com.lx862.pwgui.util.GUIHelper;
+import com.lx862.pwgui.gui.GUIConfiguration;
 import com.lx862.pwgui.util.Util;
 import org.apache.commons.io.FileUtils;
 import com.lx862.pwgui.executable.ProgramExecution;
@@ -35,7 +34,7 @@ public class NewModpackDialog extends BaseDialog {
 
         JLabel titleLabel = new JLabel("New Modpack...");
         titleLabel.setFont(FlatUIUtils.nonUIResource(UIManager.getFont("h2.font")));
-        titleLabel.setBorder(GUIHelper.getPaddedBorder(0, 0, 10, 0)); // Bottom padding to compensate
+        titleLabel.setBorder(GUIConfiguration.getPaddedBorder(0, 0, 10, 0)); // Bottom padding to compensate
         contentPanel.add(titleLabel, BorderLayout.NORTH);
 
         JTabbedPane createImportTabPane = new JTabbedPane();
@@ -45,7 +44,7 @@ public class NewModpackDialog extends BaseDialog {
         createFormPanel.setLayout(new BoxLayout(createFormPanel, BoxLayout.Y_AXIS));
 
         JLabel descriptionLabel = new JLabel("Please fill the basic info about your (soon to be!) modpack.");
-        descriptionLabel.setBorder(GUIHelper.getPaddedBorder(10));
+        descriptionLabel.setBorder(GUIConfiguration.getPaddedBorder(10));
         descriptionLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
         createFormPanel.add(descriptionLabel);
 
@@ -112,11 +111,11 @@ public class NewModpackDialog extends BaseDialog {
                 }
 
                 // Build arguments
-                PackwizExecutable.PackwizArgumentBuilder arguments = Executables.packwiz.init();
+                PackwizExecutable.PackwizArgumentBuilder arguments = PackwizExecutable.INSTANCE.init();
                 arguments.append(modpackInfoPanel.getInitArguments());
                 arguments.append(modpackVersionPanel.getInitArguments());
 
-                Executables.packwiz.changeWorkingDirectory(modpackDirectory.toPath());
+                PackwizExecutable.INSTANCE.changeWorkingDirectory(modpackDirectory.toPath());
 
                 ProgramExecution processExecution = arguments.build();
                 processExecution.onExit(exitCode -> {

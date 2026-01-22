@@ -1,12 +1,13 @@
 package com.lx862.pwgui.gui.frame;
 
 import com.lx862.pwgui.core.Config;
+import com.lx862.pwgui.support.git.executable.GitExecutable;
+import com.lx862.pwgui.support.packwiz.executable.PackwizExecutable;
 import com.lx862.pwgui.gui.components.kui.KRootContentPanel;
-import com.lx862.pwgui.pwcore.Modpack;
-import com.lx862.pwgui.executable.Executables;
+import com.lx862.pwgui.support.packwiz.Modpack;
 import com.lx862.pwgui.gui.components.fstree.FileSystemWatcher;
 import com.lx862.pwgui.gui.panel.editing.HeaderPanel;
-import com.lx862.pwgui.util.GUIHelper;
+import com.lx862.pwgui.gui.GUIConfiguration;
 import com.lx862.pwgui.util.Util;
 import com.lx862.pwgui.gui.panel.editing.EditPanel;
 
@@ -33,15 +34,15 @@ public class EditFrame extends BaseFrame {
         setLocationRelativeTo(parent);
 
         Config.getInstance().setLastModpackPath(modpack.getPackFilePath());
-        Executables.packwiz.setPackFileLocation(modpack.getRootPath().relativize(modpack.getPackFilePath()).toString());
-        Executables.packwiz.changeWorkingDirectory(modpack.getRootPath());
+        PackwizExecutable.INSTANCE.setPackFileLocation(modpack.getRootPath().relativize(modpack.getPackFilePath()).toString());
+        PackwizExecutable.INSTANCE.changeWorkingDirectory(modpack.getRootPath());
 
         headerPanel = new HeaderPanel(modpack.packFile.get());
         editPanel = new EditPanel(modpack);
 
 
         KRootContentPanel contentPanel = new KRootContentPanel(new BorderLayout(0, 10));
-        contentPanel.setBorder(GUIHelper.getPaddedBorder(7, 14, 14, 14));
+        contentPanel.setBorder(GUIConfiguration.getPaddedBorder(7, 14, 14, 14));
         registerKeyboardShortcut(contentPanel);
         contentPanel.add(headerPanel, BorderLayout.NORTH);
         contentPanel.add(editPanel, BorderLayout.CENTER);
@@ -100,6 +101,7 @@ public class EditFrame extends BaseFrame {
         editPanel.saveChanges(true);
         super.dispose();
         fileWatcherThread.interrupt();
-        Executables.dispose();
+        PackwizExecutable.INSTANCE.dispose();
+        GitExecutable.INSTANCE.dispose();
     }
 }

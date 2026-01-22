@@ -1,6 +1,7 @@
 package com.lx862.pwgui.executable;
 
 import com.lx862.pwgui.PWGUI;
+import com.lx862.pwgui.core.log.Logger;
 import com.lx862.pwgui.util.Util;
 
 import java.io.*;
@@ -10,12 +11,12 @@ public class ProgramExecution extends Task {
     private final ProcessBuilder processBuilder;
     private Process process;
 
-    public ProgramExecution(String taskName, ProcessBuilder processBuilder, ExecutorService defaultExecutor) {
+    public ProgramExecution(Logger logger, String taskName, ProcessBuilder processBuilder, ExecutorService defaultExecutor) {
         super(taskName, defaultExecutor);
         this.processBuilder = processBuilder;
 
         onOutput((stdout) -> { // Display log when we got a new line
-            PWGUI.LOGGER.infoRaw(taskName, stdout.content());
+            logger.info(stdout.content());
         });
     }
 

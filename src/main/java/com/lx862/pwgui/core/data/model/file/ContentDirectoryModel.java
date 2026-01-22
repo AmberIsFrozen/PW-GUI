@@ -1,6 +1,6 @@
 package com.lx862.pwgui.core.data.model.file;
 
-import com.lx862.pwgui.util.GUIHelper;
+import com.lx862.pwgui.gui.ImageUtil;
 import com.lx862.pwgui.util.Util;
 
 import javax.swing.*;
@@ -42,13 +42,13 @@ public class ContentDirectoryModel extends DirectoryModel {
     private static Icon iconFor(String contentType) {
         switch(contentType) {
             case "mods" -> {
-                return new ImageIcon(GUIHelper.convertImage(Util.getAssets("/assets/ui/mime/mods.png"), 16));
+                return new ImageIcon(ImageUtil.convertImage(Util.getAssets("/assets/ui/mime/mods.png"), 16));
             }
             case "resourcepacks", "plugins" -> {
                 return null;
             }
             case "shaderpacks" -> {
-                return new ImageIcon(GUIHelper.convertImage(Util.getAssets("/assets/ui/mime/shaderpacks.png"), 16));
+                return new ImageIcon(ImageUtil.convertImage(Util.getAssets("/assets/ui/mime/shaderpacks.png"), 16));
             }
         }
         return null;

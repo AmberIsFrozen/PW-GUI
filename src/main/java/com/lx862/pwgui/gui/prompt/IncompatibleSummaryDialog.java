@@ -5,7 +5,7 @@ import com.lx862.pwgui.PWGUI;
 import com.lx862.pwgui.gui.components.kui.KActionPanel;
 import com.lx862.pwgui.gui.components.kui.KRootContentPanel;
 import com.lx862.pwgui.gui.dialog.BaseDialog;
-import com.lx862.pwgui.pwcore.PackwizMetaFile;
+import com.lx862.pwgui.support.packwiz.PackwizMetaFile;
 import com.lx862.pwgui.gui.components.ModDetailListCellRenderer;
 import com.lx862.pwgui.gui.components.kui.KButton;
 import com.lx862.pwgui.util.Util;

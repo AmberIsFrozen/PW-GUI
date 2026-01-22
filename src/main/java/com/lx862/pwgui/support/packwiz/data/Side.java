@@ -1,4 +1,4 @@
-package com.lx862.pwgui.pwcore.data;
+package com.lx862.pwgui.support.packwiz.data;
 
 /* Represent a "side" in Minecraft, either Client or Server side (or both) */
 public enum Side {

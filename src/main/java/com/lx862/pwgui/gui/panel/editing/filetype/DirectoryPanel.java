@@ -2,7 +2,7 @@ package com.lx862.pwgui.gui.panel.editing.filetype;
 
 import com.lx862.pwgui.PWGUI;
 import com.lx862.pwgui.core.data.model.file.DirectoryModel;
-import com.lx862.pwgui.executable.Executables;
+import com.lx862.pwgui.support.packwiz.executable.PackwizExecutable;
 import com.lx862.pwgui.gui.components.kui.KButton;
 import com.lx862.pwgui.util.Util;
 import org.apache.commons.io.FileUtils;
@@ -42,7 +42,7 @@ public class DirectoryPanel extends FileTypePanel {
                 try {
                     FileUtils.deleteDirectory(fileEntry.path.toFile());
                     PWGUI.LOGGER.info("Deleted folder {}", fileEntry.path);
-                    Executables.packwiz.refresh().build().run("Folder deleted by user");
+                    PackwizExecutable.INSTANCE.refresh().build().run("Folder deleted by user");
                 } catch (IOException e) {
                     PWGUI.LOGGER.error("Failed to deleted folder {} due to {}", fileEntry.path, e.getMessage());
                     JOptionPane.showMessageDialog(getTopLevelAncestor(), String.format("Sorry but we are unable to delete the folder, error as follows: \n%s\nYou might try doing it from an external file manager.", e.getMessage()));

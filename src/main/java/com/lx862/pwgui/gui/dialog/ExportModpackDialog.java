@@ -2,15 +2,16 @@ package com.lx862.pwgui.gui.dialog;
 
 import com.formdev.flatlaf.ui.FlatUIUtils;
 import com.formdev.flatlaf.util.SystemFileChooser;
+import com.lx862.pwgui.support.packwiz.executable.PackwizExecutable;
+import com.lx862.pwgui.gui.ImageUtil;
 import com.lx862.pwgui.gui.components.kui.KRootContentPanel;
 import com.lx862.pwgui.gui.prompt.TaskProgressDialog;
 import com.lx862.pwgui.gui.prompt.FileSavedDialog;
-import com.lx862.pwgui.pwcore.Modpack;
-import com.lx862.pwgui.executable.Executables;
+import com.lx862.pwgui.support.packwiz.Modpack;
 import com.lx862.pwgui.gui.components.kui.KButton;
-import com.lx862.pwgui.util.GUIHelper;
+import com.lx862.pwgui.gui.GUIConfiguration;
 import com.lx862.pwgui.util.Strings;
-import com.lx862.pwgui.pwcore.data.IconNamePair;
+import com.lx862.pwgui.support.packwiz.data.IconNamePair;
 import com.lx862.pwgui.gui.components.kui.KFileChooser;
 import com.lx862.pwgui.executable.ProgramExecution;
 import com.lx862.pwgui.util.Util;
@@ -39,9 +40,9 @@ public class ExportModpackDialog extends BaseDialog {
         contentPanel.add(titleLabel, BorderLayout.NORTH);
 
         JTabbedPane formatTabPane = new JTabbedPane();
-        formatTabPane.setBorder(GUIHelper.getPaddedBorder(10, 0, 10, 0));
-        formatTabPane.addTab(IconNamePair.MODRINTH.name, new ImageIcon(GUIHelper.clampImageSize(IconNamePair.MODRINTH.image, 20)), new ModrinthExportPanel());
-        formatTabPane.addTab(IconNamePair.CURSEFORGE.name, new ImageIcon(GUIHelper.clampImageSize(IconNamePair.CURSEFORGE.image, 20)), new CurseforgeExportPanel(this::setExportButtonState));
+        formatTabPane.setBorder(GUIConfiguration.getPaddedBorder(10, 0, 10, 0));
+        formatTabPane.addTab(IconNamePair.MODRINTH.name, new ImageIcon(ImageUtil.clampImageSize(IconNamePair.MODRINTH.image, 20)), new ModrinthExportPanel());
+        formatTabPane.addTab(IconNamePair.CURSEFORGE.name, new ImageIcon(ImageUtil.clampImageSize(IconNamePair.CURSEFORGE.image, 20)), new CurseforgeExportPanel(this::setExportButtonState));
 
         formatTabPane.addChangeListener(changeEvent -> {
             ExportPanel selectedTab = (ExportPanel)formatTabPane.getComponentAt(formatTabPane.getSelectedIndex());
@@ -76,11 +77,11 @@ public class ExportModpackDialog extends BaseDialog {
     }
 
     private void exportModpack(List<String> args, File destination) {
-        ProgramExecution programRefresh = Executables.packwiz.refresh().build();
+        ProgramExecution programRefresh = PackwizExecutable.INSTANCE.refresh().build();
         programRefresh.onExit(refreshExitCode -> {
             if(refreshExitCode != 0) return;
 
-            ProgramExecution program = Executables.packwiz.buildCommand(args.toArray(new String[0])).build();
+            ProgramExecution program = PackwizExecutable.INSTANCE.buildCommand(args.toArray(new String[0])).build();
             TaskProgressDialog dialog = new TaskProgressDialog(this, "Exporting Modpack...", Strings.REASON_TRIGGERED_BY_USER, program);
             Util.addManualDownloadPrompt(this, program, dialog, () -> {
                 exportModpack(args, destination);
@@ -106,7 +107,7 @@ class ModrinthExportPanel extends ExportPanel {
     public ModrinthExportPanel() {
         setLayout(new BoxLayout(this, BoxLayout.PAGE_AXIS));
         JLabel formatLabel = new JLabel("<html>Format: <b>" + getExtension() + "</b></html>");
-        formatLabel.setBorder(GUIHelper.getPaddedBorder(4, 0, 4, 0));
+        formatLabel.setBorder(GUIConfiguration.getPaddedBorder(4, 0, 4, 0));
         add(formatLabel);
 
         restrictDomainCheckBox = new JCheckBox("Restricts domains to those allowed by modrinth.com");
@@ -145,7 +146,7 @@ class CurseforgeExportPanel extends ExportPanel {
         this.setExportButtonState = setExportButtonState;
 
         JLabel formatLabel = new JLabel("<html>Format: <b>" + getExtension() + "</b></html>");
-        formatLabel.setBorder(GUIHelper.getPaddedBorder(4, 0, 4, 0));
+        formatLabel.setBorder(GUIConfiguration.getPaddedBorder(4, 0, 4, 0));
         formatLabel.setAlignmentX(Component.LEFT_ALIGNMENT);
         add(formatLabel);
 

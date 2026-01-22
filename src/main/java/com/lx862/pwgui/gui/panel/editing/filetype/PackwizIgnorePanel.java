@@ -1,7 +1,7 @@
 package com.lx862.pwgui.gui.panel.editing.filetype;
 
 import com.lx862.pwgui.PWGUI;
-import com.lx862.pwgui.pwcore.Modpack;
+import com.lx862.pwgui.support.packwiz.Modpack;
 import com.lx862.pwgui.core.data.model.GitIgnoreRules;
 import com.lx862.pwgui.gui.listener.DocumentChangedListener;
 import com.lx862.pwgui.core.data.model.file.GenericFileModel;

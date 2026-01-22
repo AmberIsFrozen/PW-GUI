@@ -2,13 +2,13 @@ package com.lx862.pwgui.gui.action;
 
 import com.lx862.pwgui.PWGUI;
 import com.lx862.pwgui.executable.BatchedProgramExecution;
-import com.lx862.pwgui.executable.Executables;
+import com.lx862.pwgui.support.packwiz.executable.PackwizExecutable;
 import com.lx862.pwgui.executable.ProgramExecution;
 import com.lx862.pwgui.gui.prompt.BatchedExecutionProgressDialog;
-import com.lx862.pwgui.pwcore.Modpack;
-import com.lx862.pwgui.pwcore.PackFile;
-import com.lx862.pwgui.pwcore.PackIndexFile;
-import com.lx862.pwgui.pwcore.PackwizMetaFile;
+import com.lx862.pwgui.support.packwiz.Modpack;
+import com.lx862.pwgui.support.packwiz.PackFile;
+import com.lx862.pwgui.support.packwiz.PackIndexFile;
+import com.lx862.pwgui.support.packwiz.PackwizMetaFile;
 import com.lx862.pwgui.util.Util;
 
 import javax.swing.*;
@@ -51,7 +51,7 @@ public class ReinstallAction extends AbstractAction {
             // Remove
             BatchedProgramExecution removeExecution = new BatchedProgramExecution();
             for(PackwizMetaFile packwizMetaFile : metas) {
-                ProgramExecution programExecution = Executables.packwiz.remove(packwizMetaFile.getSlug()).build();
+                ProgramExecution programExecution = PackwizExecutable.INSTANCE.remove(packwizMetaFile.getSlug()).build();
                 removeExecution.add(programExecution);
             }
             removeExecution.execute("Re-installation requested by user");
@@ -65,11 +65,11 @@ public class ReinstallAction extends AbstractAction {
 
                 ProgramExecution execution;
                 if(prefix.equals("mr")) {
-                    execution = Executables.packwiz.buildCommand("mr", "add", packwizMetaFile.updateMrModId).metaFolder(metaFolder).yes().build();
+                    execution = PackwizExecutable.INSTANCE.buildCommand("mr", "add", packwizMetaFile.updateMrModId).metaFolder(metaFolder).yes().build();
                 } else if(prefix.equals("cf")) {
-                    execution = Executables.packwiz.buildCommand("cf", "add", "--addon-id", String.valueOf(packwizMetaFile.updateCfProjectId)).metaFolder(metaFolder).yes().build();
+                    execution = PackwizExecutable.INSTANCE.buildCommand("cf", "add", "--addon-id", String.valueOf(packwizMetaFile.updateCfProjectId)).metaFolder(metaFolder).yes().build();
                 } else {
-                    execution = Executables.packwiz.url().add(packwizMetaFile.getSlug(), String.valueOf(packwizMetaFile.downloadUrl), metaFolder, false).yes().build();
+                    execution = PackwizExecutable.INSTANCE.url().add(packwizMetaFile.getSlug(), String.valueOf(packwizMetaFile.downloadUrl), metaFolder, false).yes().build();
                 }
 
                 addExecution.add(execution);

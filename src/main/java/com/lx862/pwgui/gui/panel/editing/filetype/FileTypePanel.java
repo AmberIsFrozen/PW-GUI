@@ -1,6 +1,6 @@
 package com.lx862.pwgui.gui.panel.editing.filetype;
 
-import com.lx862.pwgui.util.GUIHelper;
+import com.lx862.pwgui.gui.GUIConfiguration;
 
 import javax.swing.*;
 import java.io.IOException;
@@ -10,7 +10,7 @@ public abstract class FileTypePanel extends JPanel {
 
     public FileTypePanel(FileEntryPaneContext context) {
         this.context = context;
-        setBorder(GUIHelper.getPaddedBorder(6));
+        setBorder(GUIConfiguration.getPaddedBorder(6));
     }
 
     public boolean shouldSave() {

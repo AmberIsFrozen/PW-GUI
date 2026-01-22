@@ -2,7 +2,7 @@ package com.lx862.pwgui.gui.panel.editing.filetype;
 
 import com.formdev.flatlaf.ui.FlatUIUtils;
 import com.lx862.pwgui.gui.components.kui.KTextArea;
-import com.lx862.pwgui.util.GUIHelper;
+import com.lx862.pwgui.gui.GUIConfiguration;
 
 import javax.swing.*;
 import java.awt.*;
@@ -13,7 +13,7 @@ import java.io.StringWriter;
 public class ErrorPanel extends JPanel {
     public ErrorPanel(Exception e) {
         setLayout(new BorderLayout());
-        setBorder(GUIHelper.getPaddedBorder(10));
+        setBorder(GUIConfiguration.getPaddedBorder(10));
 
         JLabel errorLabel = new JLabel("Failed to load panel content!");
         errorLabel.setFont(FlatUIUtils.nonUIResource(UIManager.getFont("h2.font")));

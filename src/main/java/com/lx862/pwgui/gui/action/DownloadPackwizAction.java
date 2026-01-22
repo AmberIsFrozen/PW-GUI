@@ -1,8 +1,9 @@
 package com.lx862.pwgui.gui.action;
 
 import com.lx862.pwgui.PWGUI;
+import com.lx862.pwgui.core.ApplicationInfo;
 import com.lx862.pwgui.core.Config;
-import com.lx862.pwgui.executable.Executables;
+import com.lx862.pwgui.support.packwiz.executable.PackwizExecutable;
 import com.lx862.pwgui.gui.prompt.DownloadProgressDialog;
 import com.lx862.pwgui.util.Util;
 import org.apache.commons.io.FileUtils;
@@ -19,7 +20,6 @@ import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.attribute.PosixFilePermissions;
-import java.util.Locale;
 import java.util.function.Consumer;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
@@ -119,24 +119,26 @@ public class DownloadPackwizAction extends AbstractAction {
     }
 
     private static String getArtifactName() {
-        String os = System.getProperty("os.name").toLowerCase(Locale.ROOT);
-        String arch = System.getProperty("os.arch");
-        boolean isARM = arch.equals("aarch64") || arch.equals("arm");
         boolean isWindows = false;
 
         String artifactName;
-        if(os.contains("windows")) {
-            isWindows = true;
-            artifactName = "Windows 64-bit";
-        } else if(os.contains("mac")) {
-            artifactName = "macOS 64-bit";
-        } else if(os.contains("linux")) {
-            artifactName = "Linux 64-bit";
-        } else {
-            throw new IllegalStateException(String.format("%s is not supported.", os));
+        switch(ApplicationInfo.INSTANCE.os.type()) {
+            case WINDOWS -> {
+                isWindows = true;
+                artifactName = "Windows 64-bit";
+            }
+            case MAC_OS -> {
+                artifactName = "macOS 64-bit";
+            }
+            case LINUX -> {
+                artifactName = "Linux 64-bit";
+            }
+            default -> {
+                throw new IllegalStateException("Unknown operating system, unable to download.");
+            }
         }
 
-        if(isARM) artifactName += " ARM";
+        if(ApplicationInfo.INSTANCE.os.architecture().isArm()) artifactName += " ARM";
         else if(!isWindows) artifactName += " x86";
 
         artifactName = artifactName.replace(" ", "%20");
@@ -152,8 +154,8 @@ public class DownloadPackwizAction extends AbstractAction {
             } catch (UnsupportedOperationException ignored) {
             }
 
-            Executables.packwiz.updateExecutableLocation(null);
-            if(!Executables.packwiz.usable()) {
+            PackwizExecutable.INSTANCE.updateExecutableLocation(null);
+            if(!PackwizExecutable.INSTANCE.usable()) {
                 JOptionPane.showMessageDialog(parent, "Packwiz executable is not valid :(\nPlease try manually downloading packwiz and locating it.", Util.withTitlePrefix("Invalid Executable"), JOptionPane.ERROR_MESSAGE);
                 return false;
             }

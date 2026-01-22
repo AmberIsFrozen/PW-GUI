@@ -2,13 +2,13 @@ package com.lx862.pwgui.gui.dialog;
 
 import com.formdev.flatlaf.ui.FlatUIUtils;
 import com.lx862.pwgui.core.data.Caches;
+import com.lx862.pwgui.support.packwiz.executable.PackwizExecutable;
 import com.lx862.pwgui.util.Strings;
 import com.lx862.pwgui.gui.components.kui.KActionPanel;
 import com.lx862.pwgui.gui.components.kui.KRootContentPanel;
-import com.lx862.pwgui.pwcore.data.PackComponent;
-import com.lx862.pwgui.pwcore.data.VersionMetadata;
+import com.lx862.pwgui.support.packwiz.data.PackComponent;
+import com.lx862.pwgui.support.packwiz.data.VersionMetadata;
 import com.lx862.pwgui.executable.BatchedProgramExecution;
-import com.lx862.pwgui.executable.Executables;
 import com.lx862.pwgui.gui.action.CloseWindowAction;
 import com.lx862.pwgui.gui.components.ToggleListSelectionModel;
 import com.lx862.pwgui.gui.components.kui.KButton;
@@ -117,10 +117,10 @@ public class ChangeAcceptableGameVersionDialog extends BaseDialog {
         BatchedProgramExecution batchedProgramExecution = new BatchedProgramExecution();
 
         for(String version : toBeRemoved) {
-            batchedProgramExecution.add(Executables.packwiz.settings().removeAcceptableVersions(version).build());
+            batchedProgramExecution.add(PackwizExecutable.INSTANCE.settings().removeAcceptableVersions(version).build());
         }
         for(String version : toBeAdded) {
-            batchedProgramExecution.add(Executables.packwiz.settings().addAcceptableVersions(version).build());
+            batchedProgramExecution.add(PackwizExecutable.INSTANCE.settings().addAcceptableVersions(version).build());
         }
 
         batchedProgramExecution.onExit(callback);

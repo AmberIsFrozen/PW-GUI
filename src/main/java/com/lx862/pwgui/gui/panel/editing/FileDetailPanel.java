@@ -1,8 +1,8 @@
 package com.lx862.pwgui.gui.panel.editing;
 
 import com.lx862.pwgui.PWGUI;
-import com.lx862.pwgui.core.BuildMetadata;
-import com.lx862.pwgui.executable.Executables;
+import com.lx862.pwgui.core.ApplicationInfo;
+import com.lx862.pwgui.support.packwiz.executable.PackwizExecutable;
 import com.lx862.pwgui.gui.NameTabPair;
 import com.lx862.pwgui.gui.components.kui.KButton;
 import com.lx862.pwgui.gui.components.kui.KTabbedPane;
@@ -74,7 +74,7 @@ public class FileDetailPanel extends JPanel {
         }
 
         // Refresh packwiz after saving file
-        Executables.packwiz.refresh().build().run(String.format("File modified by %s", BuildMetadata.INSTANCE.name));
+        PackwizExecutable.INSTANCE.refresh().build().run(String.format("File modified by %s", ApplicationInfo.INSTANCE.name));
     }
 
     private void saveTab(JPanel panel, boolean shouldRefresh) {
@@ -86,7 +86,7 @@ public class FileDetailPanel extends JPanel {
                 JOptionPane.showMessageDialog(this, String.format("Failed to save file!\n%s", e.getMessage()), Util.withTitlePrefix("Failed to Save!"), JOptionPane.ERROR_MESSAGE);
                 return;
             }
-            if(shouldRefresh) Executables.packwiz.refresh().build().run("Save file");
+            if(shouldRefresh) PackwizExecutable.INSTANCE.refresh().build().run("Save file");
         }
     }
 

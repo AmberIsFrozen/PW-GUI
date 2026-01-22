@@ -1,6 +1,6 @@
 package com.lx862.pwgui.gui.components;
 
-import com.lx862.pwgui.util.GUIHelper;
+import com.lx862.pwgui.gui.GUIConfiguration;
 
 import javax.swing.*;
 import javax.swing.border.CompoundBorder;
@@ -13,7 +13,7 @@ public class ModUpdateListCellRenderer extends DefaultListCellRenderer {
         super.getListCellRendererComponent(jList, item, index, isSelected, cellHasFocus);
         setBorder(new CompoundBorder(
                 new MatteBorder(0, 0, 1, 0, new Color(128, 128, 128)),
-                GUIHelper.getPaddedBorder(3)
+                GUIConfiguration.getPaddedBorder(3)
         ));
 
         if (item instanceof String str) {

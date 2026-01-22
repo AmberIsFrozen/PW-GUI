@@ -1,4 +1,4 @@
-package com.lx862.pwgui.pwcore;
+package com.lx862.pwgui.support.packwiz;
 
 import com.lx862.pwgui.core.data.exception.MissingKeyPropertyException;
 import com.moandjiezana.toml.Toml;

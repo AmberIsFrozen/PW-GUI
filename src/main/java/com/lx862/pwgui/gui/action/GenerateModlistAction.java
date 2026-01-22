@@ -1,6 +1,6 @@
 package com.lx862.pwgui.gui.action;
 
-import com.lx862.pwgui.pwcore.PackFile;
+import com.lx862.pwgui.support.packwiz.PackFile;
 import com.lx862.pwgui.gui.dialog.GenerateModListDialog;
 
 import javax.swing.*;

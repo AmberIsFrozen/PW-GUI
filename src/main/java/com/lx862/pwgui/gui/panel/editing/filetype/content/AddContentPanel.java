@@ -1,15 +1,15 @@
 package com.lx862.pwgui.gui.panel.editing.filetype.content;
 
+import com.lx862.pwgui.support.packwiz.executable.PackwizExecutable;
+import com.lx862.pwgui.gui.ImageUtil;
 import com.lx862.pwgui.util.Strings;
-import com.lx862.pwgui.pwcore.Modpack;
-import com.lx862.pwgui.executable.Executables;
+import com.lx862.pwgui.support.packwiz.Modpack;
 import com.lx862.pwgui.executable.ProgramExecution;
 import com.lx862.pwgui.gui.prompt.TaskProgressDialog;
 import com.lx862.pwgui.gui.prompt.NumericSelectionDialog;
 import com.lx862.pwgui.gui.panel.editing.filetype.FileEntryPaneContext;
 import com.lx862.pwgui.gui.panel.editing.filetype.FileTypePanel;
-import com.lx862.pwgui.util.GUIHelper;
-import com.lx862.pwgui.pwcore.data.IconNamePair;
+import com.lx862.pwgui.support.packwiz.data.IconNamePair;
 import com.lx862.pwgui.core.data.model.file.ContentDirectoryModel;
 import com.lx862.pwgui.util.Util;
 
@@ -27,14 +27,14 @@ public class AddContentPanel extends FileTypePanel {
         setLayout(new BorderLayout());
 
         JTabbedPane tab = new JTabbedPane();
-        tab.addTab(IconNamePair.MODRINTH.name, new ImageIcon(GUIHelper.clampImageSize(IconNamePair.MODRINTH.image, 20)), new ModrinthPanel(context, fileEntry));
-        tab.addTab(IconNamePair.CURSEFORGE.name, new ImageIcon(GUIHelper.clampImageSize(IconNamePair.CURSEFORGE.image, 20)), new CurseForgePanel(context, fileEntry));
-        tab.addTab("URL Link", new ImageIcon(GUIHelper.convertImage(Util.getAssets("/assets/ui/mime/link.png"), 20)), new UrlPanel(context, fileEntry));
+        tab.addTab(IconNamePair.MODRINTH.name, new ImageIcon(ImageUtil.clampImageSize(IconNamePair.MODRINTH.image, 20)), new ModrinthPanel(context, fileEntry));
+        tab.addTab(IconNamePair.CURSEFORGE.name, new ImageIcon(ImageUtil.clampImageSize(IconNamePair.CURSEFORGE.image, 20)), new CurseForgePanel(context, fileEntry));
+        tab.addTab("URL Link", new ImageIcon(ImageUtil.convertImage(Util.getAssets("/assets/ui/mime/link.png"), 20)), new UrlPanel(context, fileEntry));
         add(tab);
     }
 
     public static void addProjectFromContentPlatform(Window parent, Modpack modpack, String... args) {
-        ProgramExecution programExecution = Executables.packwiz.buildCommand(args).build();
+        ProgramExecution programExecution = PackwizExecutable.INSTANCE.buildCommand(args).build();
         TaskProgressDialog dialog = new TaskProgressDialog(parent, "Adding mod...", Strings.REASON_TRIGGERED_BY_USER, programExecution);
 
         List<String> recordedOutputs = new ArrayList<>();

@@ -18,7 +18,7 @@ public class Main {
 
         try {
             CommandLine cmd = cliParser.parse(cliOptions, args);
-            PWGUI.init(cmd);
+            PWGUI.start(cmd);
         } catch (Exception e) {
             PWGUI.LOGGER.error("Failed to start program!", e);
             System.exit(1);

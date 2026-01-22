@@ -1,14 +1,14 @@
 package com.lx862.pwgui.gui.panel;
 
 import com.lx862.pwgui.core.data.*;
+import com.lx862.pwgui.gui.ImageUtil;
 import com.lx862.pwgui.gui.components.kui.KComboBox;
 import com.lx862.pwgui.gui.components.kui.KGridBagLayoutPanel;
-import com.lx862.pwgui.pwcore.data.IconNamePair;
-import com.lx862.pwgui.pwcore.data.PackComponent;
-import com.lx862.pwgui.pwcore.data.PackComponentVersion;
-import com.lx862.pwgui.pwcore.data.VersionMetadata;
-import com.lx862.pwgui.util.GUIHelper;
-import com.lx862.pwgui.pwcore.PackFile;
+import com.lx862.pwgui.support.packwiz.data.IconNamePair;
+import com.lx862.pwgui.support.packwiz.data.PackComponent;
+import com.lx862.pwgui.support.packwiz.data.PackComponentVersion;
+import com.lx862.pwgui.support.packwiz.data.VersionMetadata;
+import com.lx862.pwgui.support.packwiz.PackFile;
 import com.lx862.pwgui.gui.components.WrapLayout;
 
 import javax.swing.*;
@@ -57,7 +57,7 @@ public class ModpackVersionPanel extends KGridBagLayoutPanel {
         if(initialMinecraft != null) minecraftVersionComboBox.setSelectedItem(initialMinecraft.getVersion());
         if(initialModloader != null) modloaderVersionComboBox.setSelectedItem(initialModloader.getVersion());
 
-        addRow(1, new JLabel("Minecraft Version: ", new ImageIcon(GUIHelper.clampImageSize(IconNamePair.MINECRAFT.image, 20)), SwingConstants.LEFT), minecraftVersionComboBox);
+        addRow(1, new JLabel("Minecraft Version: ", new ImageIcon(ImageUtil.clampImageSize(IconNamePair.MINECRAFT.image, 20)), SwingConstants.LEFT), minecraftVersionComboBox);
 
         showSnapshotCheckBox = new JCheckBox("Show Snapshot");
         showSnapshotCheckBox.addActionListener(actionEvent -> updateMinecraftUI());
@@ -85,8 +85,8 @@ public class ModpackVersionPanel extends KGridBagLayoutPanel {
 
             JRadioButton componentRadioButton = new JRadioButton(packComponent.iconName.name);
             componentRadioButton.addActionListener((itemListener) -> setModloader(packComponent));
-            componentRadioButton.setIcon(new ImageIcon(GUIHelper.imageOpacity(GUIHelper.clampImageSize(packComponent.iconName.image, 18), 0.5f)));
-            componentRadioButton.setSelectedIcon(new ImageIcon(GUIHelper.clampImageSize(packComponent.iconName.image, 18)));
+            componentRadioButton.setIcon(new ImageIcon(ImageUtil.withOpacity(ImageUtil.clampImageSize(packComponent.iconName.image, 18), 0.5f)));
+            componentRadioButton.setSelectedIcon(new ImageIcon(ImageUtil.clampImageSize(packComponent.iconName.image, 18)));
             modloaderChoicePanel.add(componentRadioButton);
             modloadersButtonGroup.add(componentRadioButton);
 

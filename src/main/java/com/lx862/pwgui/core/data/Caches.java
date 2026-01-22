@@ -1,7 +1,7 @@
 package com.lx862.pwgui.core.data;
 
-import com.lx862.pwgui.pwcore.data.PackComponent;
-import com.lx862.pwgui.pwcore.data.VersionMetadata;
+import com.lx862.pwgui.support.packwiz.data.PackComponent;
+import com.lx862.pwgui.support.packwiz.data.VersionMetadata;
 
 import java.util.HashMap;
 import java.util.List;

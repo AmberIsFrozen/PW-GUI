@@ -8,11 +8,12 @@ import com.google.gson.JsonObject;
 import com.google.gson.stream.JsonReader;
 import com.lx862.pwgui.PWGUI;
 import com.lx862.pwgui.core.Config;
+import com.lx862.pwgui.gui.ImageUtil;
 import com.lx862.pwgui.gui.action.CloseWindowAction;
 import com.lx862.pwgui.gui.action.OKAction;
 import com.lx862.pwgui.gui.listener.DocumentChangedListener;
 import com.lx862.pwgui.gui.components.kui.*;
-import com.lx862.pwgui.util.GUIHelper;
+import com.lx862.pwgui.gui.GUIConfiguration;
 import com.lx862.pwgui.util.Util;
 import org.apache.commons.io.FileUtils;
 
@@ -31,9 +32,9 @@ public class ChangeLicenseDialog extends BaseDialog {
     private JPanel overviewPanel = null;
     private KTextArea licenseTextArea = null;
 
-    static ImageIcon licensePermissionsIcon = new ImageIcon(GUIHelper.convertImage(Util.getAssets("/assets/ui/license_permissions.png"), 12));
-    static ImageIcon licenseConditionsIcon = new ImageIcon(GUIHelper.convertImage(Util.getAssets("/assets/ui/license_conditions.png"), 12));
-    static ImageIcon licenseLimitationsIcon = new ImageIcon(GUIHelper.convertImage(Util.getAssets("/assets/ui/license_limitations.png"), 12));
+    static ImageIcon licensePermissionsIcon = new ImageIcon(ImageUtil.convertImage(Util.getAssets("/assets/ui/license_permissions.png"), 12));
+    static ImageIcon licenseConditionsIcon = new ImageIcon(ImageUtil.convertImage(Util.getAssets("/assets/ui/license_conditions.png"), 12));
+    static ImageIcon licenseLimitationsIcon = new ImageIcon(ImageUtil.convertImage(Util.getAssets("/assets/ui/license_limitations.png"), 12));
 
     public ChangeLicenseDialog(JFrame parent, File licenseFile) {
         super(parent, Util.withTitlePrefix("Change License"), true);
@@ -55,11 +56,11 @@ public class ChangeLicenseDialog extends BaseDialog {
         descriptionLabel.setAlignmentX(Component.LEFT_ALIGNMENT);
         contentPanel.add(descriptionLabel);
 
-        contentPanel.add(GUIHelper.createVerticalPadding(5));
+        contentPanel.add(GUIConfiguration.createVerticalPadding(5));
 
         // Allow entering placeholder values
         JPanel placeholdersPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 4, 0));
-        placeholdersPanel.setBorder(new CompoundBorder(GUIHelper.getSeparatorBorder(true, true), GUIHelper.getPaddedBorder(4, 0, 4, 0)));
+        placeholdersPanel.setBorder(new CompoundBorder(GUIConfiguration.getSeparatorBorder(true, true), GUIConfiguration.getPaddedBorder(4, 0, 4, 0)));
         placeholdersPanel.setAlignmentX(Component.LEFT_ALIGNMENT);
         JLabel nameLabel = new JLabel("Your name: ");
         JTextField nameTextField = new KTextField();
@@ -81,7 +82,7 @@ public class ChangeLicenseDialog extends BaseDialog {
         placeholdersPanel.add(yearTextField);
 
         contentPanel.add(placeholdersPanel);
-        contentPanel.add(GUIHelper.createVerticalPadding(5));
+        contentPanel.add(GUIConfiguration.createVerticalPadding(5));
 
         // Left Pane
         JPanel leftPane = new JPanel(new BorderLayout());
@@ -103,7 +104,7 @@ public class ChangeLicenseDialog extends BaseDialog {
 
         // Right Pane
         overviewPanel = new JPanel();
-        overviewPanel.setBorder(GUIHelper.getPaddedBorder(6, 3, 6, 6));
+        overviewPanel.setBorder(GUIConfiguration.getPaddedBorder(6, 3, 6, 6));
         overviewPanel.setLayout(new BoxLayout(overviewPanel, BoxLayout.LINE_AXIS));
 
         JPanel rightTopPanel = new JPanel(new BorderLayout());
@@ -185,9 +186,9 @@ public class ChangeLicenseDialog extends BaseDialog {
         overviewPanel.removeAll();
         if(licenseOverview != null) {
             addOverviewCategoryPanel(overviewPanel, "Permissions", licenseOverview.permissions(), licensePermissionsIcon);
-            overviewPanel.add(GUIHelper.createHorizontalPadding(15));
+            overviewPanel.add(GUIConfiguration.createHorizontalPadding(15));
             addOverviewCategoryPanel(overviewPanel, "Conditions", licenseOverview.conditions(), licenseConditionsIcon);
-            overviewPanel.add(GUIHelper.createHorizontalPadding(15));
+            overviewPanel.add(GUIConfiguration.createHorizontalPadding(15));
             addOverviewCategoryPanel(overviewPanel, "Limitations", licenseOverview.limitations(), licenseLimitationsIcon);
         }
 

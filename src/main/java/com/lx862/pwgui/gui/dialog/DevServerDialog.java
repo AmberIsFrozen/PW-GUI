@@ -1,7 +1,7 @@
 package com.lx862.pwgui.gui.dialog;
 
 import com.lx862.pwgui.PWGUI;
-import com.lx862.pwgui.executable.Executables;
+import com.lx862.pwgui.support.packwiz.executable.PackwizExecutable;
 import com.lx862.pwgui.gui.components.kui.KActionPanel;
 import com.lx862.pwgui.gui.components.kui.KButton;
 import com.lx862.pwgui.gui.components.kui.KRootContentPanel;
@@ -71,7 +71,7 @@ public class DevServerDialog extends BaseDialog {
         private void startServer() {
             serverExecutor = Executors.newSingleThreadExecutor();
             logTextArea.append("----- Development Server Started -----\n");
-            packwizServeProgram = Executables.packwiz.serve().build();
+            packwizServeProgram = PackwizExecutable.INSTANCE.serve().build();
             packwizServeProgram.onOutput((line) -> logTextArea.append(line.content() + "\n"));
 
             try {

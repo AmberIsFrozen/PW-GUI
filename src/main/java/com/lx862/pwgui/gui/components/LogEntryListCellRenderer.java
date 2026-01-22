@@ -1,7 +1,7 @@
 package com.lx862.pwgui.gui.components;
 
 import com.lx862.pwgui.core.log.LogEntry;
-import com.lx862.pwgui.util.GUIHelper;
+import com.lx862.pwgui.gui.GUIConfiguration;
 
 import javax.swing.*;
 import java.awt.*;
@@ -14,7 +14,7 @@ public class LogEntryListCellRenderer extends DefaultListCellRenderer {
     @Override
     public Component getListCellRendererComponent(JList<?> list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
         super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
-        setBorder(GUIHelper.getPaddedBorder(3, 6, 3, 6));
+        setBorder(GUIConfiguration.getPaddedBorder(3, 6, 3, 6));
         if(value instanceof LogEntry logEntry) {
             setText("<html>" + logEntry.message() + "</html>");
 

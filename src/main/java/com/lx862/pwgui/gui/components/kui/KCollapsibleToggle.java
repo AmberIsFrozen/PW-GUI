@@ -1,6 +1,6 @@
 package com.lx862.pwgui.gui.components.kui;
 
-import com.lx862.pwgui.util.GUIHelper;
+import com.lx862.pwgui.gui.ImageUtil;
 import com.lx862.pwgui.util.Util;
 
 import javax.swing.*;
@@ -19,7 +19,7 @@ public class KCollapsibleToggle extends JCheckBox {
     }
 
     private void updateToggle() {
-        setIcon(new ImageIcon(GUIHelper.convertImage(Util.getAssets(isSelected() ? "/assets/ui/up_arrow.png" : "/assets/ui/down_arrow.png"), getFont().getSize())));
+        setIcon(new ImageIcon(ImageUtil.convertImage(Util.getAssets(isSelected() ? "/assets/ui/up_arrow.png" : "/assets/ui/down_arrow.png"), getFont().getSize())));
         setText(isSelected() ? expandedText : collapsedText);
     }
 }

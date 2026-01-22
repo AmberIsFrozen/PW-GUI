@@ -3,7 +3,7 @@ package com.lx862.pwgui.core;
 import com.google.gson.*;
 import com.lx862.pwgui.PWGUI;
 import com.lx862.pwgui.core.data.ApplicationTheme;
-import com.lx862.pwgui.pwcore.WritableFile;
+import com.lx862.pwgui.support.packwiz.WritableFile;
 import com.lx862.pwgui.util.GoUtil;
 import org.apache.commons.io.FileUtils;
 

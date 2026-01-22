@@ -7,7 +7,7 @@ import com.lx862.pwgui.gui.components.kui.KButton;
 import com.lx862.pwgui.gui.components.kui.KGridBagLayoutPanel;
 import com.lx862.pwgui.gui.components.kui.KListCellRenderer;
 import com.lx862.pwgui.gui.dialog.BaseDialog;
-import com.lx862.pwgui.util.GUIHelper;
+import com.lx862.pwgui.gui.GUIConfiguration;
 import com.lx862.pwgui.util.Util;
 
 import javax.swing.*;
@@ -24,7 +24,7 @@ public class NumericSelectionDialog extends BaseDialog {
 
     private <T> void init(Component component, String title, List<T> list, Consumer<Integer> callback) {
         KGridBagLayoutPanel contentPanel = new KGridBagLayoutPanel(3, 1);
-        contentPanel.setBorder(GUIHelper.getPaddedBorder(10));
+        contentPanel.setBorder(GUIConfiguration.getPaddedBorder(10));
 
         JLabel titleLabel = new JLabel(title);
         titleLabel.setFont(FlatUIUtils.nonUIResource(UIManager.getFont("h2.font")));

@@ -4,8 +4,9 @@ import com.formdev.flatlaf.FlatLaf;
 import com.formdev.flatlaf.util.UIScale;
 import com.lx862.pwgui.PWGUI;
 import com.lx862.pwgui.core.Config;
+import com.lx862.pwgui.gui.ImageUtil;
 import com.lx862.pwgui.gui.components.kui.KCheckBoxMenuItem;
-import com.lx862.pwgui.pwcore.Modpack;
+import com.lx862.pwgui.support.packwiz.Modpack;
 import com.lx862.pwgui.gui.action.*;
 import com.lx862.pwgui.gui.components.kui.KMenu;
 import com.lx862.pwgui.gui.components.kui.KMenuItem;
@@ -13,7 +14,6 @@ import com.lx862.pwgui.gui.dialog.ExportModpackDialog;
 import com.lx862.pwgui.gui.dialog.DevServerDialog;
 import com.lx862.pwgui.gui.dialog.ImportModpackDialog;
 import com.lx862.pwgui.gui.dialog.ViewLogDialog;
-import com.lx862.pwgui.util.GUIHelper;
 import com.lx862.pwgui.util.Util;
 
 import javax.swing.*;
@@ -34,7 +34,7 @@ public abstract class BaseFrame extends JFrame {
 
     public BaseFrame() {
         this.jMenuBar = new JMenuBar();
-        setIconImage(GUIHelper.convertImage(Util.getAssets("/assets/icon.png")));
+        setIconImage(ImageUtil.convertImage(Util.getAssets("/assets/icon.png")));
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         setJMenuBar(jMenuBar);
 

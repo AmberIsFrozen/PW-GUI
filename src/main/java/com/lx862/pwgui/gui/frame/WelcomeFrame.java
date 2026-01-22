@@ -1,17 +1,19 @@
 package com.lx862.pwgui.gui.frame;
 
 import com.lx862.pwgui.PWGUI;
-import com.lx862.pwgui.core.BuildMetadata;
+import com.lx862.pwgui.core.ApplicationInfo;
 import com.lx862.pwgui.core.Config;
+import com.lx862.pwgui.support.git.executable.GitExecutable;
+import com.lx862.pwgui.support.packwiz.executable.PackwizExecutable;
+import com.lx862.pwgui.gui.ImageUtil;
 import com.lx862.pwgui.gui.components.kui.KRootContentPanel;
-import com.lx862.pwgui.pwcore.Modpack;
-import com.lx862.pwgui.executable.Executables;
+import com.lx862.pwgui.support.packwiz.Modpack;
 import com.lx862.pwgui.gui.action.SettingsAction;
 import com.lx862.pwgui.gui.components.filepicker.PackFileFilter;
 import com.lx862.pwgui.gui.components.kui.KButton;
 import com.lx862.pwgui.gui.components.kui.KFileChooser;
 import com.lx862.pwgui.gui.dialog.NewModpackDialog;
-import com.lx862.pwgui.util.GUIHelper;
+import com.lx862.pwgui.gui.GUIConfiguration;
 import com.lx862.pwgui.util.Util;
 
 import javax.swing.*;
@@ -20,15 +22,15 @@ import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.nio.file.Path;
 
-/** The welcome splash screen after packwiz executable is found */
+/** The splash screen after packwiz executable is found */
 public class WelcomeFrame extends BaseFrame {
     public WelcomeFrame(Component parent) {
-        super(String.format("Welcome to %s!", BuildMetadata.INSTANCE.name));
+        super(ApplicationInfo.INSTANCE.name);
 
         setSize(400, 525);
         setLocationRelativeTo(parent);
 
-        Executables.packwiz.setPackFileLocation(null);
+        PackwizExecutable.INSTANCE.setPackFileLocation(null);
         Config.getInstance().setLastModpackPath(null);
         jMenuBar.add(super.getViewMenu());
         jMenuBar.add(super.getHelpMenu());
@@ -42,8 +44,8 @@ public class WelcomeFrame extends BaseFrame {
     @Override
     public void dispose() {
         super.dispose();
-        Executables.packwiz.dispose();
-        Executables.git.dispose();
+        PackwizExecutable.INSTANCE.dispose();
+        GitExecutable.INSTANCE.dispose();
     }
 
     static class MainPanel extends JPanel {
@@ -53,27 +55,27 @@ public class WelcomeFrame extends BaseFrame {
             setLayout(new BoxLayout(this, BoxLayout.PAGE_AXIS));
             add(Box.createVerticalGlue());
 
-            JLabel logoLabel = new JLabel(new ImageIcon(GUIHelper.convertImage(Util.getAssets("/assets/logo.png"), LOGO_SIZE), "Application Logo"));
+            JLabel logoLabel = new JLabel(new ImageIcon(ImageUtil.convertImage(Util.getAssets("/assets/logo.png"), LOGO_SIZE), "Application Logo"));
             logoLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
             add(logoLabel);
 
-            JLabel versionLabel = new JLabel(String.format("Version %s", BuildMetadata.INSTANCE.version));
+            JLabel versionLabel = new JLabel(String.format("Version %s", ApplicationInfo.INSTANCE.version));
             versionLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
             add(versionLabel);
 
-            add(GUIHelper.createVerticalPadding(16));
+            add(GUIConfiguration.createVerticalPadding(16));
 
             KButton openPackButton = new KButton(new OpenModpackAction(parent));
             openPackButton.setAlignmentX(Component.CENTER_ALIGNMENT);
             add(openPackButton);
 
-            add(GUIHelper.createVerticalPadding(8));
+            add(GUIConfiguration.createVerticalPadding(8));
 
             KButton createPackButton = new KButton(new CreateModpackAction(parent));
             createPackButton.setAlignmentX(Component.CENTER_ALIGNMENT);
             add(createPackButton);
 
-            add(GUIHelper.createVerticalPadding(8));
+            add(GUIConfiguration.createVerticalPadding(8));
 
             KButton settingsButton = new KButton(new SettingsAction(parent));
             settingsButton.setAlignmentX(Component.CENTER_ALIGNMENT);

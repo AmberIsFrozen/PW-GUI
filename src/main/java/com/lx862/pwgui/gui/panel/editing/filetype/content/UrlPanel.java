@@ -1,6 +1,6 @@
 package com.lx862.pwgui.gui.panel.editing.filetype.content;
 
-import com.lx862.pwgui.executable.Executables;
+import com.lx862.pwgui.support.packwiz.executable.PackwizExecutable;
 import com.lx862.pwgui.gui.components.kui.KButton;
 import com.lx862.pwgui.gui.listener.DocumentChangedListener;
 import com.lx862.pwgui.core.data.model.file.ContentDirectoryModel;
@@ -84,7 +84,7 @@ public class UrlPanel extends JPanel {
         } catch (URISyntaxException ignored) {
         }
 
-        ProgramExecution programExecution = Executables.packwiz.url().add(name, urlString, context.getModpack().getRootPath().relativize(fileEntry.path).toString(), true).build(); // We already did a domain check before, so forcibly add it anyway.
+        ProgramExecution programExecution = PackwizExecutable.INSTANCE.url().add(name, urlString, context.getModpack().getRootPath().relativize(fileEntry.path).toString(), true).build(); // We already did a domain check before, so forcibly add it anyway.
         programExecution.onExit((exitCode) -> {
             if(exitCode == 0) {
                 JOptionPane.showMessageDialog(getTopLevelAncestor(), String.format("%s has been added!", name), Util.withTitlePrefix("Item Added!"), JOptionPane.INFORMATION_MESSAGE);

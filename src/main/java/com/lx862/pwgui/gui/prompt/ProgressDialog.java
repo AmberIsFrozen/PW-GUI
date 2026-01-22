@@ -5,7 +5,7 @@ import com.lx862.pwgui.gui.components.kui.KButton;
 import com.lx862.pwgui.gui.components.kui.KCollapsibleToggle;
 import com.lx862.pwgui.gui.components.kui.KRootContentPanel;
 import com.lx862.pwgui.gui.dialog.BaseDialog;
-import com.lx862.pwgui.util.GUIHelper;
+import com.lx862.pwgui.gui.GUIConfiguration;
 import com.lx862.pwgui.util.Util;
 
 import javax.swing.*;
@@ -37,13 +37,13 @@ public abstract class ProgressDialog extends BaseDialog {
         progressBar.setAlignmentX(Component.LEFT_ALIGNMENT);
         contentPanel.add(progressBar);
 
-        contentPanel.add(GUIHelper.createVerticalPadding(10));
+        contentPanel.add(GUIConfiguration.createVerticalPadding(10));
 
         statusLabel = new JLabel("Status text");
         statusLabel.setAlignmentX(Component.LEFT_ALIGNMENT);
         contentPanel.add(statusLabel);
 
-        contentPanel.add(GUIHelper.createVerticalPadding(10));
+        contentPanel.add(GUIConfiguration.createVerticalPadding(10));
 
         logTextArea = new JTextArea(10, 0);
         logTextArea.setEditable(false);

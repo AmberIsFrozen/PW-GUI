@@ -3,11 +3,12 @@ package com.lx862.pwgui.gui.dialog;
 import com.formdev.flatlaf.FlatClientProperties;
 import com.formdev.flatlaf.ui.FlatUIUtils;
 import com.lx862.pwgui.PWGUI;
-import com.lx862.pwgui.core.BuildMetadata;
+import com.lx862.pwgui.core.ApplicationInfo;
+import com.lx862.pwgui.gui.ImageUtil;
 import com.lx862.pwgui.gui.components.kui.KRootContentPanel;
 import com.lx862.pwgui.gui.components.kui.KTabbedPane;
 import com.lx862.pwgui.gui.panel.editing.filetype.MarkdownPanel;
-import com.lx862.pwgui.util.GUIHelper;
+import com.lx862.pwgui.gui.GUIConfiguration;
 import com.lx862.pwgui.util.Util;
 import org.apache.commons.io.IOUtils;
 
@@ -19,7 +20,7 @@ import java.nio.charset.StandardCharsets;
 
 public class AboutDialog extends BaseDialog {
     public AboutDialog(Window parent) {
-        super(parent, String.format("About %s", BuildMetadata.INSTANCE.name), ModalityType.DOCUMENT_MODAL);
+        super(parent, String.format("About %s", ApplicationInfo.INSTANCE.name), ModalityType.DOCUMENT_MODAL);
         setSize(325, 500);
         setLocationRelativeTo(parent);
 
@@ -33,12 +34,12 @@ public class AboutDialog extends BaseDialog {
         public MainPanel() {
             setLayout(new BoxLayout(this, BoxLayout.PAGE_AXIS));
 
-            JLabel logoLabel = new JLabel(new ImageIcon(GUIHelper.convertImage(Util.getAssets("/assets/logo.png"), 200), "Application Logo"));
+            JLabel logoLabel = new JLabel(new ImageIcon(ImageUtil.convertImage(Util.getAssets("/assets/logo.png"), 200), "Application Logo"));
             logoLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
 
             add(logoLabel);
 
-            JLabel titleLabel = new JLabel(BuildMetadata.INSTANCE.name);
+            JLabel titleLabel = new JLabel(ApplicationInfo.INSTANCE.name);
             titleLabel.setFont(FlatUIUtils.nonUIResource(UIManager.getFont("h2.font")));
             titleLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
             add(titleLabel);
@@ -47,11 +48,11 @@ public class AboutDialog extends BaseDialog {
             descriptionLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
             add(descriptionLabel);
 
-            JLabel versionLabel = new JLabel(BuildMetadata.INSTANCE.version);
+            JLabel versionLabel = new JLabel(ApplicationInfo.INSTANCE.version);
             versionLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
             add(versionLabel);
 
-            add(GUIHelper.createVerticalPadding(8));
+            add(GUIConfiguration.createVerticalPadding(8));
 
             KTabbedPane tabbedPane = new KTabbedPane();
             tabbedPane.putClientProperty(FlatClientProperties.TABBED_PANE_TAB_AREA_ALIGNMENT, FlatClientProperties.TABBED_PANE_ALIGN_FILL );
@@ -62,7 +63,7 @@ public class AboutDialog extends BaseDialog {
 
             add(tabbedPane);
 
-            JLabel footerLabel = new JLabel(String.format("%s 2026 <3", BuildMetadata.INSTANCE.author));
+            JLabel footerLabel = new JLabel(String.format("%s 2026 <3", ApplicationInfo.INSTANCE.author));
             footerLabel.setAlignmentX(CENTER_ALIGNMENT);
             add(footerLabel);
         }
@@ -72,7 +73,7 @@ public class AboutDialog extends BaseDialog {
                 String textToShow;
                 try(InputStream is = Util.getAssets("/assets/about/" + resource)) {
                     String content = IOUtils.toString(is, StandardCharsets.UTF_8);
-                    textToShow = GUIHelper.markdownToHtml(content);
+                    textToShow = GUIConfiguration.markdownToHtml(content);
                 } catch (IOException e) {
                     PWGUI.LOGGER.error("", e);
                     textToShow = String.format("Error trying to read file: %s", e.getMessage());

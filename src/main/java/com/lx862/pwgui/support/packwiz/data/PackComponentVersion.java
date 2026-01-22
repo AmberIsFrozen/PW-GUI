@@ -1,4 +1,4 @@
-package com.lx862.pwgui.pwcore.data;
+package com.lx862.pwgui.support.packwiz.data;
 
 public class PackComponentVersion {
     private final PackComponent component;

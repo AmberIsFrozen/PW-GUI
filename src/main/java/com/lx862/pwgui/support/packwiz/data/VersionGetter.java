@@ -1,4 +1,4 @@
-package com.lx862.pwgui.pwcore.data;
+package com.lx862.pwgui.support.packwiz.data;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;

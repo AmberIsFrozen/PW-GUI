@@ -1,6 +1,6 @@
 package com.lx862.pwgui.gui.action;
 
-import com.lx862.pwgui.executable.Executables;
+import com.lx862.pwgui.support.packwiz.executable.PackwizExecutable;
 import com.lx862.pwgui.gui.dialog.ConsoleDialog;
 
 import javax.swing.*;
@@ -19,7 +19,7 @@ public class OpenPackwizConsoleAction extends AbstractAction {
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        ConsoleDialog frame = new ConsoleDialog(Executables.packwiz, parent);
+        ConsoleDialog frame = new ConsoleDialog(PackwizExecutable.INSTANCE, parent);
         frame.setVisible(true);
     }
 }

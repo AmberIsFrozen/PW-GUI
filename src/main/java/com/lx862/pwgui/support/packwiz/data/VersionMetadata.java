@@ -1,4 +1,4 @@
-package com.lx862.pwgui.pwcore.data;
+package com.lx862.pwgui.support.packwiz.data;
 
 /* This class represents version metadata, such as Minecraft version, Fabric version, Modrinth mod version, etc.*/
 public class VersionMetadata {

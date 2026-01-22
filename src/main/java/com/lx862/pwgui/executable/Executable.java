@@ -1,12 +1,13 @@
 package com.lx862.pwgui.executable;
 
-import com.lx862.pwgui.PWGUI;
+import com.lx862.pwgui.core.log.Logger;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -14,18 +15,22 @@ import java.util.concurrent.Executors;
 public abstract class Executable {
     private ExecutorService executor;
     private Path workingDirectory;
+    private final Logger logger;
     protected final List<String> keywords;
     protected final List<String> potentialPaths;
     protected final String programName;
     protected String executableLocation;
 
-    public Executable(String programName) {
+    public Executable(Logger logger, String programName) {
+        if(logger == null) throw new IllegalArgumentException("Logger must not be null!");
+
         this.workingDirectory = Paths.get(System.getProperty("user.dir"));
         this.executor = Executors.newSingleThreadExecutor();
         this.keywords = new ArrayList<>();
         this.potentialPaths = new ArrayList<>();
         this.programName = programName;
         this.executableLocation = null;
+        this.logger = logger;
     }
 
     public boolean updateExecutableLocation(String executableOverride) {
@@ -38,24 +43,24 @@ public abstract class Executable {
     public String probe(String executableOverride) {
         if(executableOverride != null) {
             if(isOurIntendedProgram(executableOverride)) {
-                PWGUI.LOGGER.info("{} executable is specified at {}", programName, executableOverride);
+                logger.info("{} executable is specified at {}", programName, executableOverride);
                 return executableOverride;
             } else {
-                PWGUI.LOGGER.info("{} executable specified at {} is not valid!", programName, executableOverride);
+                logger.info("{} executable specified at {} is not valid!", programName, executableOverride);
             }
         }
 
         if(executableLocation == null) {
-            PWGUI.LOGGER.info("Probing for {} executable...", programName);
+            logger.info("Probing for {} executable...", programName);
             for(String potentialPath : potentialPaths) {
                 if(isOurIntendedProgram(potentialPath)) {
-                    PWGUI.LOGGER.info("Found {} executable at {}", programName, potentialPath);
+                    logger.info("Found {} executable at {}", programName, potentialPath);
                     return potentialPath;
                 }
             }
         }
 
-        PWGUI.LOGGER.info("Cannot probe {} executable!", programName);
+        logger.info("Cannot probe {} executable!", programName);
         return null;
     }
 
@@ -84,7 +89,7 @@ public abstract class Executable {
     }
 
     public void changeWorkingDirectory(Path newPath) {
-        PWGUI.LOGGER.info("Working directory for {} changed to {}", programName, newPath.toString());
+        logger.info("Working directory changed to {}", newPath.toString());
         this.workingDirectory = newPath;
     }
 
@@ -100,17 +105,19 @@ public abstract class Executable {
         executor.shutdownNow();
     }
 
+    private void ensureExecutorActive() {
+        if(executor == null || executor.isShutdown()) executor = Executors.newSingleThreadExecutor();
+    }
+
     public class ProgramArgumentBuilder {
         protected final List<String> args;
 
         public ProgramArgumentBuilder(String... existingArgs) {
-            args = new ArrayList<>(List.of(existingArgs));
+            this.args = new ArrayList<>(List.of(existingArgs));
         }
 
         public ProgramArgumentBuilder append(String... strs) {
-            for(String str : strs) {
-                args.add(str);
-            }
+            args.addAll(Arrays.asList(strs));
             return this;
         }
 
@@ -120,13 +127,12 @@ public abstract class Executable {
         }
 
         public ProgramExecution build() {
+            ensureExecutorActive();
             args.add(0, executableLocation);
             ProcessBuilder processBuilder = new ProcessBuilder(args.toArray(new String[0]));
             processBuilder.directory(workingDirectory.toFile());
 
-            if(executor == null || executor.isShutdown()) executor = Executors.newSingleThreadExecutor();
-
-            return new ProgramExecution(programName, processBuilder, executor);
+            return new ProgramExecution(logger, programName, processBuilder, executor);
         }
     }
 }

@@ -2,15 +2,15 @@ package com.lx862.pwgui.gui.dialog;
 
 import com.formdev.flatlaf.ui.FlatUIUtils;
 import com.lx862.pwgui.PWGUI;
-import com.lx862.pwgui.core.BuildMetadata;
+import com.lx862.pwgui.core.ApplicationInfo;
 import com.lx862.pwgui.core.Config;
+import com.lx862.pwgui.support.packwiz.executable.PackwizExecutable;
 import com.lx862.pwgui.util.Strings;
 import com.lx862.pwgui.core.data.ApplicationTheme;
-import com.lx862.pwgui.executable.Executables;
 import com.lx862.pwgui.gui.action.DownloadPackwizAction;
 import com.lx862.pwgui.gui.action.LocatePackwizAction;
 import com.lx862.pwgui.gui.components.kui.*;
-import com.lx862.pwgui.util.GUIHelper;
+import com.lx862.pwgui.gui.GUIConfiguration;
 import com.lx862.pwgui.util.Util;
 import org.apache.commons.io.FileUtils;
 
@@ -45,7 +45,7 @@ public class SettingsDialog extends BaseDialog {
 
         JLabel titleLabel = new JLabel("Settings");
         titleLabel.setFont(FlatUIUtils.nonUIResource(UIManager.getFont("h2.font")));
-        titleLabel.setBorder(GUIHelper.getPaddedBorder(0, 0, 10, 0)); // Bottom padding to compensate
+        titleLabel.setBorder(GUIConfiguration.getPaddedBorder(0, 0, 10, 0)); // Bottom padding to compensate
         contentPanel.add(titleLabel, BorderLayout.NORTH);
 
         this.programPanel = new ProgramPanel(config, parent);
@@ -75,7 +75,7 @@ public class SettingsDialog extends BaseDialog {
         this.saved = true;
         programPanel.save();
         packwizPanel.save();
-        Executables.packwiz.updateExecutableLocation(null);
+        PackwizExecutable.INSTANCE.updateExecutableLocation(null);
 
         try {
             config.write(Strings.REASON_TRIGGERED_BY_USER);
@@ -89,7 +89,7 @@ public class SettingsDialog extends BaseDialog {
     @Override
     public void dispose() {
         if(!saved) {
-            GUIHelper.setupApplicationTheme(initialTheme, config.useWindowDecoration.getValue(), null);
+            GUIConfiguration.setupGUI(initialTheme, config.useWindowDecoration.getValue(), null);
         } else {
             programPanel.applyTheme();
         }
@@ -106,7 +106,7 @@ public class SettingsDialog extends BaseDialog {
 
         public ProgramPanel(Config config, Window windowParent) {
             setLayout(new BoxLayout(this, BoxLayout.PAGE_AXIS));
-            setBorder(BorderFactory.createTitledBorder(BuildMetadata.INSTANCE.name));
+            setBorder(BorderFactory.createTitledBorder(ApplicationInfo.INSTANCE.name));
 
             JPanel themePanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 6, 0));
             themePanel.setAlignmentX(Component.LEFT_ALIGNMENT);
@@ -121,18 +121,18 @@ public class SettingsDialog extends BaseDialog {
 
             themeComboBox.addItemListener(actionEvent -> {
                 ApplicationTheme t = (ApplicationTheme)themeComboBox.getSelectedItem();
-                GUIHelper.setupApplicationTheme(t, config.useWindowDecoration.getValue(), SettingsDialog.this);
+                GUIConfiguration.setupGUI(t, config.useWindowDecoration.getValue(), SettingsDialog.this);
             });
             themePanel.add(themeComboBox);
             add(themePanel);
 
-            add(GUIHelper.createVerticalPadding(4));
+            add(GUIConfiguration.createVerticalPadding(4));
 
             this.authorNamePanel = new AuthorNamePanel();
             authorNamePanel.setAlignmentX(Component.LEFT_ALIGNMENT);
             add(authorNamePanel);
 
-            add(GUIHelper.createVerticalPadding(4));
+            add(GUIConfiguration.createVerticalPadding(4));
 
             relaunchModpackCheckbox = new JCheckBox("Open last modpack on launch");
             relaunchModpackCheckbox.setSelected(config.openLastModpackOnLaunch.getValue());
@@ -149,7 +149,7 @@ public class SettingsDialog extends BaseDialog {
             debugModeCheckBox.setAlignmentX(Component.LEFT_ALIGNMENT);
             add(debugModeCheckBox);
 
-            add(GUIHelper.createVerticalPadding(4));
+            add(GUIConfiguration.createVerticalPadding(4));
 
             KButton resetButton = new KButton(new ResetProgramAction(SettingsDialog.this, windowParent));
             resetButton.setAlignmentX(Component.LEFT_ALIGNMENT);
@@ -165,7 +165,7 @@ public class SettingsDialog extends BaseDialog {
         }
 
         public void applyTheme() {
-            GUIHelper.setupApplicationTheme((ApplicationTheme) themeComboBox.getSelectedItem(), config.useWindowDecoration.getValue(), null);
+            GUIConfiguration.setupGUI((ApplicationTheme) themeComboBox.getSelectedItem(), config.useWindowDecoration.getValue(), null);
         }
 
         class AuthorNamePanel extends KGridBagLayoutPanel {
@@ -222,7 +222,7 @@ public class SettingsDialog extends BaseDialog {
             Path oldPath = config.lastModpackPath.getValue();
 
             config.lastModpackPath.setValue(newPath);
-            boolean located = Executables.packwiz.probe(null) != null;
+            boolean located = PackwizExecutable.INSTANCE.probe(null) != null;
             config.lastModpackPath.setValue(oldPath); // restore
 
             if(!located) {
@@ -250,7 +250,7 @@ public class SettingsDialog extends BaseDialog {
 
         @Override
         public void actionPerformed(ActionEvent actionEvent) {
-            if(JOptionPane.showConfirmDialog(parents[0], String.format("This will reset %s to it's initial state as if it's the first time the program is launched.\nAre you sure you want to continue?", BuildMetadata.INSTANCE.name), Util.withTitlePrefix("Reset Program?"), JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
+            if(JOptionPane.showConfirmDialog(parents[0], String.format("This will reset %s to it's initial state as if it's the first time the program is launched.\nAre you sure you want to continue?", ApplicationInfo.INSTANCE.name), Util.withTitlePrefix("Reset Program?"), JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
                 PWGUI.LOGGER.info("Resetting program!");
 
                 try {

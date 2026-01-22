@@ -1,7 +1,7 @@
 package com.lx862.pwgui.gui.panel.editing.filetype;
 
 import com.lx862.pwgui.PWGUI;
-import com.lx862.pwgui.util.GUIHelper;
+import com.lx862.pwgui.gui.GUIConfiguration;
 import com.lx862.pwgui.util.Util;
 import com.lx862.pwgui.core.data.model.file.MarkdownFileModel;
 
@@ -18,7 +18,7 @@ public class MarkdownPanel extends FileTypePanel {
 
         try {
             String content = fileEntry.getContent();
-            String html = GUIHelper.markdownToHtml(content);
+            String html = GUIConfiguration.markdownToHtml(content);
             editorPane.setInitialContent(html);
         } catch (Exception e) {
             PWGUI.LOGGER.error("", e);

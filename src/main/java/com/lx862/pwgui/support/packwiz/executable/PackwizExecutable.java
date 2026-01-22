@@ -1,18 +1,22 @@
-package com.lx862.pwgui.executable;
+package com.lx862.pwgui.support.packwiz.executable;
 
-import com.lx862.pwgui.PWGUI;
 import com.lx862.pwgui.core.Config;
+import com.lx862.pwgui.core.log.Logger;
+import com.lx862.pwgui.executable.Executable;
 
 import java.nio.file.Path;
 
 public class PackwizExecutable extends Executable {
-    private String packFileLocation = null;
+    public static final Logger LOGGER = new Logger("PackwizExec");
+    public static final PackwizExecutable INSTANCE = new PackwizExecutable(LOGGER);
+
     private final Url url;
     private final Settings settings;
     private final CurseForge curseForge;
+    private String packFileLocation = null;
 
-    public PackwizExecutable() {
-        super("Packwiz");
+    public PackwizExecutable(Logger logger) {
+        super(logger, "Packwiz");
         keywords.add("A command line tool for creating Minecraft modpacks");
         keywords.add("Use \"packwiz [command] --help\" for more information about a command.");
 
@@ -38,7 +42,7 @@ public class PackwizExecutable extends Executable {
         Path configuredPackwizExecutablePath = Config.getInstance().packwizExecutablePath.getValue();
         if(configuredPackwizExecutablePath != null) {
             if(isOurIntendedProgram(configuredPackwizExecutablePath.toString())) {
-                PWGUI.LOGGER.info("{} executable configured at {}", programName, configuredPackwizExecutablePath);
+                LOGGER.info("Found executable at {}", configuredPackwizExecutablePath);
                 return configuredPackwizExecutablePath.toString();
             }
         }

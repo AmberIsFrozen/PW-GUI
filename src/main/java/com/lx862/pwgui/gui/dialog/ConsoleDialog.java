@@ -1,11 +1,11 @@
 package com.lx862.pwgui.gui.dialog;
 
+import com.lx862.pwgui.support.packwiz.executable.PackwizExecutable;
 import com.lx862.pwgui.util.Strings;
 import com.lx862.pwgui.executable.Executable;
-import com.lx862.pwgui.executable.Executables;
 import com.lx862.pwgui.executable.ProgramExecution;
 import com.lx862.pwgui.gui.components.kui.*;
-import com.lx862.pwgui.util.GUIHelper;
+import com.lx862.pwgui.gui.GUIConfiguration;
 import com.lx862.pwgui.util.Util;
 
 import javax.swing.*;
@@ -45,7 +45,7 @@ public class ConsoleDialog extends BaseDialog {
         contentPanel.add(new JScrollPane(logTextArea));
 
         KGridBagLayoutPanel actionPanel = new KGridBagLayoutPanel(4, 0, 3);
-        actionPanel.setBorder(GUIHelper.getPaddedBorder(6, 0, 0, 0));
+        actionPanel.setBorder(GUIConfiguration.getPaddedBorder(6, 0, 0, 0));
 
         KTextField commandInputField = new KTextField("help");
         commandInputField.addActionListener(new RunCommandAction(commandInputField));
@@ -108,7 +108,7 @@ public class ConsoleDialog extends BaseDialog {
                 splitArgs[i] = argsTokenizer.nextToken();
             }
 
-            ProgramExecution programExecution = Executables.packwiz.buildCommand(splitArgs).build();
+            ProgramExecution programExecution = PackwizExecutable.INSTANCE.buildCommand(splitArgs).build();
             currentExecution = programExecution;
             programExecution.onOutput(line -> {
                 logTextArea.append(line.content() + "\n");

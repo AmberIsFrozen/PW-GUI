@@ -1,10 +1,12 @@
 package com.lx862.pwgui.gui.action;
 
 import com.lx862.pwgui.PWGUI;
+import com.lx862.pwgui.support.packwiz.executable.PackwizExecutable;
+import com.lx862.pwgui.support.packwiz.PackFile;
+import com.lx862.pwgui.support.packwiz.PackIndexFile;
+import com.lx862.pwgui.support.packwiz.PackwizMetaFile;
 import com.lx862.pwgui.util.Strings;
-import com.lx862.pwgui.pwcore.*;
 import com.lx862.pwgui.executable.BatchedProgramExecution;
-import com.lx862.pwgui.executable.Executables;
 import com.lx862.pwgui.executable.ProgramExecution;
 import com.lx862.pwgui.gui.prompt.BatchedExecutionProgressDialog;
 import com.lx862.pwgui.gui.prompt.TaskProgressDialog;
@@ -73,9 +75,9 @@ public class FullUpdateAction extends UpdateAction {
                         String prefix = packwizMetaFile.updateMrVersion != null ? "mr" : "cf";
                         ProgramExecution execution;
                         if(prefix.equals("mr")) {
-                            execution = Executables.packwiz.buildCommand("mr", "add", packwizMetaFile.updateMrModId).metaFolder(tempDirectory.getFileName().toString()).build();
+                            execution = PackwizExecutable.INSTANCE.buildCommand("mr", "add", packwizMetaFile.updateMrModId).metaFolder(tempDirectory.getFileName().toString()).build();
                         } else {
-                            execution = Executables.packwiz.buildCommand("cf", "add", "--addon-id", String.valueOf(packwizMetaFile.updateCfProjectId)).metaFolder(tempDirectory.getFileName().toString()).build();
+                            execution = PackwizExecutable.INSTANCE.buildCommand("cf", "add", "--addon-id", String.valueOf(packwizMetaFile.updateCfProjectId)).metaFolder(tempDirectory.getFileName().toString()).build();
                         }
 
                         execution.onOutput(stdout -> {
@@ -107,7 +109,7 @@ public class FullUpdateAction extends UpdateAction {
                             new IncompatibleSummaryDialog(parent, filesWithoutSuitableVersion).setVisible(true);
                         }
 
-                        Executables.packwiz.refresh().build().run("Clean-up after content compatibility check");
+                        PackwizExecutable.INSTANCE.refresh().build().run("Clean-up after content compatibility check");
                     });
 
                     BatchedExecutionProgressDialog modCompatDialog = new BatchedExecutionProgressDialog(parent, "Checking content compatibility...", "Check content compatibility after update", batchedProgramExecution);

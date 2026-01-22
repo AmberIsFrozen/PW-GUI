@@ -1,7 +1,7 @@
 package com.lx862.pwgui.gui.dialog;
 
 import com.lx862.pwgui.PWGUI;
-import com.lx862.pwgui.core.BuildMetadata;
+import com.lx862.pwgui.core.ApplicationInfo;
 import com.lx862.pwgui.core.Config;
 import com.lx862.pwgui.core.log.LogEntry;
 import com.lx862.pwgui.core.log.Logger;
@@ -23,24 +23,21 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
-import java.util.stream.Collectors;
 
 /** Dialog to view the program's log */
 public class ViewLogDialog extends BaseDialog {
     private final Logger.LogCallback appendLogCallback;
-    private final StringBuilder logHistory;
 
     public ViewLogDialog(JFrame frame) {
-        super(frame, Util.withTitlePrefix("View Program Log"));
+        super(frame, Util.withTitlePrefix("Program Log"));
 
         setSize(600, 400);
         setLocationRelativeTo(frame);
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-        this.logHistory = new StringBuilder();
 
         KRootContentPanel contentPanel = new KRootContentPanel(10);
 
-        JLabel descriptionLabel = new JLabel(String.format("This displays the program log for %s, which may be useful for diagnosing issues", BuildMetadata.INSTANCE.name));
+        JLabel descriptionLabel = new JLabel(String.format("This displays the program log for %s, which may be useful for diagnosing issues", ApplicationInfo.INSTANCE.name));
         contentPanel.add(descriptionLabel, BorderLayout.NORTH);
 
         DefaultListModel<LogEntry> logs = new DefaultListModel<>();
@@ -57,16 +54,14 @@ public class ViewLogDialog extends BaseDialog {
 
         this.appendLogCallback = (entry, realtime) -> {
             if(entry.logLevel() == LogEntry.LogLevel.DEBUG && !Config.getInstance().debugMode.getValue()) return;
-
             logs.addElement(entry);
-            logHistory.append(entry.message());
 
             SwingUtilities.invokeLater(() -> {
                 scrollPane.getVerticalScrollBar().setValue(scrollPane.getVerticalScrollBar().getMaximum()); // Jump to bottom
             });
         };
 
-        PWGUI.LOGGER.addListener(appendLogCallback);
+        Logger.addListener(appendLogCallback);
 
         KButton saveAsButton = new KButton(new SaveLogAction());
         KActionPanel actionPanel = new KActionPanel.Builder().add(saveAsButton).build();
@@ -78,7 +73,7 @@ public class ViewLogDialog extends BaseDialog {
     @Override
     public void dispose() {
         super.dispose();
-        PWGUI.LOGGER.removeListener(appendLogCallback);
+        Logger.removeListener(appendLogCallback);
     }
 
     class SaveLogAction extends AbstractAction {

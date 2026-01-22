@@ -1,7 +1,7 @@
 package com.lx862.pwgui.gui.action;
 
+import com.lx862.pwgui.support.packwiz.executable.PackwizExecutable;
 import com.lx862.pwgui.util.Strings;
-import com.lx862.pwgui.executable.Executables;
 import com.lx862.pwgui.util.Util;
 
 import javax.swing.*;
@@ -25,7 +25,7 @@ public class RefreshPackAction extends AbstractAction {
         Component parent = getParent.get();
         AtomicReference<String> lastLine = new AtomicReference<>();
 
-        Executables.packwiz.refresh().build()
+        PackwizExecutable.INSTANCE.refresh().build()
             .onOutput((stdout) -> lastLine.set(stdout.content()))
             .onExit(exitCode -> {
                 if(exitCode == 0) {

@@ -3,7 +3,7 @@ package com.lx862.pwgui.gui.panel;
 import com.lx862.pwgui.core.Config;
 import com.lx862.pwgui.gui.listener.DocumentChangedListener;
 import com.lx862.pwgui.gui.components.kui.KGridBagLayoutPanel;
-import com.lx862.pwgui.pwcore.PackFile;
+import com.lx862.pwgui.support.packwiz.PackFile;
 import com.lx862.pwgui.gui.components.kui.KTextField;
 
 import javax.swing.*;

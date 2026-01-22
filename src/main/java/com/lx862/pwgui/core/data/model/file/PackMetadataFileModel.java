@@ -1,7 +1,7 @@
 package com.lx862.pwgui.core.data.model.file;
 
 import com.lx862.pwgui.core.Config;
-import com.lx862.pwgui.pwcore.PackwizMetaFile;
+import com.lx862.pwgui.support.packwiz.PackwizMetaFile;
 
 import java.io.File;
 

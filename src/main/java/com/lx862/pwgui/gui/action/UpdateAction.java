@@ -1,7 +1,7 @@
 package com.lx862.pwgui.gui.action;
 
+import com.lx862.pwgui.support.packwiz.executable.PackwizExecutable;
 import com.lx862.pwgui.util.Strings;
-import com.lx862.pwgui.executable.Executables;
 import com.lx862.pwgui.executable.ProgramExecution;
 import com.lx862.pwgui.gui.prompt.TaskProgressDialog;
 import com.lx862.pwgui.gui.prompt.UpdateSummaryDialog;
@@ -48,7 +48,7 @@ public class UpdateAction extends AbstractAction {
     }
 
     public ProgramExecution getProgramExecution(Window parent) {
-        ProgramExecution programExecution = Executables.packwiz.updateAll().build();
+        ProgramExecution programExecution = PackwizExecutable.INSTANCE.updateAll().build();
         List<String> updateMods = new ArrayList<>();
         List<String> skippedMods = new ArrayList<>();
         List<String> unsupportedMods = new ArrayList<>();

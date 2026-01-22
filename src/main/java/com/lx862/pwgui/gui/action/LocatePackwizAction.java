@@ -2,7 +2,7 @@ package com.lx862.pwgui.gui.action;
 
 import com.lx862.pwgui.PWGUI;
 import com.lx862.pwgui.core.Config;
-import com.lx862.pwgui.executable.Executables;
+import com.lx862.pwgui.support.packwiz.executable.PackwizExecutable;
 import com.lx862.pwgui.gui.components.filepicker.PackwizExecutableFileFilter;
 import com.lx862.pwgui.gui.components.kui.KFileChooser;
 import com.lx862.pwgui.util.Util;
@@ -46,7 +46,7 @@ public class LocatePackwizAction extends AbstractAction {
             }
 
             Config.getInstance().packwizExecutablePath.setValue(selectedFile.toPath());
-            String newProbedPath = Executables.packwiz.probe(null);
+            String newProbedPath = PackwizExecutable.INSTANCE.probe(null);
             if(newProbedPath == null) {
                 JOptionPane.showMessageDialog(parent, "The selected executable is not valid!\nPlease confirm that you can run the executable?", Util.withTitlePrefix("Invalid Executable"), JOptionPane.ERROR_MESSAGE);
                 return;

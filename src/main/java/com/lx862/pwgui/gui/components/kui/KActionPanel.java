@@ -1,6 +1,6 @@
 package com.lx862.pwgui.gui.components.kui;
 
-import com.lx862.pwgui.util.GUIHelper;
+import com.lx862.pwgui.gui.GUIConfiguration;
 
 import javax.swing.*;
 import java.awt.*;
@@ -11,7 +11,7 @@ public class KActionPanel extends JPanel {
 
     protected KActionPanel() {
         super(new FlowLayout(FlowLayout.RIGHT, 4, 0));
-        setBorder(GUIHelper.getPaddedBorder(6, 0, 0, 0));
+        setBorder(GUIConfiguration.getPaddedBorder(6, 0, 0, 0));
     }
 
     public static class Builder {

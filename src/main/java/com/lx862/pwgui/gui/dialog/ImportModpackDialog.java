@@ -1,14 +1,14 @@
 package com.lx862.pwgui.gui.dialog;
 
 import com.formdev.flatlaf.ui.FlatUIUtils;
+import com.lx862.pwgui.support.packwiz.executable.PackwizExecutable;
 import com.lx862.pwgui.util.Strings;
-import com.lx862.pwgui.executable.Executables;
 import com.lx862.pwgui.executable.ProgramExecution;
 import com.lx862.pwgui.gui.components.filepicker.CurseForgeModpackFilter;
 import com.lx862.pwgui.gui.components.kui.KButton;
 import com.lx862.pwgui.gui.components.kui.KFileChooser;
 import com.lx862.pwgui.gui.prompt.TaskProgressDialog;
-import com.lx862.pwgui.util.GUIHelper;
+import com.lx862.pwgui.gui.GUIConfiguration;
 import com.lx862.pwgui.util.Util;
 
 import javax.swing.*;
@@ -36,7 +36,7 @@ public class ImportModpackDialog extends BaseDialog {
         private final Window parent;
 
         public ImportModpackPanel(Window parent, boolean isCreate, Consumer<Path> importCallback) {
-            setBorder(GUIHelper.getPaddedBorder(8));
+            setBorder(GUIConfiguration.getPaddedBorder(8));
             setLayout(new BoxLayout(this, BoxLayout.PAGE_AXIS));
 
             this.parent = parent;
@@ -91,7 +91,7 @@ public class ImportModpackDialog extends BaseDialog {
                     modpackFileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
                     if(modpackFileChooser.openSaveDirectoryDialog(this) == JFileChooser.APPROVE_OPTION) {
                         File destinationPath = modpackFileChooser.getSelectedFile();
-                        Executables.packwiz.changeWorkingDirectory(destinationPath.toPath());
+                        PackwizExecutable.INSTANCE.changeWorkingDirectory(destinationPath.toPath());
 
                         runImportCommand(file, () -> {
                             importCallback.accept(destinationPath.toPath().resolve("pack.toml"));
@@ -104,7 +104,7 @@ public class ImportModpackDialog extends BaseDialog {
         }
 
         private void runImportCommand(File sourceFile, Runnable callback) {
-            ProgramExecution programExecution = Executables.packwiz.curseForge().importPack(sourceFile.toString()).build();
+            ProgramExecution programExecution = PackwizExecutable.INSTANCE.curseForge().importPack(sourceFile.toString()).build();
             programExecution.onExit(exitCode -> {
                 if(exitCode == 0) {
                     callback.run();

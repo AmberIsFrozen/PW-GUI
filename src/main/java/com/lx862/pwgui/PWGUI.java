@@ -1,16 +1,15 @@
 package com.lx862.pwgui;
 
 import com.formdev.flatlaf.util.UIScale;
-import com.lx862.pwgui.core.BuildMetadata;
+import com.lx862.pwgui.core.ApplicationInfo;
 import com.lx862.pwgui.core.Config;
-import com.lx862.pwgui.core.log.LogEntry;
 import com.lx862.pwgui.core.log.Logger;
-import com.lx862.pwgui.executable.Executables;
+import com.lx862.pwgui.support.packwiz.executable.PackwizExecutable;
 import com.lx862.pwgui.gui.frame.EditFrame;
 import com.lx862.pwgui.gui.frame.SetupFrame;
 import com.lx862.pwgui.gui.frame.WelcomeFrame;
-import com.lx862.pwgui.pwcore.Modpack;
-import com.lx862.pwgui.util.GUIHelper;
+import com.lx862.pwgui.support.packwiz.Modpack;
+import com.lx862.pwgui.gui.GUIConfiguration;
 import org.apache.commons.cli.CommandLine;
 
 import javax.swing.*;
@@ -18,19 +17,18 @@ import java.io.File;
 import java.io.FileNotFoundException;
 
 public class PWGUI {
-    public static final Logger LOGGER = new Logger();
-
-    static {
-        appendStdoutLogger(LOGGER);
-    }
+    public static final Logger LOGGER = new Logger("PW-GUI");
 
     /**
      * Initialize/re-initialize the program
      * @param commandLine The CommandLine parsed from the CLI. Null if this is a reinitialization process.
      */
-    public static void init(CommandLine commandLine) {
-        BuildMetadata.init();
+    public static void start(CommandLine commandLine) {
+        ApplicationInfo.init();
+        init(commandLine);
+    }
 
+    public static void init(CommandLine commandLine) {
         try {
             Config.init();
         } catch (Exception e) {
@@ -43,18 +41,19 @@ public class PWGUI {
         if(commandLine != null) {
             String packwizPathOverride = commandLine.getOptionValue("pwexec");
             String packFilePathOverride = commandLine.getOptionValue("pack");
-            packwizLocated = Executables.packwiz.updateExecutableLocation(packwizPathOverride);
+            packwizLocated = PackwizExecutable.INSTANCE.updateExecutableLocation(packwizPathOverride);
             if(packFilePathOverride != null) packFilePath = packFilePathOverride;
         } else {
-            packwizLocated = Executables.packwiz.updateExecutableLocation(null);
+            packwizLocated = PackwizExecutable.INSTANCE.updateExecutableLocation(null);
         }
+
         // final boolean gitLocated = git.updateExecutableLocation(null); // We don't have git support yet
         launchGUI(packFilePath, packwizLocated);
     }
 
     private static void launchGUI(String packFilePath, boolean packwizLocated) {
         Config config = Config.getInstance();
-        GUIHelper.setupApplicationTheme(config.applicationTheme.getValue(), config.useWindowDecoration.getValue(), null); // Initialize FlatLaf and it's config
+        GUIConfiguration.setupGUI(config.applicationTheme.getValue(), config.useWindowDecoration.getValue(), null); // Initialize FlatLaf and it's config
         UIScale.setZoomFactor(config.zoomFactor.getValue());
 
         if(!packwizLocated) { // No packwiz, show setup wizard
@@ -90,15 +89,5 @@ public class PWGUI {
             LOGGER.info("Specified Pack File does not exist!");
             return null;
         }
-    }
-
-    private static void appendStdoutLogger(Logger logger) {
-        logger.addListener(((entry, isRealtime) -> {
-            if(entry.logLevel() == LogEntry.LogLevel.ERROR) {
-                System.err.println(entry.message());
-            } else if(entry.logLevel() != LogEntry.LogLevel.DEBUG || Config.getInstance().debugMode.getValue()) {
-                System.out.println(entry.message());
-            }
-        }));
     }
 }

@@ -1,6 +1,6 @@
 package com.lx862.pwgui.gui.components.kui;
 
-import com.lx862.pwgui.util.GUIHelper;
+import com.lx862.pwgui.gui.GUIConfiguration;
 
 import javax.swing.*;
 import java.awt.*;
@@ -13,7 +13,7 @@ public class KRootContentPanel extends JPanel {
 
     public KRootContentPanel(int padding) {
         super(new BorderLayout());
-        setBorder(GUIHelper.getPaddedBorder(padding));
+        setBorder(GUIConfiguration.getPaddedBorder(padding));
     }
 
     public KRootContentPanel(LayoutManager layout) {

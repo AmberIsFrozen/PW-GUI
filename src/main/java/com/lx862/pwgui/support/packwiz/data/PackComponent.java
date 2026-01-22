@@ -1,4 +1,4 @@
-package com.lx862.pwgui.pwcore.data;
+package com.lx862.pwgui.support.packwiz.data;
 
 /* This is what Packwiz defines as Component (at least in the docs IIRC).
 * It's just a set of software/modloaders that are applied to your pack.

@@ -1,27 +1,42 @@
 package com.lx862.pwgui.core.log;
 
-import com.lx862.pwgui.core.BuildMetadata;
+import com.lx862.pwgui.core.Config;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
 /** The logger used for the program */
 public class Logger {
-    private final List<LogCallback> logListeners;
     private final List<LogEntry> entries;
+    private final String contextName;
+    private static final List<LogCallback> logListeners = new ArrayList<>();
     private static final SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss");
 
-    public Logger() {
-        this.entries = new ArrayList<>();
-        this.logListeners = new ArrayList<>();
+    private static final List<Logger> registeredLoggers = new ArrayList<>();
+
+    static {
+        appendStdoutLogger();
     }
 
-    public void addListener(LogCallback logListener) {
-        this.logListeners.add(logListener);
+    public Logger(String contextName) {
+        this.entries = new ArrayList<>();
+        this.contextName = contextName;
+        registeredLoggers.add(this);
+    }
+
+    public static void addListener(LogCallback logListener) {
+        logListeners.add(logListener);
+
+        List<LogEntry> entries = new ArrayList<>();
+        for(Logger logger : registeredLoggers) {
+            entries.addAll(Arrays.stream(logger.getLogHistory()).toList());
+        }
+        entries.sort((e, f) -> Math.toIntExact(e.timeMs() - f.timeMs()));
 
         // Send historic log to listener
         for(LogEntry line : entries) {
@@ -29,8 +44,8 @@ public class Logger {
         }
     }
 
-    public void removeListener(LogCallback logListener) {
-        this.logListeners.remove(logListener);
+    public static void removeListener(LogCallback logListener) {
+        logListeners.remove(logListener);
     }
 
     public void error(String str, Throwable t, Object... placeholders) {
@@ -40,35 +55,19 @@ public class Logger {
     }
 
     public void error(String str, Object... placeholders) {
-        errorRaw(BuildMetadata.INSTANCE.name, str, placeholders);
-    }
-
-    public void errorRaw(String prefix, String str, Object... placeholders) {
-        writeLog(LogEntry.LogLevel.ERROR, prefix, str, placeholders);
+        writeLog(LogEntry.LogLevel.ERROR, contextName, str, placeholders);
     }
 
     public void warn(String str, Object... placeholders) {
-        warnRaw(BuildMetadata.INSTANCE.name, str, placeholders);
-    }
-
-    public void warnRaw(String prefix, String str, Object... placeholders) {
-        writeLog(LogEntry.LogLevel.WARNING, prefix, str, placeholders);
+        writeLog(LogEntry.LogLevel.WARNING, contextName, str, placeholders);
     }
 
     public void info(String str, Object... placeholders) {
-        infoRaw(BuildMetadata.INSTANCE.name, str, placeholders);
-    }
-
-    public void infoRaw(String prefix, String str, Object... placeholders) {
-        writeLog(LogEntry.LogLevel.INFO, prefix, str, placeholders);
+        writeLog(LogEntry.LogLevel.INFO, contextName, str, placeholders);
     }
 
     public void debug(String str, Object... placeholders) {
-        debug(BuildMetadata.INSTANCE.name, str, placeholders);
-    }
-
-    public void debug(String prefix, String str, Object... placeholders) {
-        writeLog(LogEntry.LogLevel.DEBUG, prefix, str, placeholders);
+        writeLog(LogEntry.LogLevel.DEBUG, contextName, str, placeholders);
     }
 
     private void writeLog(LogEntry.LogLevel logLevel, String prefix, String str, Object... placeholders) {
@@ -91,6 +90,16 @@ public class Logger {
 
     public LogEntry[] getLogHistory() {
         return this.entries.toArray(LogEntry[]::new);
+    }
+
+    private static void appendStdoutLogger() {
+        addListener(((entry, isRealtime) -> {
+            if(entry.logLevel() == LogEntry.LogLevel.ERROR) {
+                System.err.println(entry.message());
+            } else if(entry.logLevel() != LogEntry.LogLevel.DEBUG || Config.getInstance().debugMode.getValue()) {
+                System.out.println(entry.message());
+            }
+        }));
     }
 
     public interface LogCallback {

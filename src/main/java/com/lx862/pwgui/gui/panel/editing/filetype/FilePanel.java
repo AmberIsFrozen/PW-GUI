@@ -1,10 +1,10 @@
 package com.lx862.pwgui.gui.panel.editing.filetype;
 
 import com.lx862.pwgui.PWGUI;
+import com.lx862.pwgui.support.packwiz.executable.PackwizExecutable;
 import com.lx862.pwgui.util.Strings;
-import com.lx862.pwgui.pwcore.PackIndexFile;
+import com.lx862.pwgui.support.packwiz.PackIndexFile;
 import com.lx862.pwgui.core.data.model.file.GenericFileModel;
-import com.lx862.pwgui.executable.Executables;
 import com.lx862.pwgui.gui.components.kui.KButton;
 import com.lx862.pwgui.util.Util;
 
@@ -78,7 +78,7 @@ public class FilePanel extends FileTypePanel {
                 try {
                     Files.delete(fileEntry.path);
                     PWGUI.LOGGER.info("Deleted file {}", fileEntry.path);
-                    Executables.packwiz.refresh().build().run("File deleted by user");
+                    PackwizExecutable.INSTANCE.refresh().build().run("File deleted by user");
                 } catch (IOException e) {
                     PWGUI.LOGGER.error("Failed to deleted file {} due to {}", fileEntry.path, e.getMessage());
                     JOptionPane.showMessageDialog(getTopLevelAncestor(), String.format("Failed to delete file: \n%s\nYou may try doing it from an external file manager.", e.getMessage()), Util.withTitlePrefix("Failed to Delete File!"), JOptionPane.ERROR_MESSAGE);
