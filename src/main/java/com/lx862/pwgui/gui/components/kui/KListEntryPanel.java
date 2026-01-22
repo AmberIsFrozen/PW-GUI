@@ -23,8 +23,6 @@ public class KListEntryPanel extends JPanel {
         }
     }
 
-
-
     @Override
     public Component add(Component comp) {
         if(comp instanceof JComponent) {

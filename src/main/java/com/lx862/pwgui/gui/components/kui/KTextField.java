@@ -1,12 +1,9 @@
 package com.lx862.pwgui.gui.components.kui;
 
-import com.lx862.pwgui.gui.GUIConfiguration;
-
 import javax.swing.*;
-import javax.swing.border.CompoundBorder;
 import java.awt.*;
 
-/** A padded variant of JTextField with placeholder text support */
+/** A variant of JTextField with placeholder text support */
 public class KTextField extends JTextField {
     private final String placeholder;
     private final boolean moveCaretToFront;
@@ -19,7 +16,6 @@ public class KTextField extends JTextField {
     public KTextField(String placeholderText, boolean moveCaretToFront) {
         this.placeholder = placeholderText;
         this.moveCaretToFront = moveCaretToFront;
-        setBorder(new CompoundBorder(getBorder(), GUIConfiguration.getPaddedBorder(3)));
     }
 
     /**

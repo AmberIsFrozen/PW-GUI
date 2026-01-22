@@ -9,7 +9,7 @@ public class LicenseFileModel extends PlainTextFileModel {
 
     @Override
     public String getDisplayName() {
-        return "License File";
+        return "License";
     }
 
     @Override

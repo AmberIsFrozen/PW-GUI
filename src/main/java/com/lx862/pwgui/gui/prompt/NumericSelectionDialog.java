@@ -5,7 +5,6 @@ import com.lx862.pwgui.gui.action.OKAction;
 import com.lx862.pwgui.gui.components.kui.KActionPanel;
 import com.lx862.pwgui.gui.components.kui.KButton;
 import com.lx862.pwgui.gui.components.kui.KGridBagLayoutPanel;
-import com.lx862.pwgui.gui.components.kui.KListCellRenderer;
 import com.lx862.pwgui.gui.dialog.BaseDialog;
 import com.lx862.pwgui.gui.GUIConfiguration;
 import com.lx862.pwgui.util.Util;
@@ -37,7 +36,6 @@ public class NumericSelectionDialog extends BaseDialog {
 
         JList<T> jList = new JList<>(defaultListModel);
         jList.setSize(Integer.MAX_VALUE, getHeight());
-        jList.setCellRenderer(new KListCellRenderer());
         jList.setSelectedIndex(0);
         jList.setAlignmentX(Component.LEFT_ALIGNMENT);
         contentPanel.addRow(1, jList);

@@ -12,7 +12,6 @@ import com.lx862.pwgui.executable.BatchedProgramExecution;
 import com.lx862.pwgui.gui.action.CloseWindowAction;
 import com.lx862.pwgui.gui.components.ToggleListSelectionModel;
 import com.lx862.pwgui.gui.components.kui.KButton;
-import com.lx862.pwgui.gui.components.kui.KListCellRenderer;
 import com.lx862.pwgui.util.Util;
 
 import javax.swing.*;
@@ -54,7 +53,6 @@ public class ChangeAcceptableGameVersionDialog extends BaseDialog {
         JCheckBox snapshotCheckBox = new JCheckBox("Show Snapshot");
 
         JList<String> versionList = new JList<>(new DefaultListModel<>());
-        versionList.setCellRenderer(new KListCellRenderer());
         versionList.setSelectionModel(new ToggleListSelectionModel());
         versionList.setAlignmentX(Component.LEFT_ALIGNMENT);
         versionList.addListSelectionListener(listSelectionEvent -> {

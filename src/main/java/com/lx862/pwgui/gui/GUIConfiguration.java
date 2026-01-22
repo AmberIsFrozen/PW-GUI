@@ -36,14 +36,30 @@ public class GUIConfiguration {
             UIManager.put("ScrollBar.width", 14);
             UIManager.put("TabbedPane.showTabSeparators", true);
             UIManager.put("Button.arc", 9);
+            UIManager.put("Button.margin", new Insets(5, 15, 5, 15));
+            UIManager.put("TextField.margin", new Insets(5, 9, 5, 9));
+            UIManager.put("ComboBox.padding", new Insets(5, 7, 5, 7));
+            UIManager.put("ComboBox.popupInsets", new Insets(3, 3, 3, 3));
+            UIManager.put("ComboBox.selectionArc", 7);
             UIManager.put("ScrollPane.arc", 9);
-            UIManager.put("TextComponent.arc", 6);
+            UIManager.put("TextComponent.arc", 7);
+            UIManager.put("Menu.margin", new Insets(5, 10, 5, 10));
+            UIManager.put("MenuItem.margin", new Insets(5, 10, 5, 10));
+            UIManager.put("CheckBoxMenuItem.margin", new Insets(5, 10, 5, 10));
+            UIManager.put("MenuBar.itemMargins", new Insets(5, 8, 5, 8));
             UIManager.put("List.selectionArc", 6);
             UIManager.put("List.border", getPaddedBorder(3, 0, 3, 0));
+            UIManager.put("List.cellMargins", new Insets(5, 8, 5, 8));
             UIManager.put("Tree.selectionArc", 6);
             UIManager.put("Tree.border", getPaddedBorder(3, 0, 3, 0));
+            UIManager.put("Tree.rendererMargins", new Insets(6, 0, 6, 0));
             UIManager.put("Component.arc", 6);
             UIManager.put("Component.hideMnemonics", false);
+
+            ToolTipManager.sharedInstance().setInitialDelay(300);
+
+            // Don't dismiss the tooltip when user is still hovering
+            ToolTipManager.sharedInstance().setDismissDelay(Integer.MAX_VALUE);
 
             if(window == null) { // Every window
                 for(Window subWindow : Window.getWindows()) {

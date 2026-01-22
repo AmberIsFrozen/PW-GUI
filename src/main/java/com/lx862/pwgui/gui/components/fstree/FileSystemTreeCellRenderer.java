@@ -1,12 +1,12 @@
 package com.lx862.pwgui.gui.components.fstree;
 
 import com.lx862.pwgui.core.data.model.file.FileSystemEntityModel;
-import com.lx862.pwgui.gui.components.kui.KTreeCellRenderer;
 
 import javax.swing.*;
+import javax.swing.tree.DefaultTreeCellRenderer;
 import java.awt.*;
 
-public class FileSystemTreeCellRenderer extends KTreeCellRenderer {
+public class FileSystemTreeCellRenderer extends DefaultTreeCellRenderer {
     private static final int IGNORED_COLOR_ALPHA = 75;
 
     private final Color newFileColor;
@@ -20,7 +20,6 @@ public class FileSystemTreeCellRenderer extends KTreeCellRenderer {
     public Component getTreeCellRendererComponent(JTree jTree, Object o, boolean selected, boolean expanded, boolean leaf, int row, boolean b3) {
         super.getTreeCellRendererComponent(jTree, o, selected, expanded, leaf, row, b3);
         if(jTree instanceof FileSystemTree fileSystemTree) {
-            Font defaultFont = UIManager.getFont("defaultFont");
             if(o instanceof FileSystemSortedTreeNode fileSystemSortedTreeNode) {
                 FileSystemEntityModel fileInfo = (FileSystemEntityModel)fileSystemSortedTreeNode.getUserObject();
 
@@ -30,12 +29,12 @@ public class FileSystemTreeCellRenderer extends KTreeCellRenderer {
                 }
 
                 setText(fileInfo.getDisplayName());
-                setFont(defaultFont.deriveFont(fileInfo.isUserFriendlyName() ? Font.ITALIC : Font.PLAIN));
+                setFont(jTree.getFont().deriveFont(fileInfo.isUserFriendlyName() ? Font.ITALIC : Font.PLAIN));
                 setIcon(fileInfo.getIcon());
 
                 fileIsNew = fileSystemTree.isNewFile(fileSystemSortedTreeNode.path);
             } else {
-                setFont(defaultFont.deriveFont(Font.PLAIN));
+                setFont(jTree.getFont().deriveFont(Font.PLAIN));
                 setText(o.toString());
             }
         } else {

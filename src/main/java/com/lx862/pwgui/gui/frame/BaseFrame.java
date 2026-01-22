@@ -5,11 +5,8 @@ import com.formdev.flatlaf.util.UIScale;
 import com.lx862.pwgui.PWGUI;
 import com.lx862.pwgui.core.Config;
 import com.lx862.pwgui.gui.ImageUtil;
-import com.lx862.pwgui.gui.components.kui.KCheckBoxMenuItem;
 import com.lx862.pwgui.support.packwiz.Modpack;
 import com.lx862.pwgui.gui.action.*;
-import com.lx862.pwgui.gui.components.kui.KMenu;
-import com.lx862.pwgui.gui.components.kui.KMenuItem;
 import com.lx862.pwgui.gui.dialog.ExportModpackDialog;
 import com.lx862.pwgui.gui.dialog.DevServerDialog;
 import com.lx862.pwgui.gui.dialog.ImportModpackDialog;
@@ -27,10 +24,9 @@ public abstract class BaseFrame extends JFrame {
     private static final float[] ZOOM_LEVELS = {1.0f, 1.1f, 1.2f ,1.3f, 1.4f, 1.5f, 1.6f, 1.7f, 1.8f, 1.9f, 2.0f};
     protected final JMenuBar jMenuBar;
     private final KeyEventDispatcher shortcutKeyListener;
+    private final HashMap<Float, JCheckBoxMenuItem> zoomDropdownItems = new HashMap<>();
     private int baseWidth;
     private int baseHeight;
-
-    HashMap<Float, KCheckBoxMenuItem> zoomDropdownItems = new HashMap<>();
 
     public BaseFrame() {
         this.jMenuBar = new JMenuBar();
@@ -89,13 +85,13 @@ public abstract class BaseFrame extends JFrame {
         super.dispose();
     }
 
-    protected KMenu getHelpMenu() {
-        KMenu helpMenu = new KMenu("Help");
+    protected JMenu getHelpMenu() {
+        JMenu helpMenu = new JMenu("Help");
 
-        KMenuItem clearPWCacheItem = new KMenuItem(new ClearPackwizCacheAction(this));
+        JMenuItem clearPWCacheItem = new JMenuItem(new ClearPackwizCacheAction(this));
         helpMenu.add(clearPWCacheItem);
 
-        KMenuItem viewLogMenuItem = new KMenuItem("View Log");
+        JMenuItem viewLogMenuItem = new JMenuItem("View Log");
         viewLogMenuItem.setMnemonic(KeyEvent.VK_V);
         viewLogMenuItem.addActionListener(actionEvent -> {
             ViewLogDialog logViewer = new ViewLogDialog(this);
@@ -103,23 +99,23 @@ public abstract class BaseFrame extends JFrame {
         });
         helpMenu.add(viewLogMenuItem);
 
-        KMenuItem aboutMenuItem = new KMenuItem(new AboutAction(this));
+        JMenuItem aboutMenuItem = new JMenuItem(new AboutAction(this));
         aboutMenuItem.setMnemonic(KeyEvent.VK_A);
         helpMenu.add(aboutMenuItem);
 
         return helpMenu;
     }
 
-    protected KMenu getToolMenu(Modpack modpack) {
-        KMenu toolMenu = new KMenu("Tool");
+    protected JMenu getToolMenu(Modpack modpack) {
+        JMenu toolMenu = new JMenu("Tool");
 
-//        KMenuItem refreshMenuItem = new KMenuItem(new RefreshPackAction(this));
+//        JMenuItem refreshMenuItem = new JMenuItem(new RefreshPackAction(this));
 //        toolMenu.add(refreshMenuItem);
 
-        KMenuItem generateModlistItem = new KMenuItem(new GenerateModlistAction(this, modpack.packFile.get()));
+        JMenuItem generateModlistItem = new JMenuItem(new GenerateModlistAction(this, modpack.packFile.get()));
         toolMenu.add(generateModlistItem);
 
-        KMenuItem devServerMenuItem = new KMenuItem("Run Development Server...");
+        JMenuItem devServerMenuItem = new JMenuItem("Run Development Server...");
         devServerMenuItem.setMnemonic(KeyEvent.VK_D);
         toolMenu.add(devServerMenuItem);
         devServerMenuItem.addActionListener(actionEvent -> {
@@ -127,27 +123,27 @@ public abstract class BaseFrame extends JFrame {
             frame.setVisible(true);
         });
 
-        KMenuItem pwConsoleMenuItem = new KMenuItem(new OpenPackwizConsoleAction(this));
+        JMenuItem pwConsoleMenuItem = new JMenuItem(new OpenPackwizConsoleAction(this));
         toolMenu.add(pwConsoleMenuItem);
 
         return toolMenu;
     }
 
-    protected KMenu getEditMenu(Modpack modpack) {
-        KMenu editMenu = new KMenu("Edit");
-        KMenuItem reinstallMenuItem = new KMenuItem(new ReinstallAction("Reinstall Modpack", this, modpack));
+    protected JMenu getEditMenu(Modpack modpack) {
+        JMenu editMenu = new JMenu("Edit");
+        JMenuItem reinstallMenuItem = new JMenuItem(new ReinstallAction("Reinstall Modpack", this, modpack));
         editMenu.add(reinstallMenuItem);
 
-        KMenuItem updateAllMenuItem = new KMenuItem(new UpdateAction(() -> this));
+        JMenuItem updateAllMenuItem = new JMenuItem(new UpdateAction(() -> this));
         editMenu.add(updateAllMenuItem);
 
-        KMenu addMissingMenu = new KMenu("Add Missing...");
+        JMenu addMissingMenu = new JMenu("Add Missing...");
 
-        KMenuItem modsDirectoryMenuItem = new KMenuItem(new CreateMissingDirectoryAction(this, modpack.getRootPath(), "mods", "Mods Folder"));
-        KMenuItem configDirectoryMenuItem = new KMenuItem(new CreateMissingDirectoryAction(this, modpack.getRootPath(), "config", "Mod Config Folder"));
-        KMenuItem resourcePacksDirectoryMenuItem = new KMenuItem(new CreateMissingDirectoryAction(this, modpack.getRootPath(), "resourcepacks", "Resource Packs Folder"));
-        KMenuItem shaderPacksDirectoryMenuItem = new KMenuItem(new CreateMissingDirectoryAction(this, modpack.getRootPath(), "shaderpacks", "Shader Packs Folder"));
-        KMenuItem pluginsDirectoryMenuItem = new KMenuItem(new CreateMissingDirectoryAction(this, modpack.getRootPath(), "plugins", "Plugins Folder"));
+        JMenuItem modsDirectoryMenuItem = new JMenuItem(new CreateMissingDirectoryAction(this, modpack.getRootPath(), "mods", "Mods Folder"));
+        JMenuItem configDirectoryMenuItem = new JMenuItem(new CreateMissingDirectoryAction(this, modpack.getRootPath(), "config", "Mod Config Folder"));
+        JMenuItem resourcePacksDirectoryMenuItem = new JMenuItem(new CreateMissingDirectoryAction(this, modpack.getRootPath(), "resourcepacks", "Resource Packs Folder"));
+        JMenuItem shaderPacksDirectoryMenuItem = new JMenuItem(new CreateMissingDirectoryAction(this, modpack.getRootPath(), "shaderpacks", "Shader Packs Folder"));
+        JMenuItem pluginsDirectoryMenuItem = new JMenuItem(new CreateMissingDirectoryAction(this, modpack.getRootPath(), "plugins", "Plugins Folder"));
 
         addMissingMenu.add(modsDirectoryMenuItem);
         addMissingMenu.add(resourcePacksDirectoryMenuItem);
@@ -157,21 +153,21 @@ public abstract class BaseFrame extends JFrame {
 
         editMenu.add(addMissingMenu);
 
-        KMenuItem settingsItem = new KMenuItem(new SettingsAction(this));
+        JMenuItem settingsItem = new JMenuItem(new SettingsAction(this));
         editMenu.add(settingsItem);
 
         return editMenu;
     }
 
-    protected KMenu getFileMenu(Modpack modpack, Consumer<Boolean> saveAllCallback) {
-        KMenu fileMenu = new KMenu("File");
+    protected JMenu getFileMenu(Modpack modpack, Consumer<Boolean> saveAllCallback) {
+        JMenu fileMenu = new JMenu("File");
 
-        KMenuItem saveMenuItem = new KMenuItem("Save Selected File");
+        JMenuItem saveMenuItem = new JMenuItem("Save Selected File");
         saveMenuItem.setMnemonic(KeyEvent.VK_S);
         saveMenuItem.addActionListener(actionEvent -> saveAllCallback.accept(false));
         fileMenu.add(saveMenuItem);
 
-        KMenuItem importMenuItem = new KMenuItem("Import Pack...");
+        JMenuItem importMenuItem = new JMenuItem("Import Pack...");
         importMenuItem.setMnemonic(KeyEvent.VK_I);
         importMenuItem.addActionListener(actionEvent -> {
             saveAllCallback.accept(false);
@@ -179,7 +175,7 @@ public abstract class BaseFrame extends JFrame {
         });
         fileMenu.add(importMenuItem);
 
-        KMenuItem exportMenuItem = new KMenuItem("Export Pack...");
+        JMenuItem exportMenuItem = new JMenuItem("Export Pack...");
         exportMenuItem.setMnemonic(KeyEvent.VK_E);
         exportMenuItem.addActionListener(actionEvent -> {
             saveAllCallback.accept(false);
@@ -187,7 +183,7 @@ public abstract class BaseFrame extends JFrame {
         });
         fileMenu.add(exportMenuItem);
 
-        KMenuItem quitMenuItem = new KMenuItem("Quit...");
+        JMenuItem quitMenuItem = new JMenuItem("Quit...");
         quitMenuItem.setMnemonic(KeyEvent.VK_Q);
 
         quitMenuItem.addActionListener(actionEvent -> {
@@ -200,13 +196,13 @@ public abstract class BaseFrame extends JFrame {
         return fileMenu;
     }
 
-    protected KMenu getViewMenu() {
-        KMenu viewMenu = new KMenu("View");
-        KMenu zoomMenu = new KMenu("Zoom...");
+    protected JMenu getViewMenu() {
+        JMenu viewMenu = new JMenu("View");
+        JMenu zoomMenu = new JMenu("Zoom...");
 
         for(float zoomFactor : ZOOM_LEVELS) {
             int scalePercentage = (int)(zoomFactor * 100);
-            KCheckBoxMenuItem zoomLevelMenu = new KCheckBoxMenuItem(scalePercentage + "%");
+            JCheckBoxMenuItem zoomLevelMenu = new JCheckBoxMenuItem(scalePercentage + "%");
             zoomLevelMenu.addActionListener(actionEvent -> {
                 if(UIScale.setZoomFactor(zoomFactor)) {
                     updateZoom(zoomFactor);

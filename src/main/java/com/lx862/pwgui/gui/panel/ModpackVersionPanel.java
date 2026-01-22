@@ -2,7 +2,6 @@ package com.lx862.pwgui.gui.panel;
 
 import com.lx862.pwgui.core.data.*;
 import com.lx862.pwgui.gui.ImageUtil;
-import com.lx862.pwgui.gui.components.kui.KComboBox;
 import com.lx862.pwgui.gui.components.kui.KGridBagLayoutPanel;
 import com.lx862.pwgui.support.packwiz.data.IconNamePair;
 import com.lx862.pwgui.support.packwiz.data.PackComponent;
@@ -19,8 +18,8 @@ import java.util.Objects;
 import java.util.function.Consumer;
 
 public class ModpackVersionPanel extends KGridBagLayoutPanel {
-    private final KComboBox<VersionMetadata> minecraftVersionComboBox;
-    private final KComboBox<VersionMetadata> modloaderVersionComboBox;
+    private final JComboBox<VersionMetadata> minecraftVersionComboBox;
+    private final JComboBox<VersionMetadata> modloaderVersionComboBox;
     private final JCheckBox showSnapshotCheckBox;
     private final JLabel modloaderVersionLabel;
 
@@ -36,7 +35,7 @@ public class ModpackVersionPanel extends KGridBagLayoutPanel {
         this.initialModloader = existingFile == null ? null :existingFile.getModloader();
         if(this.initialModloader != null) this.selectedModloader = this.initialModloader.getComponent();
 
-        minecraftVersionComboBox = new KComboBox<>();
+        minecraftVersionComboBox = new JComboBox<>();
         minecraftVersionComboBox.setEditable(true);
         minecraftVersionComboBox.addItemListener(e -> {
             if(existingFile != null) {
@@ -45,7 +44,7 @@ public class ModpackVersionPanel extends KGridBagLayoutPanel {
             }
         });
 
-        modloaderVersionComboBox = new KComboBox<>();
+        modloaderVersionComboBox = new JComboBox<>();
         modloaderVersionComboBox.setEditable(true);
         modloaderVersionComboBox.addItemListener(e -> {
             if(existingFile != null) {

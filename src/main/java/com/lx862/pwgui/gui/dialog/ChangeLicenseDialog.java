@@ -89,7 +89,7 @@ public class ChangeLicenseDialog extends BaseDialog {
         leftPane.add(new JLabel("Selected License:"), BorderLayout.NORTH);
 
         JList<LicenseModel> licenseJList = new JList<>();
-        licenseJList.setCellRenderer(new KListCellRenderer());
+//        licenseJList.setCellRenderer(new KListCellRenderer());
 
         DefaultListModel<LicenseModel> licenseListModel = new DefaultListModel<>();
         licenseListModel.addAll(licenses);

@@ -100,7 +100,7 @@ public class SettingsDialog extends BaseDialog {
         private final JCheckBox relaunchModpackCheckbox;
         private final JCheckBox debugModeCheckBox;
         private final JCheckBox showPackwizMetaFileNameCheckbox;
-        private final KComboBox<ApplicationTheme> themeComboBox;
+        private final JComboBox<ApplicationTheme> themeComboBox;
 
         private final AuthorNamePanel authorNamePanel;
 
@@ -112,8 +112,8 @@ public class SettingsDialog extends BaseDialog {
             themePanel.setAlignmentX(Component.LEFT_ALIGNMENT);
             themePanel.add(new JLabel("Theme:"));
 
-            this.themeComboBox = new KComboBox<>();
-            this.themeComboBox.setRenderer(new KListCellRenderer());
+            this.themeComboBox = new JComboBox<>();
+//            this.themeComboBox.setRenderer(new KListCellRenderer());
             for(ApplicationTheme applicationTheme : ApplicationTheme.values()) {
                 themeComboBox.addItem(applicationTheme);
             }
