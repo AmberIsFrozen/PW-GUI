@@ -8,6 +8,7 @@ imageio = "3.13.0"
 gson = "2.13.2"
 commonmark = "0.27.1"
 rsyntaxtextarea = "3.6.1"
+ztzip = "1.17"
 
 [plugins]
 shadow = { id = "com.gradleup.shadow", version.ref = "shadow" }
@@ -25,6 +26,7 @@ commonmark = { group = "org.commonmark", name = "commonmark", version.ref = "com
 commonmark-ext-gfm-table = { group = "org.commonmark", name = "commonmark-ext-gfm-tables", version.ref = "commonmark" }
 commonmark-ext-gfm-strikethrough = { group = "org.commonmark", name = "commonmark-ext-gfm-strikethrough", version.ref = "commonmark" }
 rsyntaxtextarea = { group = "com.fifesoft", name = "rsyntaxtextarea", version.ref = "rsyntaxtextarea" }
+ztzip = { group = "org.zeroturnaround", name = "zt-zip", version.ref = "ztzip" }
 
 [bundles]
 commonmark = ["commonmark", "commonmark-ext-gfm-table", "commonmark-ext-gfm-strikethrough"]
