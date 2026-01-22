@@ -34,6 +34,7 @@ jobs:
         run: chmod +x ./gradlew
       - name: Build with Gradle
         run: |
+          ./gradlew test
           ./gradlew build
           ./gradlew createAllExecutables
       - name: Generate artifact attestation

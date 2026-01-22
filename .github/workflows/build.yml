@@ -22,7 +22,9 @@ jobs:
       - name: Make Gradle wrapper executable
         run: chmod +x ./gradlew
       - name: Build with Gradle
-        run: ./gradlew build
+        run: |
+          ./gradlew test
+          ./gradlew build
       - name: Upload Artifacts to GitHub
         uses: actions/upload-artifact@v5
         with:
