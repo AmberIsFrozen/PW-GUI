@@ -24,7 +24,7 @@ public class FileSystemTreeCellRenderer extends KTreeCellRenderer {
             if(o instanceof FileSystemSortedTreeNode fileSystemSortedTreeNode) {
                 FileSystemEntityModel fileInfo = (FileSystemEntityModel)fileSystemSortedTreeNode.getUserObject();
 
-                if(fileSystemTree.getIgnorePattern() != null && fileSystemTree.getIgnorePattern().shouldIgnore(fileInfo.path)) {
+                if(fileSystemTree.shouldIgnore(fileInfo.path)) {
                     Color lowOpacityColor = new Color(getForeground().getRed(), getForeground().getGreen(), getForeground().getBlue(), IGNORED_COLOR_ALPHA);
                     setForeground(lowOpacityColor);
                 }

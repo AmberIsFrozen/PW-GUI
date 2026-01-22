@@ -2,17 +2,20 @@ package com.lx862.pwgui.gui.components.fstree;
 
 import com.lx862.pwgui.core.data.model.file.FileSystemEntityModel;
 
-import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.MutableTreeNode;
 import java.nio.file.Path;
 
-public class FileSystemSortedTreeNode extends DefaultMutableTreeNode implements Comparable<FileSystemSortedTreeNode> {
+public class FileSystemSortedTreeNode extends LazyLoadedDefaultTreeNode implements Comparable<MutableTreeNode> {
     public final String name;
     public final Path path;
+    private final int initialChildFileCount;
 
     public FileSystemSortedTreeNode(FileSystemEntityModel model) {
         this.path = model.path;
         this.name = model.name;
+
+        String[] fileList = this.path.toFile().list();
+        this.initialChildFileCount = fileList == null ? 0 : fileList.length;
         setUserObject(model);
     }
 
@@ -45,12 +48,20 @@ public class FileSystemSortedTreeNode extends DefaultMutableTreeNode implements 
     }
 
     @Override
-    public int compareTo(FileSystemSortedTreeNode other) {
-        int bl1 = Boolean.compare(other.path.toFile().isDirectory(), path.toFile().isDirectory());
-        if(bl1 == 0) {
-            return name.compareToIgnoreCase(other.name);
-        } else {
-            return bl1;
+    public int compareTo(MutableTreeNode otherNode) {
+        if(otherNode instanceof FileSystemSortedTreeNode other) {
+            int bl1 = Boolean.compare(other.path.toFile().isDirectory(), path.toFile().isDirectory());
+            if(bl1 == 0) {
+                return name.compareToIgnoreCase(other.name);
+            } else {
+                return bl1;
+            }
         }
+        return 1;
+    }
+
+    @Override
+    public boolean guessIfNodeIsLeaf() {
+        return initialChildFileCount == 0;
     }
 }

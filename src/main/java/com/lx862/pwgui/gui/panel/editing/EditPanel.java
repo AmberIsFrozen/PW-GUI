@@ -34,7 +34,7 @@ public class EditPanel extends JPanel {
                 saveChanges(true);
             }
 
-            fileBrowserPanel.fileBrowserTree.setIgnorePattern(null);
+            fileBrowserPanel.updateIgnorePattern(null);
 
             FileSystemSortedTreeNode node = (FileSystemSortedTreeNode) fileBrowserPanel.fileBrowserTree.getLastSelectedPathComponent();
 
@@ -43,7 +43,7 @@ public class EditPanel extends JPanel {
                 filePanels = Collections.emptyList();
             } else {
                 FileSystemEntityModel entry = (FileSystemEntityModel) node.getUserObject();
-                filePanels = getViews(new FileEntryPaneContext(modpack, fileBrowserPanel.fileBrowserTree::setIgnorePattern, fileDetailPanel.saveButton::setEnabled, () -> saveChanges(true)), entry);
+                filePanels = getViews(new FileEntryPaneContext(modpack, fileBrowserPanel::updateIgnorePattern, fileDetailPanel.saveButton::setEnabled, () -> saveChanges(true)), entry);
                 Collections.reverse(filePanels);
             }
             fileDetailPanel.setTabs(filePanels);

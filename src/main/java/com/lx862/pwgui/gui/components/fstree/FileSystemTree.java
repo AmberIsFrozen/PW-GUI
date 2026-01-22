@@ -1,37 +1,33 @@
 package com.lx862.pwgui.gui.components.fstree;
 
 import com.lx862.pwgui.PWGUI;
-import com.lx862.pwgui.core.data.model.GitIgnoreRules;
 import com.lx862.pwgui.core.data.model.file.FileSystemEntityModel;
 
 import javax.swing.*;
 import javax.swing.event.TreeSelectionEvent;
-import javax.swing.tree.DefaultTreeModel;
-import javax.swing.tree.TreePath;
+import javax.swing.tree.*;
 import java.io.File;
 import java.nio.file.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.function.Consumer;
-import java.util.function.Function;
 
 import static java.nio.file.StandardWatchEventKinds.*;
 
-/* A JTree representing a directory view/file browser. */
-public class FileSystemTree extends JTree {
+/** A JTree representing a directory view/file browser. */
+public class FileSystemTree extends LazyJTree {
     private static final List<String> excludedDirs = Arrays.asList(
             ".git", // Huge amount of files to walk through, not gonna bother
             ".pwgui-tmp" // Our temp directory, should be deleted shortly after. (Currently used for mod probing)
     );
 
-    private final Function<File, FileSystemEntityModel> createFileModel;
     private final List<Path> fileNeedingUserAcknowledgement;
-    private GitIgnoreRules ignorePattern;
+    private final TreeConfiguration treeConfiguration;
     public boolean fsLock; // A slight hack to signal to others when a file is changed
 
-    public FileSystemTree(Path root, Function<File, FileSystemEntityModel> createFileModel) {
-        this.createFileModel = createFileModel;
+    public FileSystemTree(Path root, TreeConfiguration treeConfiguration) {
+        this.treeConfiguration = treeConfiguration;
         this.fileNeedingUserAcknowledgement = new ArrayList<>();
         setModel(new DefaultTreeModel(generateRecursiveTree(root), false));
         setRootVisible(false);
@@ -42,17 +38,11 @@ public class FileSystemTree extends JTree {
             FileSystemSortedTreeNode treeNode = (FileSystemSortedTreeNode)treeSelectionEvent.getPath().getLastPathComponent();
             newFileAcknowledged(treeNode.path);
         });
-
         setShowsRootHandles(true);
     }
 
-    public GitIgnoreRules getIgnorePattern() {
-        return ignorePattern;
-    }
-
-    public void setIgnorePattern(GitIgnoreRules pattern) {
-        this.ignorePattern = pattern;
-        repaint();
+    public boolean shouldIgnore(Path path) {
+        return treeConfiguration.shouldDimAppearance(path);
     }
 
     public void markAsNewFile(Path path) {
@@ -64,43 +54,45 @@ public class FileSystemTree extends JTree {
     }
 
     /**
-     * The file entry have been selected by the user
+     * The file entry has been selected by the user
      */
     public void newFileAcknowledged(Path path) {
         this.fileNeedingUserAcknowledgement.remove(path);
     }
 
     private FileSystemSortedTreeNode generateRecursiveTree(Path root) {
-        return generateRecursiveTree(new FileSystemSortedTreeNode(createFileModel.apply(root.toFile())));
+        FileSystemSortedTreeNode rootNode = new FileSystemSortedTreeNode(treeConfiguration.getModel(root.toFile()));
+        return addChildToTree(rootNode);
     }
 
-    private FileSystemSortedTreeNode generateRecursiveTree(FileSystemSortedTreeNode rootNode) {
+    private FileSystemSortedTreeNode addChildToTree(FileSystemSortedTreeNode rootNode) {
         File[] files = rootNode.path.toFile().listFiles();
         if(files != null) {
             for(File file : files) {
-                FileSystemEntityModel child = createFileModel.apply(file);
+                FileSystemEntityModel child = treeConfiguration.getModel(file);
                 if(child == null) continue;
 
                 if(file.isDirectory() && !excludedDirs.contains(file.getName())) {
-                    FileSystemSortedTreeNode node = generateRecursiveTree(new FileSystemSortedTreeNode(child));
+                    FileSystemSortedTreeNode node = new FileSystemSortedTreeNode(child);
                     rootNode.add(node);
                 } else {
-                    rootNode.add(new FileSystemSortedTreeNode(child));
+                    FileSystemSortedTreeNode node = new FileSystemSortedTreeNode(child);
+                    rootNode.add(node);
                 }
             }
+            rootNode.sort();
         }
 
-        rootNode.sort();
         return rootNode;
     }
 
-    /* This is used to notify that a file has been created/modified/removed for live update purposes.
+    /** This is used to notify that a file has been created/modified/removed for live update purposes.
     * You are expected to bring your own FileWatcher to the table :) */
     public void onFileChange(WatchEvent.Kind<?> kind, Path filePath) {
         if(kind == ENTRY_CREATE && Files.exists(filePath)) {
             addNode(filePath);
         } else if(kind == ENTRY_MODIFY) {
-            FileSystemEntityModel newNode = createFileModel.apply(filePath.toFile());
+            FileSystemEntityModel newNode = treeConfiguration.getModel(filePath.toFile());
             if(newNode != null) modifyNode(filePath, newNode);
         } else {
             removeNode(filePath);
@@ -165,5 +157,17 @@ public class FileSystemTree extends JTree {
                 callback.accept(childNode);
             }
         }
+    }
+
+    @Override
+    public void loadLazyNode(LazyLoadedDefaultTreeNode node) {
+        if(node instanceof FileSystemSortedTreeNode fsNode) {
+            addChildToTree(fsNode);
+        }
+    }
+
+    public interface TreeConfiguration {
+        boolean shouldDimAppearance(Path path);
+        FileSystemEntityModel getModel(File file);
     }
 }

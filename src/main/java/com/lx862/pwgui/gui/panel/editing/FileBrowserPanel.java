@@ -1,6 +1,7 @@
 package com.lx862.pwgui.gui.panel.editing;
 
 import com.lx862.pwgui.PWGUI;
+import com.lx862.pwgui.core.data.model.GitIgnoreRules;
 import com.lx862.pwgui.core.data.model.file.*;
 import com.lx862.pwgui.support.packwiz.Modpack;
 import com.lx862.pwgui.gui.components.fstree.FileSystemTree;
@@ -12,10 +13,12 @@ import javax.swing.*;
 import java.awt.*;
 import java.io.File;
 import java.nio.file.Files;
+import java.nio.file.Path;
 
 class FileBrowserPanel extends JPanel {
     private static final Color NEW_FILE_LIST_COLOR = new Color(0x44FFAA00, true);
     public final FileSystemTree fileBrowserTree;
+    private GitIgnoreRules ignorePattern;
 
     public FileBrowserPanel(Modpack modpack) {
         setLayout(new GridBagLayout());
@@ -24,7 +27,17 @@ class FileBrowserPanel extends JPanel {
         gbc.weightx = 1;
         gbc.gridx = 0;
 
-        fileBrowserTree = new FileSystemTree(modpack.getRootPath(), (file -> getFileModel(modpack, file)));
+        fileBrowserTree = new FileSystemTree(modpack.getRootPath(), new FileSystemTree.TreeConfiguration() {
+            @Override
+            public boolean shouldDimAppearance(Path path) {
+                return ignorePattern != null && ignorePattern.match(path);
+            }
+
+            @Override
+            public FileSystemEntityModel getModel(File file) {
+                return getFileModel(modpack, file);
+            }
+        });
         fileBrowserTree.setCellRenderer(new FileSystemTreeCellRenderer(NEW_FILE_LIST_COLOR));
 
         gbc.weighty = 1.0;
@@ -80,6 +93,13 @@ class FileBrowserPanel extends JPanel {
         } catch (Exception e) {
             PWGUI.LOGGER.error("", e);
             return null;
+        }
+    }
+
+    public void updateIgnorePattern(GitIgnoreRules newIgnorePattern) {
+        if(this.ignorePattern != newIgnorePattern) {
+            this.ignorePattern = newIgnorePattern;
+            this.fileBrowserTree.repaint();
         }
     }
 

@@ -26,7 +26,7 @@ public class GitIgnoreRules {
     }
 
     /** Whether the given path is ignored by the current rulesets */
-    public boolean shouldIgnore(Path path) {
+    public boolean match(Path path) {
         for(String line : rules) {
             if(line.trim().isEmpty()) continue;
             if(line.startsWith("#")) continue; // Comment
