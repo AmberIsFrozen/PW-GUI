@@ -56,6 +56,8 @@ public class KGridBagLayoutPanel extends JPanel {
         gbc.gridy = y;
         gbc.weighty = 1;
         gbc.gridwidth = maxWidthSpan;
-        add(new JPanel(), gbc);
+        JPanel panel = new JPanel();
+        panel.setOpaque(false);
+        add(panel, gbc);
     }
 }

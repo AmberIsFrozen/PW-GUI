@@ -37,6 +37,7 @@ public class GUIConfiguration {
             UIManager.put("TabbedPane.showTabSeparators", true);
             UIManager.put("Button.arc", 9);
             UIManager.put("Button.margin", new Insets(5, 15, 5, 15));
+            UIManager.put("Button.default.boldText", false);
             UIManager.put("TextField.margin", new Insets(5, 9, 5, 9));
             UIManager.put("ComboBox.padding", new Insets(5, 7, 5, 7));
             UIManager.put("ComboBox.popupInsets", new Insets(3, 3, 3, 3));

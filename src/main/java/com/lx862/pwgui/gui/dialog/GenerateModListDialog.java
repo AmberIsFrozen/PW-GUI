@@ -119,6 +119,7 @@ public class GenerateModListDialog extends BaseDialog {
         contentPanel.add(actionPanel, BorderLayout.PAGE_END);
 
         add(contentPanel);
+        getRootPane().setDefaultButton(saveAsButton);
     }
 
     class SaveModlistAction extends AbstractAction {

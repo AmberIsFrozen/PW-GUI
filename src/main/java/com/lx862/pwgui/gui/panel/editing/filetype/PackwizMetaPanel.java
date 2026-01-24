@@ -88,17 +88,15 @@ public class PackwizMetaPanel extends FileTypePanel {
         pinnedCheckbox.setAlignmentX(LEFT_ALIGNMENT);
         editableContentPanel.addRow(2, pinnedCheckbox);
 
-        JPanel actionPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 0, 0));
         KButton updateButton = new KButton("Check for update");
         updateButton.setMnemonic(KeyEvent.VK_C);
         updateButton.addActionListener(actionEvent -> checkForUpdate(getTopLevelAncestor()));
-        actionPanel.add(updateButton);
 
         KButton removeButton = new KButton("Remove");
         removeButton.setMnemonic(KeyEvent.VK_R);
         removeButton.addActionListener(actionEvent -> removeMod());
-        actionPanel.add(removeButton);
 
+        JPanel actionPanel = new KActionPanel.Builder(FlowLayout.LEFT).setPositiveButton(updateButton).setNegativeButton(removeButton).build();
         editableContentPanel.addRow(2, actionPanel);
 
         pinnedCheckbox.addActionListener(actionEvent -> updateUpdateButtonState(updateButton, pinnedCheckbox));
@@ -122,7 +120,9 @@ public class PackwizMetaPanel extends FileTypePanel {
             KCollapsibleToggle showDetailButton = new KCollapsibleToggle("Show Detail", "Hide Detail");
             add(showDetailButton, BorderLayout.NORTH);
 
-            JScrollPane detailContentPanel = new JScrollPane(new DetailContentPanel(packwizMetaFile));
+            JPanel pn = new DetailContentPanel(packwizMetaFile);
+            pn.setBackground(new JTextField().getBackground());
+            JScrollPane detailContentPanel = new JScrollPane(pn);
             add(detailContentPanel, BorderLayout.CENTER);
 
             showDetailButton.setSelected(metaDetailExpanded);
