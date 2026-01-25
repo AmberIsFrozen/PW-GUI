@@ -7,7 +7,7 @@ import com.lx862.pwgui.core.data.model.file.ContentDirectoryModel;
 import com.lx862.pwgui.executable.ProgramExecution;
 import com.lx862.pwgui.gui.components.kui.KGridBagLayoutPanel;
 import com.lx862.pwgui.gui.components.kui.KTextField;
-import com.lx862.pwgui.gui.prompt.TaskProgressDialog;
+import com.lx862.pwgui.gui.prompt.TaskDialog;
 import com.lx862.pwgui.gui.panel.editing.filetype.FileEntryPaneContext;
 import com.lx862.pwgui.util.Util;
 
@@ -85,13 +85,15 @@ public class UrlPanel extends JPanel {
         }
 
         ProgramExecution programExecution = PackwizExecutable.INSTANCE.url().add(name, urlString, true).metaFolder(context.getModpack().getRootPath().relativize(fileEntry.path).toString()).build(); // We already did a domain check before, so forcibly add it anyway.
-        programExecution.onExit((exitCode) -> {
-            if(exitCode == 0) {
+        programExecution.onExit((exitResult) -> {
+            if(exitResult.success()) {
                 JOptionPane.showMessageDialog(getTopLevelAncestor(), String.format("%s has been added!", name), Util.withTitlePrefix("Item Added!"), JOptionPane.INFORMATION_MESSAGE);
             }
         });
 
-        new TaskProgressDialog((Window)getTopLevelAncestor(), "Adding item...", "Triggered by user", programExecution).setVisible(true);
+        TaskDialog taskDialog = new TaskDialog((Window)getTopLevelAncestor(), "Adding item...", programExecution);
+        programExecution.run("Triggered by user");
+        taskDialog.setVisible(true);
     }
 
     private void updateInstallButtonState(KButton addButton, KTextField nameTextField, KTextField urlTextField, JLabel urlInvalidLabel) {

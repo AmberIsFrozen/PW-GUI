@@ -8,8 +8,6 @@ import com.lx862.pwgui.gui.components.kui.KTextField;
 
 import javax.swing.*;
 import java.awt.*;
-import java.util.ArrayList;
-import java.util.List;
 
 public class ModpackInfoPanel extends KGridBagLayoutPanel {
     private final KTextField nameTextField;
@@ -57,15 +55,15 @@ public class ModpackInfoPanel extends KGridBagLayoutPanel {
         addRow(1, new JLabel("Version: "), versionTextField);
     }
 
-    public String getModpackName() {
+    public String getPackName() {
         return nameTextField.getText();
     }
 
-    public String getAuthor() {
+    public String getPackAuthor() {
         return authorTextField.getText();
     }
 
-    public String getVersion() {
+    public String getPackVersion() {
         return versionTextField.getText();
     }
 
@@ -74,11 +72,11 @@ public class ModpackInfoPanel extends KGridBagLayoutPanel {
     }
 
     public boolean requiredInfoFilled() {
-        String name = getName();
-        String author = getAuthor();
-        String version = getVersion();
+        String name = getPackName();
+        String author = getPackAuthor();
+        String version = getPackVersion();
 
-        return name != null && !name.isEmpty() && author != null && !author.isEmpty() && version != null && version.isEmpty(); // Packwiz specs does not mandate a modpack version/author, but is required for packwiz CLI when initing
+        return name != null && !name.isEmpty() && author != null && !author.isEmpty() && version != null && !version.isEmpty(); // Packwiz specs does not mandate a modpack version/author, but is required for packwiz CLI when initing
     }
 
     @Override

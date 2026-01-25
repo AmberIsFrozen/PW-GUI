@@ -81,7 +81,7 @@ public abstract class ProgressDialog extends BaseDialog {
 
     /**
      * Set the progress bar of the current progress dialog.
-     * @param progress An double value from 0 to 1. Automatically multiplied by 100 and rounded to the nearest integer percentage
+     * @param progress A double value from 0 to 1. Automatically multiplied by 100 and rounded to the nearest integer percentage
      */
     protected void setProgress(double progress) {
         setProgress((int)Math.round(progress * 100));

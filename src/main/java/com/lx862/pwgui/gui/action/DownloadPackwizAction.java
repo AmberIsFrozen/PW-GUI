@@ -3,8 +3,10 @@ package com.lx862.pwgui.gui.action;
 import com.lx862.pwgui.PWGUI;
 import com.lx862.pwgui.core.ApplicationInfo;
 import com.lx862.pwgui.core.Config;
+import com.lx862.pwgui.gui.prompt.TaskDialog;
 import com.lx862.pwgui.support.packwiz.executable.PackwizExecutable;
-import com.lx862.pwgui.gui.prompt.DownloadProgressDialog;
+import com.lx862.pwgui.util.DownloadTask;
+import com.lx862.pwgui.util.Strings;
 import com.lx862.pwgui.util.Util;
 import org.apache.commons.io.FileUtils;
 
@@ -20,6 +22,7 @@ import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.attribute.PosixFilePermissions;
+import java.util.concurrent.Executors;
 import java.util.function.Consumer;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
@@ -59,9 +62,19 @@ public class DownloadPackwizAction extends AbstractAction {
     private void attemptDownload(String[] mirrors, int mirrorIdx, Window parent, Path destinationPath) throws MalformedURLException {
         Path destination = destinationPath.resolve("packwiz_executable.zip");
         URL url = URI.create(String.format(mirrors[mirrorIdx], getArtifactName())).toURL();
+        boolean lastAvailableAttempt = mirrorIdx == mirrors.length-1;
 
-        DownloadProgressDialog downloadProgressDialog = new DownloadProgressDialog(parent, "Downloading packwiz...", "packwiz", url, destination, success -> {
-            if(!success) {
+        DownloadTask task = new DownloadTask("packwiz", "packwiz", url, destination, Executors.newSingleThreadExecutor());
+        TaskDialog downloadDialog = new TaskDialog(parent, "Downloading packwiz...", task);
+
+        task.onExit(exitResult -> {
+            downloadDialog.dispose();
+            if(lastAvailableAttempt && !exitResult.success()) {
+                task.showErrorDialog(parent, exitResult.exception());
+                return;
+            }
+
+            if(!exitResult.success()) {
                 PWGUI.LOGGER.error("Failed to download from " + url + "!");
                 int newAttemptedMirror = mirrorIdx+1;
                 if(newAttemptedMirror < mirrors.length) {
@@ -70,9 +83,6 @@ public class DownloadPackwizAction extends AbstractAction {
                         attemptDownload(mirrors, newAttemptedMirror, parent, destinationPath);
                     } catch (MalformedURLException ignored) {
                     }
-                    return true;
-                } else {
-                    return false;
                 }
             } else {
                 Path packwizExecutablePath = null;
@@ -83,7 +93,7 @@ public class DownloadPackwizAction extends AbstractAction {
                 } catch (IOException e) {
                     PWGUI.LOGGER.error("", e);
                     JOptionPane.showMessageDialog(parent, "Failed to create the folder containing the packwiz executable, see program logs for detail!", Util.withTitlePrefix("Setup Failed"), JOptionPane.ERROR_MESSAGE);
-                    return false;
+                    return;
                 }
 
                 try(FileInputStream fis = new FileInputStream(destination.toFile()); ZipInputStream zis = new ZipInputStream(fis)) {
@@ -98,7 +108,7 @@ public class DownloadPackwizAction extends AbstractAction {
                 } catch (Exception e) {
                     PWGUI.LOGGER.error("", e);
                     JOptionPane.showMessageDialog(parent, String.format("Failed to extract packwiz from zip file:\n%s\nSee program logs for detail!", e.getMessage()), Util.withTitlePrefix("Setup Failed"), JOptionPane.ERROR_MESSAGE);
-                    return false;
+                    return;
                 }
 
                 try {
@@ -111,11 +121,11 @@ public class DownloadPackwizAction extends AbstractAction {
                 if(configureSuccessful) {
                     finishCallback.accept(packwizExecutablePath);
                 }
-                return true;
             }
         });
 
-        downloadProgressDialog.setVisible(true);
+        task.run(Strings.REASON_TRIGGERED_BY_USER);
+        downloadDialog.setVisible(true);
     }
 
     private static String getArtifactName() {

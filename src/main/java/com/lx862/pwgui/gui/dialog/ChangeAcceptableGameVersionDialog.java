@@ -2,13 +2,14 @@ package com.lx862.pwgui.gui.dialog;
 
 import com.formdev.flatlaf.ui.FlatUIUtils;
 import com.lx862.pwgui.core.data.Caches;
+import com.lx862.pwgui.executable.Task;
 import com.lx862.pwgui.support.packwiz.executable.PackwizExecutable;
 import com.lx862.pwgui.util.Strings;
 import com.lx862.pwgui.gui.components.kui.KActionPanel;
 import com.lx862.pwgui.gui.components.kui.KRootContentPanel;
 import com.lx862.pwgui.support.packwiz.data.PackComponent;
 import com.lx862.pwgui.support.packwiz.data.VersionMetadata;
-import com.lx862.pwgui.executable.BatchedProgramExecution;
+import com.lx862.pwgui.executable.BatchedTask;
 import com.lx862.pwgui.gui.action.CloseWindowAction;
 import com.lx862.pwgui.gui.components.ToggleListSelectionModel;
 import com.lx862.pwgui.gui.components.kui.KButton;
@@ -80,8 +81,8 @@ public class ChangeAcceptableGameVersionDialog extends BaseDialog {
             // Because we directly run packwiz to change the version, it would bypass the regular save procedure and would overwrite the file directly, discarding any unsaved changes
             // We should prompt for saving to avoid any data loss (Ideally we should write the changes ourselves, but meh :P)
             saveCallback.run();
-            changeAcceptableVersion(preSelectedVersions, versionList.getSelectedValuesList(), (success) -> {
-                if(success) {
+            changeAcceptableVersion(preSelectedVersions, versionList.getSelectedValuesList(), (exitCode) -> {
+                if(exitCode.success()) {
                     dispose();
                 } else {
                     JOptionPane.showMessageDialog(this, "Some versions did not get added due to errors.\nPlease check log for details.", Util.withTitlePrefix("Error"), JOptionPane.ERROR_MESSAGE);
@@ -108,21 +109,21 @@ public class ChangeAcceptableGameVersionDialog extends BaseDialog {
         return false;
     }
 
-    private void changeAcceptableVersion(List<String> oldVersionList, List<String> newVersionList, Consumer<Boolean> callback) {
+    private void changeAcceptableVersion(List<String> oldVersionList, List<String> newVersionList, Consumer<Task.ExitResult> callback) {
         List<String> toBeRemoved = oldVersionList.stream().filter(e -> !newVersionList.contains(e)).toList();
         List<String> toBeAdded = newVersionList.stream().filter(e -> !oldVersionList.contains(e)).toList();
 
-        BatchedProgramExecution batchedProgramExecution = new BatchedProgramExecution();
+        BatchedTask batchedTask = new BatchedTask("Change acceptable version");
 
         for(String version : toBeRemoved) {
-            batchedProgramExecution.add(PackwizExecutable.INSTANCE.settings().removeAcceptableVersions(version).build());
+            batchedTask.add(PackwizExecutable.INSTANCE.settings().removeAcceptableVersions(version).build());
         }
         for(String version : toBeAdded) {
-            batchedProgramExecution.add(PackwizExecutable.INSTANCE.settings().addAcceptableVersions(version).build());
+            batchedTask.add(PackwizExecutable.INSTANCE.settings().addAcceptableVersions(version).build());
         }
 
-        batchedProgramExecution.onExit(callback);
-        batchedProgramExecution.execute(Strings.REASON_TRIGGERED_BY_USER);
+        batchedTask.onExit(callback);
+        batchedTask.run(Strings.REASON_TRIGGERED_BY_USER);
     }
 
     private void refreshVersionList(JList<String> jList, List<String> selected, JCheckBox snapshotCheckBox) {

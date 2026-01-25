@@ -5,7 +5,7 @@ import com.lx862.pwgui.gui.ImageUtil;
 import com.lx862.pwgui.util.Strings;
 import com.lx862.pwgui.support.packwiz.Modpack;
 import com.lx862.pwgui.executable.ProgramExecution;
-import com.lx862.pwgui.gui.prompt.TaskProgressDialog;
+import com.lx862.pwgui.gui.prompt.TaskDialog;
 import com.lx862.pwgui.gui.prompt.NumericSelectionDialog;
 import com.lx862.pwgui.gui.panel.editing.filetype.FileEntryPaneContext;
 import com.lx862.pwgui.gui.panel.editing.filetype.FileTypePanel;
@@ -35,7 +35,7 @@ public class AddContentPanel extends FileTypePanel {
 
     public static void addProjectFromContentPlatform(Window parent, Modpack modpack, String... args) {
         ProgramExecution programExecution = PackwizExecutable.INSTANCE.buildCommand(args).build();
-        TaskProgressDialog dialog = new TaskProgressDialog(parent, "Adding mod...", Strings.REASON_TRIGGERED_BY_USER, programExecution);
+        TaskDialog dialog = new TaskDialog(parent, "Adding mod...", programExecution);
 
         List<String> recordedOutputs = new ArrayList<>();
 
@@ -113,12 +113,13 @@ public class AddContentPanel extends FileTypePanel {
             return false;
         });
 
-        programExecution.onExit((exitCode) -> {
-            if(exitCode == 0 && !cancelled.get()) {
+        programExecution.onExit((exitResult) -> {
+            if(exitResult.success() && !cancelled.get()) {
                 JOptionPane.showMessageDialog(parent, String.format("%s has been added to the modpack!", modName.get()), Util.withTitlePrefix("Project Added!"), JOptionPane.INFORMATION_MESSAGE);
             }
         });
 
+        programExecution.run(Strings.REASON_TRIGGERED_BY_USER);
         dialog.setVisible(true);
     }
 }

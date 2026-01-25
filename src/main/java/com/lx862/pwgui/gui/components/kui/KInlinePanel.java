@@ -10,7 +10,11 @@ public class KInlinePanel extends JPanel {
     private final int hGap;
 
     public KInlinePanel(int flowLayout, int hGap, int vGap) {
-        setLayout(new WrapLayout(flowLayout, 0, vGap));
+        this(flowLayout, hGap, vGap, true);
+    }
+
+    public KInlinePanel(int flowLayout, int hGap, int vGap, boolean wrappable) {
+        setLayout(wrappable ? new WrapLayout(flowLayout, 0, vGap) : new FlowLayout(flowLayout, 0, vGap));
         this.hGap = hGap;
     }
 

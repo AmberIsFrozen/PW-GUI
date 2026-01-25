@@ -169,7 +169,11 @@ public class GenerateModListDialog extends BaseDialog {
         List<PackwizMetaFile> metaFiles = new ArrayList<>();
         for(PackIndexFile.FileEntry fileEntry : indexFile.getFileEntries()) {
             if(!fileEntry.metafile) continue;
-            metaFiles.add(new PackwizMetaFile(packFile.resolveRelative(fileEntry.file)));
+            try {
+                metaFiles.add(new PackwizMetaFile(packFile.resolveRelative(fileEntry.file)));
+            } catch (Exception e) {
+                PWGUI.LOGGER.error("Failed to read meta file " + fileEntry.file + "!", e);
+            }
         }
 
         List<PackwizMetaFile> clientFiles = metaFiles.stream().filter(e -> e.isClientSide(true)).toList();

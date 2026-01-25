@@ -6,7 +6,7 @@ import com.lx862.pwgui.gui.components.AlignedBoxPanel;
 import com.lx862.pwgui.support.packwiz.executable.PackwizExecutable;
 import com.lx862.pwgui.gui.ImageUtil;
 import com.lx862.pwgui.gui.components.kui.KRootContentPanel;
-import com.lx862.pwgui.gui.prompt.TaskProgressDialog;
+import com.lx862.pwgui.gui.prompt.TaskDialog;
 import com.lx862.pwgui.gui.prompt.FileSavedDialog;
 import com.lx862.pwgui.support.packwiz.Modpack;
 import com.lx862.pwgui.gui.components.kui.KButton;
@@ -79,22 +79,26 @@ public class ExportModpackDialog extends BaseDialog {
 
     private void exportModpack(List<String> args, File destination) {
         ProgramExecution programRefresh = PackwizExecutable.INSTANCE.refresh().build();
-        programRefresh.onExit(refreshExitCode -> {
-            if(refreshExitCode != 0) return;
+        programRefresh.onExit(refreshExitResult -> {
+            if(!refreshExitResult.success()) return;
 
             ProgramExecution program = PackwizExecutable.INSTANCE.buildCommand(args.toArray(new String[0])).build();
-            TaskProgressDialog dialog = new TaskProgressDialog(this, "Exporting Modpack...", Strings.REASON_TRIGGERED_BY_USER, program);
+            TaskDialog dialog = new TaskDialog(this, "Exporting Modpack...", program);
             Util.addManualDownloadPrompt(this, program, dialog, () -> {
                 exportModpack(args, destination);
             });
-            program.onExit(exitCode -> {
-                if(exitCode == 0) {
+            program.onExit(exitResult -> {
+                if(exitResult.success()) {
                     new FileSavedDialog(this, "Modpack Exported!", destination).setVisible(true);
                 }
             });
+            program.run(Strings.REASON_TRIGGERED_BY_USER);
             dialog.setVisible(true);
         });
-        new TaskProgressDialog(this, "Refreshing Modpack...", "Refresh before export to ensure consistency.", programRefresh).setVisible(true);
+
+        TaskDialog taskDialog = new TaskDialog(this, "Refreshing Modpack...", programRefresh);
+        programRefresh.run("Refresh before export to ensure consistency.");
+        taskDialog.setVisible(true);
     }
 
     private void setExportButtonState(boolean active) {

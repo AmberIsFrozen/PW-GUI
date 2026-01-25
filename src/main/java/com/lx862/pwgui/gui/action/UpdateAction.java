@@ -3,7 +3,7 @@ package com.lx862.pwgui.gui.action;
 import com.lx862.pwgui.support.packwiz.executable.PackwizExecutable;
 import com.lx862.pwgui.util.Strings;
 import com.lx862.pwgui.executable.ProgramExecution;
-import com.lx862.pwgui.gui.prompt.TaskProgressDialog;
+import com.lx862.pwgui.gui.prompt.TaskDialog;
 import com.lx862.pwgui.gui.prompt.UpdateSummaryDialog;
 import com.lx862.pwgui.util.Util;
 
@@ -32,8 +32,8 @@ public class UpdateAction extends AbstractAction {
         Window parent = getParent.get();
         ProgramExecution programExecution = getProgramExecution(parent);
 
-        programExecution.onExit(exitCode -> {
-            if(exitCode == 0) {
+        programExecution.onExit(exitResult -> {
+            if(exitResult.success()) {
                 if(alreadyUpToDate.get()) {
                     JOptionPane.showMessageDialog(parent, "All files are already up to date!", Util.withTitlePrefix("Up to Date!"), JOptionPane.INFORMATION_MESSAGE);
                 } else if(modsUpdated.get()) {
@@ -43,8 +43,9 @@ public class UpdateAction extends AbstractAction {
                 }
             }
         });
-        TaskProgressDialog taskProgressDialog = new TaskProgressDialog(parent, "Checking for update...", Strings.REASON_TRIGGERED_BY_USER, programExecution);
-        taskProgressDialog.setVisible(true);
+        TaskDialog taskDialog = new TaskDialog(parent, "Checking for update...", programExecution);
+        programExecution.run(Strings.REASON_TRIGGERED_BY_USER);
+        taskDialog.setVisible(true);
     }
 
     public ProgramExecution getProgramExecution(Window parent) {

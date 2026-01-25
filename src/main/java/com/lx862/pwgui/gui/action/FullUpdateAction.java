@@ -6,10 +6,9 @@ import com.lx862.pwgui.support.packwiz.PackFile;
 import com.lx862.pwgui.support.packwiz.PackIndexFile;
 import com.lx862.pwgui.support.packwiz.PackwizMetaFile;
 import com.lx862.pwgui.util.Strings;
-import com.lx862.pwgui.executable.BatchedProgramExecution;
+import com.lx862.pwgui.executable.BatchedTask;
 import com.lx862.pwgui.executable.ProgramExecution;
-import com.lx862.pwgui.gui.prompt.BatchedExecutionProgressDialog;
-import com.lx862.pwgui.gui.prompt.TaskProgressDialog;
+import com.lx862.pwgui.gui.prompt.TaskDialog;
 import com.lx862.pwgui.gui.prompt.IncompatibleSummaryDialog;
 import com.lx862.pwgui.util.Util;
 import org.apache.commons.io.FileUtils;
@@ -22,8 +21,13 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.function.Supplier;
 
+/**
+ * A special task executed after modpack version has changed, used to diagnose mods with incompatible versions.
+ */
 public class FullUpdateAction extends UpdateAction {
     private final PackFile packFile;
 
@@ -35,13 +39,13 @@ public class FullUpdateAction extends UpdateAction {
     @Override
     public void actionPerformed(ActionEvent event) {
         Window parent = getParent.get();
-        ProgramExecution updateExecution = getProgramExecution(parent);
+        ProgramExecution regularUpdateExecution = getProgramExecution(parent);
 
         PackIndexFile packIndex = packFile.packIndexFile.get();
         List<PackIndexFile.FileEntry> originalEntries = packIndex.getFileEntries().stream().filter(f -> f.metafile).toList();
 
-        updateExecution.onExit(exitCode -> {
-            if(exitCode == 0) {
+        regularUpdateExecution.onExit(exitResult -> {
+            if(exitResult.success()) {
                 if(!alreadyUpToDate.get() && !modsUpdated.get()) {
                     JOptionPane.showMessageDialog(parent, "Update cancelled, no changes were made.", Util.withTitlePrefix("Update Cancelled!"), JOptionPane.INFORMATION_MESSAGE);
                 } else {
@@ -64,7 +68,9 @@ public class FullUpdateAction extends UpdateAction {
                         return;
                     }
 
-                    BatchedProgramExecution batchedProgramExecution = new BatchedProgramExecution();
+                    ExecutorService executor = Executors.newFixedThreadPool(1);
+
+                    BatchedTask batchedTask = new BatchedTask("Packwiz", executor);
                     for(PackIndexFile.FileEntry entry : unchangedEntries) {
                         PackwizMetaFile packwizMetaFile = new PackwizMetaFile(entry.path);
                         if(packwizMetaFile.pinned || !packwizMetaFile.haveUpdateSource()) continue;
@@ -87,13 +93,14 @@ public class FullUpdateAction extends UpdateAction {
                                 filesWithoutSuitableVersion.add(packwizMetaFile);
                             }
                         });
-                        batchedProgramExecution.add(execution);
+                        batchedTask.add(execution);
 
                         // Try installing these mod to a temp directory. If it succeeds, it supports our new modpack configuration!
                         PWGUI.LOGGER.info(entry.file + " is unchanged, adding for check");
                     }
 
-                    batchedProgramExecution.onExit(programErrored -> {
+                    batchedTask.onExit(programErrored -> {
+                        executor.shutdownNow();
                         PWGUI.LOGGER.info("Found {} incompatible item(s) under the current modpack configuration.", filesWithoutSuitableVersion.size());
 
                         try {
@@ -112,12 +119,14 @@ public class FullUpdateAction extends UpdateAction {
                         PackwizExecutable.INSTANCE.refresh().build().run("Clean-up after content compatibility check");
                     });
 
-                    BatchedExecutionProgressDialog modCompatDialog = new BatchedExecutionProgressDialog(parent, "Checking content compatibility...", "Check content compatibility after update", batchedProgramExecution);
+                    TaskDialog modCompatDialog = new TaskDialog(parent, "Checking content compatibility...", batchedTask);
+                    batchedTask.run("Check content compatibility after update");
                     modCompatDialog.setVisible(true);
                 }
             }
         });
-        TaskProgressDialog updateProgressDialog = new TaskProgressDialog(parent, "Checking for update...", Strings.REASON_TRIGGERED_BY_USER, updateExecution);
+        TaskDialog updateProgressDialog = new TaskDialog(parent, "Checking for update...", regularUpdateExecution);
         updateProgressDialog.setVisible(true);
+        regularUpdateExecution.run(Strings.REASON_TRIGGERED_BY_USER);
     }
 }

@@ -8,7 +8,7 @@ import com.lx862.pwgui.gui.components.kui.*;
 import com.lx862.pwgui.util.Strings;
 import com.lx862.pwgui.executable.ProgramExecution;
 import com.lx862.pwgui.support.packwiz.PackwizMetaFile;
-import com.lx862.pwgui.gui.prompt.TaskProgressDialog;
+import com.lx862.pwgui.gui.prompt.TaskDialog;
 import com.lx862.pwgui.gui.GUIConfiguration;
 import com.lx862.pwgui.util.Util;
 
@@ -213,7 +213,7 @@ public class PackwizMetaPanel extends FileTypePanel {
 
     private void checkForUpdate(Component parent) {
         ProgramExecution programExecution = PackwizExecutable.INSTANCE.update(packwizMetaFile.getSlug()).build();
-        TaskProgressDialog dialog = new TaskProgressDialog((Window)getTopLevelAncestor(), String.format("Updating %s...", packwizMetaFile.name), Strings.REASON_TRIGGERED_BY_USER, programExecution);
+        TaskDialog dialog = new TaskDialog((Window)getTopLevelAncestor(), String.format("Updating %s...", packwizMetaFile.name), programExecution);
 
         AtomicReference<String> updateString = new AtomicReference<>(null);
         programExecution.onOutput((stdout) -> {
@@ -222,8 +222,8 @@ public class PackwizMetaPanel extends FileTypePanel {
             }
         });
 
-        programExecution.onExit(exitCode -> {
-            if(exitCode == 0) {
+        programExecution.onExit(exitResult -> {
+            if(exitResult.success()) {
                 String updateMsg = updateString.get();
                 if(updateMsg != null) {
                     JOptionPane.showMessageDialog(parent, String.format("%s has been updated!\n%s", packwizMetaFile.name, updateMsg), Util.withTitlePrefix("File Updated!"), JOptionPane.INFORMATION_MESSAGE);
@@ -233,6 +233,7 @@ public class PackwizMetaPanel extends FileTypePanel {
             }
         });
 
+        programExecution.run(Strings.REASON_TRIGGERED_BY_USER);
         dialog.setVisible(true);
     }
 

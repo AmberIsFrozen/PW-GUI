@@ -27,11 +27,11 @@ public class RefreshPackAction extends AbstractAction {
 
         PackwizExecutable.INSTANCE.refresh().build()
             .onOutput((stdout) -> lastLine.set(stdout.content()))
-            .onExit(exitCode -> {
-                if(exitCode == 0) {
+            .onExit(exitResult -> {
+                if(exitResult.success()) {
                     JOptionPane.showMessageDialog(parent, "Modpack index refreshed!", Util.withTitlePrefix("Refresh Modpack Index"), JOptionPane.INFORMATION_MESSAGE);
                 } else {
-                    JOptionPane.showMessageDialog(parent, String.format("Packwiz exited with exit code %d:\n%s", exitCode, lastLine.get()), Util.withTitlePrefix("Refresh Modpack Index"), JOptionPane.ERROR_MESSAGE);
+                    JOptionPane.showMessageDialog(parent, String.format("Packwiz exited with exit code %d:\n%s", exitResult, lastLine.get()), Util.withTitlePrefix("Refresh Modpack Index"), JOptionPane.ERROR_MESSAGE);
                 }
             })
         .run(Strings.REASON_TRIGGERED_BY_USER);

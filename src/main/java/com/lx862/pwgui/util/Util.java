@@ -5,7 +5,7 @@ import com.lx862.pwgui.Main;
 import com.lx862.pwgui.core.ApplicationInfo;
 import com.lx862.pwgui.core.data.model.ManualModInfo;
 import com.lx862.pwgui.executable.ProgramExecution;
-import com.lx862.pwgui.gui.prompt.TaskProgressDialog;
+import com.lx862.pwgui.gui.prompt.TaskDialog;
 import com.lx862.pwgui.gui.prompt.ManualDownloadDialog;
 
 import javax.swing.*;
@@ -117,7 +117,7 @@ public class Util {
         }
     }
 
-    public static void addManualDownloadPrompt(JDialog parentDialog, ProgramExecution programExecution, TaskProgressDialog taskProgressDialog, Runnable callback) {
+    public static void addManualDownloadPrompt(JDialog parentDialog, ProgramExecution programExecution, TaskDialog taskDialog, Runnable callback) {
         List<ManualModInfo> manualDownloadMod = new ArrayList<>();
         AtomicBoolean captureManualDownloadMod = new AtomicBoolean();
         AtomicReference<String> cachePath = new AtomicReference<>();
@@ -153,8 +153,8 @@ public class Util {
             }
         });
 
-        if(taskProgressDialog != null) {
-            taskProgressDialog.whenProgramErrored(() -> !captureManualDownloadMod.get()); // Mute exit code 1 error pop up if it's about manual download
+        if(taskDialog != null) {
+            taskDialog.whenProgramErrored(() -> !captureManualDownloadMod.get()); // Mute exit code 1 error pop up if it's about manual download
         }
     }
 

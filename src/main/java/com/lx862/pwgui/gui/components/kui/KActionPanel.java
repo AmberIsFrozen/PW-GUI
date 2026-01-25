@@ -11,7 +11,7 @@ import java.util.List;
 public class KActionPanel extends KInlinePanel {
 
     protected KActionPanel(int flowLayout) {
-        super(flowLayout, 4, 0);
+        super(flowLayout, 4, 0, false);
         setBorder(GUIConfiguration.getPaddedBorder(6, 0, 0, 0));
     }
 

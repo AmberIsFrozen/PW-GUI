@@ -9,7 +9,6 @@ import com.lx862.pwgui.support.packwiz.Modpack;
 import com.lx862.pwgui.gui.action.*;
 import com.lx862.pwgui.gui.dialog.ExportModpackDialog;
 import com.lx862.pwgui.gui.dialog.DevServerDialog;
-import com.lx862.pwgui.gui.dialog.ImportModpackDialog;
 import com.lx862.pwgui.gui.dialog.ViewLogDialog;
 import com.lx862.pwgui.util.Util;
 

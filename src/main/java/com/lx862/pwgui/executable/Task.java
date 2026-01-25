@@ -1,7 +1,5 @@
 package com.lx862.pwgui.executable;
 
-import com.lx862.pwgui.PWGUI;
-
 import javax.swing.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -10,15 +8,17 @@ import java.util.function.Consumer;
 
 public abstract class Task {
     private final List<Consumer<OutputMessage>> outputListeners;
-    private final List<Consumer<Integer>> exitListeners;
+    private final List<Consumer<ExitResult>> exitListeners;
+    private final List<Consumer<Float>> progressListeners;
     private final String taskName;
-    private final ExecutorService defaultExecutor;
+    protected final ExecutorService defaultExecutor;
 
     public Task(String taskName, ExecutorService defaultExecutor) {
         this.taskName = taskName;
         this.defaultExecutor = defaultExecutor;
         this.outputListeners = new ArrayList<>();
         this.exitListeners = new ArrayList<>();
+        this.progressListeners = new ArrayList<>();
     }
 
     public Task onOutput(Consumer<OutputMessage> consumer) {
@@ -26,8 +26,13 @@ public abstract class Task {
         return this;
     }
 
-    public Task onExit(Consumer<Integer> consumer) {
+    public Task onExit(Consumer<ExitResult> consumer) {
         this.exitListeners.add(consumer);
+        return this;
+    }
+
+    public Task onProgress(Consumer<Float> consumer) {
+        this.progressListeners.add(consumer);
         return this;
     }
 
@@ -40,16 +45,20 @@ public abstract class Task {
     public abstract void terminate();
 
     protected void callOutputListeners(OutputMessage outputMessage) {
-        for(Consumer<OutputMessage> outputListener : outputListeners) {
-            SwingUtilities.invokeLater(() -> {
-                outputListener.accept(outputMessage);
-            });
-        }
+        invokeCallback(outputListeners, outputMessage);
     }
 
-    protected void callExitListeners(int exitCode) {
-        for(Consumer<Integer> listener : exitListeners) {
-            SwingUtilities.invokeLater(() -> listener.accept(exitCode));
+    protected void setProgress(float value) {
+        invokeCallback(progressListeners, value);
+    }
+
+    protected void callExitListeners(ExitResult exitResult) {
+        invokeCallback(exitListeners, exitResult);
+    }
+
+    protected <T> void invokeCallback(List<Consumer<T>> callbacks, T value) {
+        for(Consumer<T> callback : callbacks) {
+            SwingUtilities.invokeLater(() -> callback.accept(value));
         }
     }
 
@@ -58,5 +67,17 @@ public abstract class Task {
     }
 
     public record OutputMessage(String content, boolean isPrompt) {
+    }
+
+    public record ExitResult(boolean success, int exitCode, Exception exception) {
+        public static ExitResult ok() {
+            return code(0);
+        }
+        public static ExitResult code(int exitCode) {
+            return new ExitResult(exitCode == 0, exitCode, null);
+        }
+        public static ExitResult exception(int exitCode, Exception ex) {
+            return new ExitResult(false, exitCode, ex);
+        }
     }
 }

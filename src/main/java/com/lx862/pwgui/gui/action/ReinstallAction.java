@@ -1,10 +1,10 @@
 package com.lx862.pwgui.gui.action;
 
 import com.lx862.pwgui.PWGUI;
-import com.lx862.pwgui.executable.BatchedProgramExecution;
+import com.lx862.pwgui.executable.BatchedTask;
+import com.lx862.pwgui.gui.prompt.TaskDialog;
 import com.lx862.pwgui.support.packwiz.executable.PackwizExecutable;
 import com.lx862.pwgui.executable.ProgramExecution;
-import com.lx862.pwgui.gui.prompt.BatchedExecutionProgressDialog;
 import com.lx862.pwgui.support.packwiz.Modpack;
 import com.lx862.pwgui.support.packwiz.PackFile;
 import com.lx862.pwgui.support.packwiz.PackIndexFile;
@@ -17,6 +17,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 public class ReinstallAction extends AbstractAction {
     private final Window parent;
@@ -49,15 +51,16 @@ public class ReinstallAction extends AbstractAction {
             }
 
             // Remove
-            BatchedProgramExecution removeExecution = new BatchedProgramExecution();
+            BatchedTask removeExecution = new BatchedTask("Removing meta files");
             for(PackwizMetaFile packwizMetaFile : metas) {
                 ProgramExecution programExecution = PackwizExecutable.INSTANCE.remove(packwizMetaFile.getSlug()).build();
                 removeExecution.add(programExecution);
             }
-            removeExecution.execute("Re-installation requested by user");
+            removeExecution.run("Re-installation requested by user");
 
             // Add
-            BatchedProgramExecution addExecution = new BatchedProgramExecution();
+            ExecutorService executor = Executors.newFixedThreadPool(1);
+            BatchedTask addExecution = new BatchedTask("Re-adding meta files", executor);
             for(PackwizMetaFile packwizMetaFile : metas) {
                 String prefix = packwizMetaFile.updateMrVersion != null ? "mr" : packwizMetaFile.updateCfProjectId == -1 ? "url" : "cf";
 
@@ -76,10 +79,12 @@ public class ReinstallAction extends AbstractAction {
             }
 
             addExecution.onExit((success) -> {
+                executor.shutdownNow();
                 JOptionPane.showMessageDialog(parent, "Re-installation finished.");
             });
 
-            BatchedExecutionProgressDialog batchedExecutionProgressDialog = new BatchedExecutionProgressDialog(parent, "Re-adding meta files", "Re-installation requested by user", addExecution);
+            TaskDialog batchedExecutionProgressDialog = new TaskDialog(parent, "Re-adding meta files", addExecution);
+            addExecution.run("Re-installation requested by user");
             batchedExecutionProgressDialog.setVisible(true);
         }
     }

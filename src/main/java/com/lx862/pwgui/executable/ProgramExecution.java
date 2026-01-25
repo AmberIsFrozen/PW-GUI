@@ -48,11 +48,11 @@ public class ProgramExecution extends Task {
 
                 this.process.waitFor();
                 int exitValue = this.process.exitValue();
-                callExitListeners(exitValue);
+                callExitListeners(ExitResult.code(exitValue));
             } catch (IOException e) {
                 PWGUI.LOGGER.error("", e);
                 callOutputListeners(new OutputMessage(Util.withBracketPrefix(String.format("Failed to execute %s:\n%s", getTaskName(), e.getMessage())), false));
-                callExitListeners(-2);
+                callExitListeners(ExitResult.code(-2));
             } catch (InterruptedException ignored) {
             }
         });
