@@ -5,10 +5,12 @@ import com.lx862.pwgui.support.packwiz.data.VersionMetadata;
 
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.function.Consumer;
 
 public class Caches {
-    public static final HashMap<PackComponent, List<VersionMetadata>> componentCaches = new HashMap<>();
+    public static final Map<PackComponent, List<VersionMetadata>> componentCaches = new HashMap<>();
+    public static final Map<String, byte[]> resourceCaches = new HashMap<>();
 
     public static void getVersionMetadata(PackComponent component, Consumer<List<VersionMetadata>> callback) {
         if(componentCaches.containsKey(component)) {

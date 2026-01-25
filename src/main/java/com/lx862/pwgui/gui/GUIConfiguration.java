@@ -2,7 +2,6 @@ package com.lx862.pwgui.gui;
 
 import com.formdev.flatlaf.FlatLaf;
 import com.formdev.flatlaf.extras.FlatInspector;
-import com.lx862.pwgui.core.data.ApplicationTheme;
 import org.commonmark.ext.gfm.strikethrough.StrikethroughExtension;
 import org.commonmark.ext.gfm.tables.TablesExtension;
 import org.commonmark.parser.Parser;

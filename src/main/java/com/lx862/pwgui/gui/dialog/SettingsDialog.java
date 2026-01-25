@@ -6,7 +6,7 @@ import com.lx862.pwgui.core.ApplicationInfo;
 import com.lx862.pwgui.core.Config;
 import com.lx862.pwgui.support.packwiz.executable.PackwizExecutable;
 import com.lx862.pwgui.util.Strings;
-import com.lx862.pwgui.core.data.ApplicationTheme;
+import com.lx862.pwgui.gui.ApplicationTheme;
 import com.lx862.pwgui.gui.action.DownloadPackwizAction;
 import com.lx862.pwgui.gui.action.LocatePackwizAction;
 import com.lx862.pwgui.gui.components.kui.*;

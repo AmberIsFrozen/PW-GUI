@@ -1,4 +1,4 @@
-package com.lx862.pwgui.core.data;
+package com.lx862.pwgui.gui;
 
 import com.formdev.flatlaf.FlatIntelliJLaf;
 import com.formdev.flatlaf.intellijthemes.*;

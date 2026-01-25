@@ -1,4 +1,4 @@
-package com.lx862.pwgui.core.data.exception;
+package com.lx862.pwgui.support.packwiz.exception;
 
 public class MissingKeyPropertyException extends RuntimeException {
     public MissingKeyPropertyException(String filename, String property) {

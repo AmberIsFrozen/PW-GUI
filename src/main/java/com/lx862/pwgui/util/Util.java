@@ -3,6 +3,8 @@ package com.lx862.pwgui.util;
 import com.lx862.pwgui.PWGUI;
 import com.lx862.pwgui.Main;
 import com.lx862.pwgui.core.ApplicationInfo;
+import com.lx862.pwgui.core.data.Cache;
+import com.lx862.pwgui.core.data.Caches;
 import com.lx862.pwgui.core.data.model.ManualModInfo;
 import com.lx862.pwgui.executable.ProgramExecution;
 import com.lx862.pwgui.gui.prompt.TaskDialog;
@@ -12,6 +14,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.StringSelection;
+import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -42,7 +45,19 @@ public class Util {
 
     /** Get resources from jar */
     public static InputStream getAssets(String path) {
-        return Main.class.getResourceAsStream(path);
+        byte[] data;
+        if(Caches.resourceCaches.containsKey(path)) {
+            data = Caches.resourceCaches.get(path);
+        } else {
+            try(InputStream is = Main.class.getResourceAsStream(path)) {
+                data = is == null ? null : is.readAllBytes();
+            } catch (IOException e) {
+                data = null;
+            }
+            Caches.resourceCaches.put(path, data);
+        }
+
+        return data == null ? null : new ByteArrayInputStream(data);
     }
 
     /** Copy resources from within a jar to a file in a directory */
