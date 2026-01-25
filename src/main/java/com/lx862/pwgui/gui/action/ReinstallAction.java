@@ -69,7 +69,7 @@ public class ReinstallAction extends AbstractAction {
                 } else if(prefix.equals("cf")) {
                     execution = PackwizExecutable.INSTANCE.buildCommand("cf", "add", "--addon-id", String.valueOf(packwizMetaFile.updateCfProjectId)).metaFolder(metaFolder).yes().build();
                 } else {
-                    execution = PackwizExecutable.INSTANCE.url().add(packwizMetaFile.getSlug(), String.valueOf(packwizMetaFile.downloadUrl), metaFolder, false).yes().build();
+                    execution = PackwizExecutable.INSTANCE.url().add(packwizMetaFile.getSlug(), String.valueOf(packwizMetaFile.downloadUrl), false).metaFolder(metaFolder).yes().build();
                 }
 
                 addExecution.add(execution);

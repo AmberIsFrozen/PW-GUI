@@ -167,13 +167,13 @@ public abstract class BaseFrame extends JFrame {
         saveMenuItem.addActionListener(actionEvent -> saveAllCallback.accept(false));
         fileMenu.add(saveMenuItem);
 
-        JMenuItem importMenuItem = new JMenuItem("Import Pack...");
-        importMenuItem.setMnemonic(KeyEvent.VK_I);
-        importMenuItem.addActionListener(actionEvent -> {
-            saveAllCallback.accept(false);
-            new ImportModpackDialog(this).setVisible(true);
-        });
-        fileMenu.add(importMenuItem);
+//        JMenuItem importMenuItem = new JMenuItem("Import Pack...");
+//        importMenuItem.setMnemonic(KeyEvent.VK_I);
+//        importMenuItem.addActionListener(actionEvent -> {
+//            saveAllCallback.accept(false);
+//            new ImportModpackDialog(this).setVisible(true);
+//        });
+//        fileMenu.add(importMenuItem);
 
         JMenuItem exportMenuItem = new JMenuItem("Export Pack...");
         exportMenuItem.setMnemonic(KeyEvent.VK_E);

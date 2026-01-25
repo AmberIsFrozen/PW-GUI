@@ -8,18 +8,17 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public class KActionPanel extends JPanel {
-    private static final int GAP_MARGIN = 4;
+public class KActionPanel extends KInlinePanel {
 
     protected KActionPanel(int flowLayout) {
-        super(new FlowLayout(flowLayout, 0, 0));
+        super(flowLayout, 4, 0);
         setBorder(GUIConfiguration.getPaddedBorder(6, 0, 0, 0));
     }
 
     public static class Builder {
         private JButton negativeButton = null;
         private JButton positiveButton = null;
-        private int flowLayout;
+        private final int flowLayout;
 
         private final java.util.List<JComponent> otherComponents;
 
@@ -60,14 +59,8 @@ public class KActionPanel extends JPanel {
             if(negativeButton != null) {
                 components.add(negativeButton);
             }
-
-            for(int i = 0; i < components.size(); i++) {
-                boolean hasTrailingMargin = i != (components.size()-1);
-
-                actionPanel.add(components.get(i));
-                if(hasTrailingMargin) {
-                    actionPanel.add(GUIConfiguration.createHorizontalPadding(GAP_MARGIN));
-                }
+            for(JComponent component : components) {
+                actionPanel.add(component);
             }
             return actionPanel;
         }

@@ -23,7 +23,7 @@ public class PackFileFilter extends FileFilter implements NativeFileFilter {
     }
 
     @Override
-    public SystemFileChooser.FileFilter getNativeFilePicker() {
-        return new SystemFileChooser.FileNameExtensionFilter(getDescription(), "toml");
+    public SystemFileChooser.FileFilter getNativeFileFilter() {
+        return nativeExtensionFilter("toml");
     }
 }

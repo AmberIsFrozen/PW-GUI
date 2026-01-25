@@ -9,6 +9,7 @@ gson = "2.13.2"
 commonmark = "0.27.1"
 rsyntaxtextarea = "3.6.1"
 ztzip = "1.17"
+slf4j = "2.0.17"
 
 [plugins]
 shadow = { id = "com.gradleup.shadow", version.ref = "shadow" }
@@ -17,6 +18,7 @@ shadow = { id = "com.gradleup.shadow", version.ref = "shadow" }
 gson = { group = "com.google.code.gson", name = "gson", version.ref = "gson" }
 flatlaf = { group = "com.formdev", name = "flatlaf", version.ref = "flatlaf" }
 flatlaf-ij-themes = { group = "com.formdev", name = "flatlaf-intellij-themes", version.ref = "flatlaf" }
+flatlaf-extras = { group = "com.formdev", name = "flatlaf-extras", version.ref = "flatlaf" }
 toml4j = { group = "com.moandjiezana.toml", name = "toml4j", version.ref = "toml4j" }
 common-io = { group = "commons-io", name = "commons-io", version.ref = "common-io" }
 common-cli = { group = "commons-cli", name = "commons-cli", version.ref = "common-cli" }
@@ -27,8 +29,9 @@ commonmark-ext-gfm-table = { group = "org.commonmark", name = "commonmark-ext-gf
 commonmark-ext-gfm-strikethrough = { group = "org.commonmark", name = "commonmark-ext-gfm-strikethrough", version.ref = "commonmark" }
 rsyntaxtextarea = { group = "com.fifesoft", name = "rsyntaxtextarea", version.ref = "rsyntaxtextarea" }
 ztzip = { group = "org.zeroturnaround", name = "zt-zip", version.ref = "ztzip" }
+slf4j-noop = { group = "org.slf4j", name = "slf4j-nop", version.ref = "slf4j"}
 
 [bundles]
 commonmark = ["commonmark", "commonmark-ext-gfm-table", "commonmark-ext-gfm-strikethrough"]
-flatlaf = ["flatlaf", "flatlaf-ij-themes"]
+flatlaf = ["flatlaf", "flatlaf-ij-themes", "flatlaf-extras"]
 imageio-ext = ["imageio-bmp", "imageio-webp"]

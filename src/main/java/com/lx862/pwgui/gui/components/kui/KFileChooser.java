@@ -54,14 +54,14 @@ public class KFileChooser extends SystemFileChooser {
     /** Open the Save As dialog. User will be prompted if the folder is not empty */
     public int openSaveDirectoryDialog(Component component) {
         setApproveCallback((selected, ctx) -> {
-            try(Stream<Path> files = Files.list(getSelectedFile().toPath())) {
+            try(Stream<Path> files = Files.list(selected[0].toPath())) {
                 if(files.findAny().isPresent()){
                     int replaceResult = ctx.showMessageDialog(JOptionPane.WARNING_MESSAGE, "Folder is not empty, are you sure you want to continue?\nAll operations will be performed directly in the folder you chose.", Util.withTitlePrefix("Folder Not Empty"), JOptionPane.YES_NO_OPTION);
                     if (replaceResult != JOptionPane.YES_OPTION) {
                         return openSaveDirectoryDialog(component);
                     }
                 }
-            } catch (IOException e) {
+            } catch (Exception e) {
                 PWGUI.LOGGER.error("", e);
             }
             return APPROVE_OPTION;
@@ -71,9 +71,9 @@ public class KFileChooser extends SystemFileChooser {
     }
 
     public void setFileFilter(NativeFileFilter fileFilter) {
-        FileFilter newFileFilter = fileFilter.getNativeFilePicker();
+        FileFilter newFileFilter = fileFilter.getNativeFileFilter();
         if(newFileFilter != null) {
-            super.setFileFilter(fileFilter.getNativeFilePicker());
+            super.setFileFilter(fileFilter.getNativeFileFilter());
         }
     }
 

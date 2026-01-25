@@ -22,7 +22,7 @@ public class ProgramExecution extends Task {
 
     @Override
     public void run(String reason, ExecutorService executor) {
-        PWGUI.LOGGER.info("Running command \"{}\" due to \"{}\"", String.join(" ", processBuilder.command()), reason);
+        PWGUI.LOGGER.info("Running command \"{}\" due to \"{}\"", getCommand(), reason);
 
         executor.submit(() -> {
             try {
@@ -56,6 +56,10 @@ public class ProgramExecution extends Task {
             } catch (InterruptedException ignored) {
             }
         });
+    }
+
+    public String getCommand() {
+        return String.join(" ", processBuilder.command());
     }
 
     @Override

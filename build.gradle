@@ -25,6 +25,7 @@ dependencies {
     implementation libs.bundles.imageio.ext
     implementation libs.rsyntaxtextarea
     implementation libs.ztzip
+    implementation libs.slf4j.noop
 }
 
 tasks.withType(JavaCompile).configureEach {

@@ -18,6 +18,6 @@ public class ModrinthModpack {
         File zipFile = zipPath.toFile();
         if(!ZipUtil.containsEntry(zipFile, ModpackIndex.FILE_NAME)) throw new IllegalArgumentException(String.format("Modpack file does not contain %s!", ModpackIndex.FILE_NAME));
         index = new Gson().fromJson(StandardCharsets.UTF_8.decode(ByteBuffer.wrap(ZipUtil.unpackEntry(zipFile, ModpackIndex.FILE_NAME))).toString(), ModpackIndex.class);
-        index.validate();
+        index.validateSpec();
     }
 }

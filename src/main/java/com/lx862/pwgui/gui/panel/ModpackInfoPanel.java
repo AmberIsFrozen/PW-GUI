@@ -61,26 +61,24 @@ public class ModpackInfoPanel extends KGridBagLayoutPanel {
         return nameTextField.getText();
     }
 
+    public String getAuthor() {
+        return authorTextField.getText();
+    }
+
+    public String getVersion() {
+        return versionTextField.getText();
+    }
+
     public boolean shouldSave() {
         return requiredInfoFilled() && (!initialVersion.equals(versionTextField.getText()) || !initialName.equals(nameTextField.getText()) || !initialAuthor.equals(authorTextField.getText()));
     }
 
     public boolean requiredInfoFilled() {
-        return !nameTextField.getText().isEmpty() && !authorTextField.getText().isEmpty() && !versionTextField.getText().isEmpty(); // Packwiz specs does not mandate a modpack version/author, but is required for packwiz CLI when initing
-    }
+        String name = getName();
+        String author = getAuthor();
+        String version = getVersion();
 
-    public List<String> getInitArguments() {
-        List<String> st = new ArrayList<>();
-
-        st.add("--name");
-        st.add(nameTextField.getText());
-
-        st.add("--author");
-        st.add(authorTextField.getText());
-
-        st.add("--version");
-        st.add(versionTextField.getText());
-        return st;
+        return name != null && !name.isEmpty() && author != null && !author.isEmpty() && version != null && version.isEmpty(); // Packwiz specs does not mandate a modpack version/author, but is required for packwiz CLI when initing
     }
 
     @Override

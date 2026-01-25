@@ -12,7 +12,6 @@ import com.lx862.pwgui.gui.components.WrapLayout;
 
 import javax.swing.*;
 import java.awt.*;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.function.Consumer;
@@ -56,7 +55,7 @@ public class ModpackVersionPanel extends KGridBagLayoutPanel {
         if(initialMinecraft != null) minecraftVersionComboBox.setSelectedItem(initialMinecraft.getVersion());
         if(initialModloader != null) modloaderVersionComboBox.setSelectedItem(initialModloader.getVersion());
 
-        addRow(1, new JLabel("Minecraft Version: ", new ImageIcon(ImageUtil.clampImageSize(IconNamePair.MINECRAFT.image, 20)), SwingConstants.LEFT), minecraftVersionComboBox);
+        addRow(1, new JLabel("Minecraft Version: ", new ImageIcon(ImageUtil.clampImageSize(IconNamePair.MINECRAFT.image(), 20)), SwingConstants.LEFT), minecraftVersionComboBox);
 
         showSnapshotCheckBox = new JCheckBox("Show Snapshot");
         showSnapshotCheckBox.addActionListener(actionEvent -> updateMinecraftUI());
@@ -82,10 +81,10 @@ public class ModpackVersionPanel extends KGridBagLayoutPanel {
         for(PackComponent packComponent : PackComponent.values()) {
             if(!packComponent.choosable) continue;
 
-            JRadioButton componentRadioButton = new JRadioButton(packComponent.iconName.name);
+            JRadioButton componentRadioButton = new JRadioButton(packComponent.iconName.name());
             componentRadioButton.addActionListener((itemListener) -> setModloader(packComponent));
-            componentRadioButton.setIcon(new ImageIcon(ImageUtil.withOpacity(ImageUtil.clampImageSize(packComponent.iconName.image, 18), 0.5f)));
-            componentRadioButton.setSelectedIcon(new ImageIcon(ImageUtil.clampImageSize(packComponent.iconName.image, 18)));
+            componentRadioButton.setIcon(new ImageIcon(ImageUtil.withOpacity(ImageUtil.clampImageSize(packComponent.iconName.image(), 18), 0.5f)));
+            componentRadioButton.setSelectedIcon(new ImageIcon(ImageUtil.clampImageSize(packComponent.iconName.image(), 18)));
             modloaderChoicePanel.add(componentRadioButton);
             modloadersButtonGroup.add(componentRadioButton);
 
@@ -135,7 +134,7 @@ public class ModpackVersionPanel extends KGridBagLayoutPanel {
         } else {
             modloaderVersionLabel.setVisible(true);
             modloaderVersionComboBox.setVisible(true);
-            modloaderVersionLabel.setText(modloader.iconName.name + " version:");
+            modloaderVersionLabel.setText(modloader.iconName.name() + " version:");
 
             modloaderVersionComboBox.setEnabled(false);
             modloaderVersionComboBox.addItem(new VersionMetadata(null, "Loading...", VersionMetadata.State.RELEASE));
@@ -144,25 +143,6 @@ public class ModpackVersionPanel extends KGridBagLayoutPanel {
                 modloaderVersionComboBox.setEnabled(true);
             });
         }
-    }
-
-    public List<String> getInitArguments() {
-        List<String> st = new ArrayList<>();
-        st.add("--mc-version");
-        st.add(getMinecraft().getVersion());
-
-        PackComponentVersion modloader = getModloader();
-        if(modloader != null) {
-            st.add("--modloader");
-            st.add(modloader.getComponent().slug);
-            st.add("--" + modloader.getComponent().slug + "-version");
-            st.add(modloader.getVersion());
-        } else {
-            st.add("--modloader");
-            st.add("none");
-        }
-
-        return st;
     }
 
     public PackComponentVersion getMinecraft() {

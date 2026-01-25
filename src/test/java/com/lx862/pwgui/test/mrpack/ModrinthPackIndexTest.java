@@ -19,7 +19,7 @@ public class ModrinthPackIndexTest {
 
     @Test
     public void validateIndex() {
-        assertDoesNotThrow(() -> file.validate());
+        assertDoesNotThrow(() -> file.validateSpec());
     }
 
     private ModpackIndex createMockIndex() {

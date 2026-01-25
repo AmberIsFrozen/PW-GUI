@@ -27,8 +27,8 @@ public class AddContentPanel extends FileTypePanel {
         setLayout(new BorderLayout());
 
         JTabbedPane tab = new JTabbedPane();
-        tab.addTab(IconNamePair.MODRINTH.name, new ImageIcon(ImageUtil.clampImageSize(IconNamePair.MODRINTH.image, 20)), new ModrinthPanel(context, fileEntry));
-        tab.addTab(IconNamePair.CURSEFORGE.name, new ImageIcon(ImageUtil.clampImageSize(IconNamePair.CURSEFORGE.image, 20)), new CurseForgePanel(context, fileEntry));
+        tab.addTab(IconNamePair.MODRINTH.name(), new ImageIcon(ImageUtil.clampImageSize(IconNamePair.MODRINTH.image(), 20)), new ModrinthPanel(context, fileEntry));
+        tab.addTab(IconNamePair.CURSEFORGE.name(), new ImageIcon(ImageUtil.clampImageSize(IconNamePair.CURSEFORGE.image(), 20)), new CurseForgePanel(context, fileEntry));
         tab.addTab("URL Link", new ImageIcon(ImageUtil.convertImage(Util.getAssets("/assets/ui/mime/link.png"), 20)), new UrlPanel(context, fileEntry));
         add(tab);
     }

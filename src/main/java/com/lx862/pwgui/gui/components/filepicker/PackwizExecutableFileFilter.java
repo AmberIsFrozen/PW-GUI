@@ -18,11 +18,11 @@ public class PackwizExecutableFileFilter extends FileFilter implements NativeFil
     }
 
     @Override
-    public SystemFileChooser.FileFilter getNativeFilePicker() {
+    public SystemFileChooser.FileFilter getNativeFileFilter() {
         // Require .exe on Windows
         // Unfortunately we can't specify an empty extension, so have to rely on the default "All Files" for macOS/linux executable, which doesn't have file extensions :(
         if(ApplicationInfo.INSTANCE.os.type() == ApplicationInfo.OperatingSystem.Type.WINDOWS) {
-            return new SystemFileChooser.FileNameExtensionFilter(getDescription(), "exe", "");
+            return nativeExtensionFilter("exe");
         }
         return null;
     }

@@ -84,7 +84,7 @@ public class UrlPanel extends JPanel {
         } catch (URISyntaxException ignored) {
         }
 
-        ProgramExecution programExecution = PackwizExecutable.INSTANCE.url().add(name, urlString, context.getModpack().getRootPath().relativize(fileEntry.path).toString(), true).build(); // We already did a domain check before, so forcibly add it anyway.
+        ProgramExecution programExecution = PackwizExecutable.INSTANCE.url().add(name, urlString, true).metaFolder(context.getModpack().getRootPath().relativize(fileEntry.path).toString()).build(); // We already did a domain check before, so forcibly add it anyway.
         programExecution.onExit((exitCode) -> {
             if(exitCode == 0) {
                 JOptionPane.showMessageDialog(getTopLevelAncestor(), String.format("%s has been added!", name), Util.withTitlePrefix("Item Added!"), JOptionPane.INFORMATION_MESSAGE);

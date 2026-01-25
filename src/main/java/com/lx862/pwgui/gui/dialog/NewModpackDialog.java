@@ -2,6 +2,7 @@ package com.lx862.pwgui.gui.dialog;
 
 import com.formdev.flatlaf.ui.FlatUIUtils;
 import com.lx862.pwgui.PWGUI;
+import com.lx862.pwgui.support.packwiz.data.PackComponentVersion;
 import com.lx862.pwgui.util.Strings;
 import com.lx862.pwgui.support.packwiz.executable.PackwizExecutable;
 import com.lx862.pwgui.gui.components.kui.*;
@@ -22,7 +23,9 @@ import java.nio.file.Path;
 import java.util.function.Consumer;
 
 public class NewModpackDialog extends BaseDialog {
+
     private ModpackInfoPanel modpackInfoPanel = null;
+
     public NewModpackDialog(JFrame frame, Consumer<Path> packCreatedCallback) {
         super(frame, Util.withTitlePrefix("New Modpack"), true);
 
@@ -61,48 +64,55 @@ public class NewModpackDialog extends BaseDialog {
         createFormPanel.add(modpackVersionPanel);
         createFormPanel.add(Box.createVerticalGlue());
         createFormPanel.add(new KSeparator());
+
         createPanel.add(createFormPanel, BorderLayout.CENTER);
 
         saveButton.addActionListener(actionEvent -> {
-            createModpack(modpackInfoPanel, modpackVersionPanel, (path) -> {
-                doAftermath(path, modpackVersionPanel.getModloader() != null);
-                packCreatedCallback.accept(path.resolve("pack.toml"));
-            });
+            createModpack(
+                this,
+                modpackInfoPanel.getModpackName(), modpackInfoPanel.getAuthor(), modpackInfoPanel.getVersion(),
+                modpackVersionPanel.getMinecraft(), modpackVersionPanel.getModloader(),
+                (path) -> {
+                    dispose();
+                    doAftermath(path, modpackVersionPanel.getModloader() != null);
+                    packCreatedCallback.accept(path.resolve("pack.toml"));
+                }
+            );
         });
 
         KActionPanel actionPanel = new KActionPanel.Builder().setPositiveButton(saveButton).build();
         createPanel.add(actionPanel, BorderLayout.SOUTH);
 
         createImportTabPane.add("Create", createPanel);
-        createImportTabPane.add("Import", new ImportModpackDialog.ImportModpackPanel(this, true, packCreatedCallback));
+        createImportTabPane.add("Import", new ImportModpackDialog.ImportModpackPanel(this, packCreatedCallback));
         contentPanel.add(createImportTabPane, BorderLayout.CENTER);
 
         add(contentPanel);
     }
 
-    private void createModpack(ModpackInfoPanel modpackInfoPanel, ModpackVersionPanel modpackVersionPanel, Consumer<Path> finishCallback) {
+    public static void createModpack(Window parent, String packName, String packAuthor, String packVersion, PackComponentVersion minecraft, PackComponentVersion modloader, Consumer<Path> finishCallback) {
         try {
             KFileChooser fileChooser = new KFileChooser("new-modpack");
             fileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
             fileChooser.setDialogTitle("Choose a folder to store your modpack in...");
 
-            if(fileChooser.showOpenDialog(this) == JFileChooser.APPROVE_OPTION) {
+            if(fileChooser.showOpenDialog(parent) == JFileChooser.APPROVE_OPTION) {
                 File directory = fileChooser.getSelectedFile();
-                String cleanFilesystemName = modpackInfoPanel.getModpackName().replaceAll("(?U)[^\\w\\._]+", "_"); // https://stackoverflow.com/questions/1155107/is-there-a-cross-platform-java-method-to-remove-filename-special-chars
+                String cleanFilesystemName = packName.replaceAll("(?U)[^\\w\\._]+", "_"); // https://stackoverflow.com/questions/1155107/is-there-a-cross-platform-java-method-to-remove-filename-special-chars
                 File modpackDirectory = directory.toPath().resolve(cleanFilesystemName).toFile();
 
                 if(Files.exists(modpackDirectory.toPath())) {
                     if(modpackDirectory.isFile()) {
-                        JOptionPane.showMessageDialog(this, String.format("A file with name \"%s\" already exists!\nConsider removing/renaming the file.", modpackDirectory.getName()), Util.withTitlePrefix("Create Modpack"), JOptionPane.ERROR_MESSAGE);
-                        createModpack(modpackInfoPanel, modpackVersionPanel, finishCallback);
+                        JOptionPane.showMessageDialog(parent, String.format("A file with name \"%s\" already exists!\nConsider removing/renaming the file.", modpackDirectory.getName()), Util.withTitlePrefix("Create Modpack"), JOptionPane.ERROR_MESSAGE);
+                        createModpack(parent, packName, packAuthor, packVersion, minecraft, modloader, finishCallback);
                         return;
                     } else if(modpackDirectory.list().length > 0) {
                         // Note: We use "folder already exists" because it's easier to get by. If a user have an empty directory, this won't prompt because no data will be loss.
-                        if(JOptionPane.showConfirmDialog(this, String.format("\"%s\" folder already exists!\nDo you want to use that folder for your Modpack anyway?\nWARNING: This would remove EVERYTHING within the folder!", modpackDirectory.getName()), Util.withTitlePrefix("Create Modpack"), JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
+                        if(JOptionPane.showConfirmDialog(parent, String.format("\"%s\" folder already exists!\nDo you want to use that folder for your Modpack anyway?\nWARNING: This would remove EVERYTHING within the folder!", modpackDirectory.getName()), Util.withTitlePrefix("Create Modpack"), JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
                             FileUtils.deleteDirectory(modpackDirectory);
                             Files.createDirectory(modpackDirectory.toPath());
                         } else {
-                            createModpack(modpackInfoPanel, modpackVersionPanel, finishCallback);
+                            createModpack(parent, packName, packAuthor, packVersion, minecraft, modloader, finishCallback);
                             return;
                         }
                     }
@@ -111,25 +121,22 @@ public class NewModpackDialog extends BaseDialog {
                 }
 
                 // Build arguments
-                PackwizExecutable.PackwizArgumentBuilder arguments = PackwizExecutable.INSTANCE.init();
-                arguments.append(modpackInfoPanel.getInitArguments());
-                arguments.append(modpackVersionPanel.getInitArguments());
+                PackwizExecutable.PackwizArgumentBuilder arguments = PackwizExecutable.INSTANCE.init(packName, packAuthor, packVersion, minecraft.getVersion(), modloader);
 
                 PackwizExecutable.INSTANCE.changeWorkingDirectory(modpackDirectory.toPath());
 
                 ProgramExecution processExecution = arguments.build();
                 processExecution.onExit(exitCode -> {
                     if(exitCode == 0) {
-                        dispose();
                         if(finishCallback != null) finishCallback.accept(modpackDirectory.toPath());
                     }
                 });
 
-                new TaskProgressDialog(this, "Creating Modpack...", Strings.REASON_TRIGGERED_BY_USER, processExecution).setVisible(true);
+                new TaskProgressDialog(parent, "Creating Modpack...", Strings.REASON_TRIGGERED_BY_USER, processExecution).setVisible(true);
             }
         } catch (Exception e) {
             PWGUI.LOGGER.error("", e);
-            JOptionPane.showMessageDialog(this, String.format("Failed to create modpack:\n%s", e.getMessage()), Util.withTitlePrefix("Create Modpack"), JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(parent, String.format("Failed to create modpack:\n%s", e.getMessage()), Util.withTitlePrefix("Create Modpack"), JOptionPane.ERROR_MESSAGE);
         }
     }
 

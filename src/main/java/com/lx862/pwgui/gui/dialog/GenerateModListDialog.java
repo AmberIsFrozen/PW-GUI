@@ -1,14 +1,11 @@
 package com.lx862.pwgui.gui.dialog;
 
 import com.lx862.pwgui.PWGUI;
-import com.lx862.pwgui.gui.components.kui.KActionPanel;
-import com.lx862.pwgui.gui.components.kui.KRootContentPanel;
+import com.lx862.pwgui.gui.components.kui.*;
 import com.lx862.pwgui.gui.prompt.FileSavedDialog;
 import com.lx862.pwgui.support.packwiz.PackFile;
 import com.lx862.pwgui.support.packwiz.PackIndexFile;
 import com.lx862.pwgui.support.packwiz.PackwizMetaFile;
-import com.lx862.pwgui.gui.components.kui.KButton;
-import com.lx862.pwgui.gui.components.kui.KFileChooser;
 import com.lx862.pwgui.gui.panel.editing.filetype.MarkdownPanel;
 import com.lx862.pwgui.gui.GUIConfiguration;
 import com.lx862.pwgui.util.Util;
@@ -50,7 +47,7 @@ public class GenerateModListDialog extends BaseDialog {
         JPanel headerRow = new JPanel();
         headerRow.setLayout(new BoxLayout(headerRow, BoxLayout.PAGE_AXIS));
 
-        JPanel formatRow = new JPanel(new FlowLayout(FlowLayout.LEFT, 4, 0));
+        JPanel formatRow = new KInlinePanel();
         formatRow.setAlignmentX(Component.LEFT_ALIGNMENT);
 
         JLabel formatLabel = new JLabel("Format:");
@@ -71,7 +68,7 @@ public class GenerateModListDialog extends BaseDialog {
 
         headerRow.add(formatRow);
 
-        JPanel optionsRow = new JPanel(new FlowLayout(FlowLayout.LEFT, 4, 4));
+        JPanel optionsRow = new KInlinePanel();
         optionsRow.setAlignmentX(Component.LEFT_ALIGNMENT);
 
         JLabel optionsLabel = new JLabel("Options:");

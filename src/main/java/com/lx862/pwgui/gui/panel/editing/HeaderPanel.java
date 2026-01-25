@@ -77,7 +77,7 @@ public class HeaderPanel extends JPanel {
             setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 
             for (PackComponentVersion packComponentVersion : components) {
-                JLabel componentLabel = new JLabel(packComponentVersion.getComponent().iconName.name + " version: " + packComponentVersion.getVersion(), new ImageIcon(ImageUtil.clampImageSize(packComponentVersion.getComponent().iconName.image, 20)), SwingConstants.LEFT);
+                JLabel componentLabel = new JLabel(packComponentVersion.getComponent().iconName.name() + " version: " + packComponentVersion.getVersion(), new ImageIcon(ImageUtil.clampImageSize(packComponentVersion.getComponent().iconName.image(), 20)), SwingConstants.LEFT);
                 componentLabel.setAlignmentX(Component.RIGHT_ALIGNMENT);
                 add(componentLabel);
             }

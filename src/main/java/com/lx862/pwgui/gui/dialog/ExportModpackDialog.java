@@ -2,6 +2,7 @@ package com.lx862.pwgui.gui.dialog;
 
 import com.formdev.flatlaf.ui.FlatUIUtils;
 import com.formdev.flatlaf.util.SystemFileChooser;
+import com.lx862.pwgui.gui.components.AlignedBoxPanel;
 import com.lx862.pwgui.support.packwiz.executable.PackwizExecutable;
 import com.lx862.pwgui.gui.ImageUtil;
 import com.lx862.pwgui.gui.components.kui.KRootContentPanel;
@@ -41,8 +42,8 @@ public class ExportModpackDialog extends BaseDialog {
 
         JTabbedPane formatTabPane = new JTabbedPane();
         formatTabPane.setBorder(GUIConfiguration.getPaddedBorder(10, 0, 10, 0));
-        formatTabPane.addTab(IconNamePair.MODRINTH.name, new ImageIcon(ImageUtil.clampImageSize(IconNamePair.MODRINTH.image, 20)), new ModrinthExportPanel());
-        formatTabPane.addTab(IconNamePair.CURSEFORGE.name, new ImageIcon(ImageUtil.clampImageSize(IconNamePair.CURSEFORGE.image, 20)), new CurseforgeExportPanel(this::setExportButtonState));
+        formatTabPane.addTab(IconNamePair.MODRINTH.name(), new ImageIcon(ImageUtil.clampImageSize(IconNamePair.MODRINTH.image(), 20)), new ModrinthExportPanel());
+        formatTabPane.addTab(IconNamePair.CURSEFORGE.name(), new ImageIcon(ImageUtil.clampImageSize(IconNamePair.CURSEFORGE.image(), 20)), new CurseforgeExportPanel(this::setExportButtonState));
 
         formatTabPane.addChangeListener(changeEvent -> {
             ExportPanel selectedTab = (ExportPanel)formatTabPane.getComponentAt(formatTabPane.getSelectedIndex());
@@ -101,11 +102,11 @@ public class ExportModpackDialog extends BaseDialog {
     }
 }
 
-class ModrinthExportPanel extends ExportPanel {
+class ModrinthExportPanel extends AlignedBoxPanel implements ExportPanel {
     private final JCheckBox restrictDomainCheckBox;
 
     public ModrinthExportPanel() {
-        setLayout(new BoxLayout(this, BoxLayout.PAGE_AXIS));
+        super(LEFT_ALIGNMENT);
         JLabel formatLabel = new JLabel("<html>Format: <b>" + getExtension() + "</b></html>");
         formatLabel.setBorder(GUIConfiguration.getPaddedBorder(4, 0, 4, 0));
         add(formatLabel);
@@ -136,26 +137,24 @@ class ModrinthExportPanel extends ExportPanel {
     }
 }
 
-class CurseforgeExportPanel extends ExportPanel {
+class CurseforgeExportPanel extends AlignedBoxPanel implements ExportPanel {
     private final JCheckBox exportClientCheckBox;
     private final JCheckBox exportServerCheckBox;
     private final Consumer<Boolean> setExportButtonState;
 
     public CurseforgeExportPanel(Consumer<Boolean> setExportButtonState) {
+        super(LEFT_ALIGNMENT);
         setLayout(new BoxLayout(this, BoxLayout.PAGE_AXIS));
         this.setExportButtonState = setExportButtonState;
 
         JLabel formatLabel = new JLabel("<html>Format: <b>" + getExtension() + "</b></html>");
         formatLabel.setBorder(GUIConfiguration.getPaddedBorder(4, 0, 4, 0));
-        formatLabel.setAlignmentX(Component.LEFT_ALIGNMENT);
         add(formatLabel);
 
         JPanel sidesPanel = new JPanel();
         sidesPanel.setLayout(new FlowLayout(FlowLayout.LEFT, 0, 0));
-        sidesPanel.setAlignmentX(Component.LEFT_ALIGNMENT);
 
         JLabel sidesLabel = new JLabel("Sides:");
-        sidesLabel.setAlignmentX(Component.LEFT_ALIGNMENT);
         sidesPanel.add(sidesLabel);
 
         exportClientCheckBox = new JCheckBox("Client");
@@ -202,8 +201,8 @@ class CurseforgeExportPanel extends ExportPanel {
     }
 }
 
-abstract class ExportPanel extends JPanel {
-    public abstract boolean canExport();
-    public abstract String getExtension();
-    public abstract List<String> getArguments();
+interface ExportPanel {
+    boolean canExport();
+    String getExtension();
+    List<String> getArguments();
 }

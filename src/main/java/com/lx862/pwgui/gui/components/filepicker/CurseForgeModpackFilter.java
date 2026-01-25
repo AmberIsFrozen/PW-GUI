@@ -17,7 +17,7 @@ public class CurseForgeModpackFilter extends FileFilter implements NativeFileFil
     }
 
     @Override
-    public SystemFileChooser.FileFilter getNativeFilePicker() {
-        return new SystemFileChooser.FileNameExtensionFilter(getDescription(), "zip", "json");
+    public SystemFileChooser.FileFilter getNativeFileFilter() {
+        return nativeExtensionFilter("zip", "json");
     }
 }

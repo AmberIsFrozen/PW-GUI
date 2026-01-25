@@ -3,6 +3,7 @@ package com.lx862.pwgui.support.packwiz.executable;
 import com.lx862.pwgui.core.Config;
 import com.lx862.pwgui.core.log.Logger;
 import com.lx862.pwgui.executable.Executable;
+import com.lx862.pwgui.support.packwiz.data.PackComponentVersion;
 
 import java.nio.file.Path;
 
@@ -13,6 +14,7 @@ public class PackwizExecutable extends Executable {
     private final Url url;
     private final Settings settings;
     private final CurseForge curseForge;
+    private final Modrinth modrinth;
     private String packFileLocation = null;
 
     public PackwizExecutable(Logger logger) {
@@ -26,6 +28,7 @@ public class PackwizExecutable extends Executable {
         this.url = new Url();
         this.settings = new Settings();
         this.curseForge = new CurseForge();
+        this.modrinth = new Modrinth();
     }
 
     @Override
@@ -55,10 +58,13 @@ public class PackwizExecutable extends Executable {
 
     /* Commands */
 
-    public PackwizArgumentBuilder init() {
-        return buildCommand("init");
+    public PackwizArgumentBuilder init(String name, String author, String version, String minecraftVersion, PackComponentVersion modloader) {
+        PackwizArgumentBuilder commandBuilder = buildCommand("init", "--name", name, "--author", author, "--version", version, "--mc-version", minecraftVersion, "--modloader", modloader == null ? "none" : modloader.getComponent().slug);
+        if(modloader != null) {
+            commandBuilder.append("--" + modloader.getComponent().slug + "-version", modloader.getVersion());
+        }
+        return commandBuilder;
     }
-
 
     public PackwizArgumentBuilder refresh() {
         return buildCommand("refresh");
@@ -86,8 +92,8 @@ public class PackwizExecutable extends Executable {
     }
 
     public class Url {
-        public PackwizArgumentBuilder add(String name, String url, String metaFolder, boolean force) {
-            PackwizArgumentBuilder argumentBuilder = buildCommand("url", "add", name, url).metaFolder(metaFolder);
+        public PackwizArgumentBuilder add(String name, String url, boolean force) {
+            PackwizArgumentBuilder argumentBuilder = buildCommand("url", "add", name, url);
             if(force) {
                 argumentBuilder.append("--force");
             }
@@ -119,18 +125,28 @@ public class PackwizExecutable extends Executable {
         }
     }
 
+    public Modrinth modrinth() {
+        return modrinth;
+    }
+
+    public class Modrinth {
+        public PackwizArgumentBuilder add(String name) {
+            return buildCommand("modrinth", "add", name);
+        }
+    }
+
     public class PackwizArgumentBuilder extends ProgramArgumentBuilder {
         public PackwizArgumentBuilder(String... args) {
             super(args);
         }
 
         public PackwizArgumentBuilder metaFolder(String str) {
-            append("--meta-folder", str);
+            if(str != null) append("--meta-folder", str);
             return this;
         }
 
         public PackwizArgumentBuilder packFile(String packFileLocation) {
-            append("--pack-file", packFileLocation);
+            if(packFileLocation != null) append("--pack-file", packFileLocation);
             return this;
         }
 

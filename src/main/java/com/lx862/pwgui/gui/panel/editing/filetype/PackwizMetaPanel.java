@@ -36,6 +36,8 @@ public class PackwizMetaPanel extends FileTypePanel {
     public PackwizMetaPanel(FileEntryPaneContext context, PackMetadataFileModel fileEntry) {
         super(context);
         setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
+        setBorder(GUIConfiguration.getPaddedBorder(4, 4, 4, 0));
+
         this.packwizMetaFile = new PackwizMetaFile(fileEntry.getPackMetadata().getPath(), fileEntry.getPackMetadata().getToml());
         this.initialDescription = packwizMetaFile.optionDescription;
         this.initialOptional = packwizMetaFile.optionOptional;
@@ -96,7 +98,10 @@ public class PackwizMetaPanel extends FileTypePanel {
         removeButton.setMnemonic(KeyEvent.VK_R);
         removeButton.addActionListener(actionEvent -> removeMod());
 
-        JPanel actionPanel = new KActionPanel.Builder(FlowLayout.LEFT).setPositiveButton(updateButton).setNegativeButton(removeButton).build();
+        KInlinePanel actionPanel = new KInlinePanel(FlowLayout.LEFT);
+        actionPanel.add(updateButton);
+        actionPanel.add(removeButton);
+
         editableContentPanel.addRow(2, actionPanel);
 
         pinnedCheckbox.addActionListener(actionEvent -> updateUpdateButtonState(updateButton, pinnedCheckbox));

@@ -1,6 +1,7 @@
 package com.lx862.pwgui.gui;
 
 import com.formdev.flatlaf.FlatLaf;
+import com.formdev.flatlaf.extras.FlatInspector;
 import com.lx862.pwgui.core.data.ApplicationTheme;
 import org.commonmark.ext.gfm.strikethrough.StrikethroughExtension;
 import org.commonmark.ext.gfm.tables.TablesExtension;
@@ -30,6 +31,8 @@ public class GUIConfiguration {
             FlatLaf.setup(applicationTheme.getLaf());
 
             System.setProperty("flatlaf.useWindowDecorations", useWindowDecoration ? "true" : "false");
+
+            FlatInspector.install("ctrl shift alt X" );
 
             UIManager.put("Component.focusWidth", 1);
             UIManager.put("ScrollBar.showButtons", true);
