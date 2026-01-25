@@ -1,6 +1,7 @@
 package com.lx862.pwgui.executable;
 
 import com.lx862.pwgui.core.log.Logger;
+import com.lx862.pwgui.task.RunProgramTask;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
@@ -126,13 +127,13 @@ public abstract class Executable {
             return this;
         }
 
-        public ProgramExecution build() {
+        public RunProgramTask build() {
             ensureExecutorActive();
             args.add(0, executableLocation);
             ProcessBuilder processBuilder = new ProcessBuilder(args.toArray(new String[0]));
             processBuilder.directory(workingDirectory.toFile());
 
-            return new ProgramExecution(logger, programName, processBuilder, executor);
+            return new RunProgramTask(logger, programName, processBuilder, executor);
         }
     }
 }

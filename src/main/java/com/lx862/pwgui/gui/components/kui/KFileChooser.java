@@ -56,10 +56,8 @@ public class KFileChooser extends SystemFileChooser {
         setApproveCallback((selected, ctx) -> {
             try(Stream<Path> files = Files.list(selected[0].toPath())) {
                 if(files.findAny().isPresent()){
-                    int replaceResult = ctx.showMessageDialog(JOptionPane.WARNING_MESSAGE, "Folder is not empty, are you sure you want to continue?\nAll operations will be performed directly in the folder you chose.", Util.withTitlePrefix("Folder Not Empty"), JOptionPane.YES_NO_OPTION);
-                    if (replaceResult != JOptionPane.YES_OPTION) {
-                        return openSaveDirectoryDialog(component);
-                    }
+                    ctx.showMessageDialog(JOptionPane.INFORMATION_MESSAGE, "Folder not empty", "The selected folder is not empty, please create an empty folder for the modpack to be stored in.", JOptionPane.OK_OPTION);
+                    return CANCEL_OPTION;
                 }
             } catch (Exception e) {
                 PWGUI.LOGGER.error("", e);

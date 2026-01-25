@@ -5,7 +5,7 @@ import com.lx862.pwgui.core.ApplicationInfo;
 import com.lx862.pwgui.core.Config;
 import com.lx862.pwgui.gui.prompt.TaskDialog;
 import com.lx862.pwgui.support.packwiz.executable.PackwizExecutable;
-import com.lx862.pwgui.util.DownloadTask;
+import com.lx862.pwgui.task.DownloadTask;
 import com.lx862.pwgui.util.Strings;
 import com.lx862.pwgui.util.Util;
 import org.apache.commons.io.FileUtils;

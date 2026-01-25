@@ -1,4 +1,4 @@
-package com.lx862.pwgui.executable;
+package com.lx862.pwgui.task;
 
 import com.lx862.pwgui.PWGUI;
 import com.lx862.pwgui.core.log.Logger;
@@ -7,11 +7,11 @@ import com.lx862.pwgui.util.Util;
 import java.io.*;
 import java.util.concurrent.ExecutorService;
 
-public class ProgramExecution extends Task {
+public class RunProgramTask extends Task {
     private final ProcessBuilder processBuilder;
     private Process process;
 
-    public ProgramExecution(Logger logger, String taskName, ProcessBuilder processBuilder, ExecutorService defaultExecutor) {
+    public RunProgramTask(Logger logger, String taskName, ProcessBuilder processBuilder, ExecutorService defaultExecutor) {
         super(taskName, defaultExecutor);
         this.processBuilder = processBuilder;
 
@@ -34,13 +34,13 @@ public class ProgramExecution extends Task {
                     while ((c = reader.read()) != -1) {
                         if(c == '\n' || c == '\r') { // Newline character
                             String line = sb.toString();
-                            callOutputListeners(new OutputMessage(line, false));
+                            submitOutput(new OutputMessage(line, false));
                             sb = new StringBuilder(); // Clear current line
                         } else {
                             sb.append((char)c);
                             String line = sb.toString();
                             if(line.endsWith("[Y/n]: ")) { // Inline prompt
-                                callOutputListeners(new OutputMessage(line, true));
+                                submitOutput(new OutputMessage(line, true));
                             }
                         }
                     }
@@ -48,11 +48,11 @@ public class ProgramExecution extends Task {
 
                 this.process.waitFor();
                 int exitValue = this.process.exitValue();
-                callExitListeners(ExitResult.code(exitValue));
+                submitExitResult(ExitResult.code(exitValue));
             } catch (IOException e) {
                 PWGUI.LOGGER.error("", e);
-                callOutputListeners(new OutputMessage(Util.withBracketPrefix(String.format("Failed to execute %s:\n%s", getTaskName(), e.getMessage())), false));
-                callExitListeners(ExitResult.code(-2));
+                submitOutput(new OutputMessage(Util.withBracketPrefix(String.format("Failed to execute %s:\n%s", getTaskName(), e.getMessage())), false));
+                submitExitResult(ExitResult.code(-2));
             } catch (InterruptedException ignored) {
             }
         });

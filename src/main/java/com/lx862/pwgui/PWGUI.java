@@ -35,7 +35,7 @@ public class PWGUI {
             LOGGER.error("Failed to read config file!", e);
         }
 
-        String packFilePath = Config.getInstance().openLastModpackOnLaunch.getValue() ? Config.getInstance().lastModpackPath.getValue() == null ? null : Config.getInstance().lastModpackPath.getValue().toString() : null;
+        String packFilePath = Config.getInstance().openLastModpackOnLaunch.value() ? Config.getInstance().lastModpackPath.value() == null ? null : Config.getInstance().lastModpackPath.value().toString() : null;
         boolean packwizLocated;
 
         if(commandLine != null) {
@@ -53,8 +53,8 @@ public class PWGUI {
 
     private static void launchGUI(String packFilePath, boolean packwizLocated) {
         Config config = Config.getInstance();
-        GUIConfiguration.setupGUI(config.applicationTheme.getValue(), config.useWindowDecoration.getValue(), null); // Initialize FlatLaf and it's config
-        UIScale.setZoomFactor(config.zoomFactor.getValue());
+        GUIConfiguration.setupGUI(config.applicationTheme.value(), config.useWindowDecoration.value(), null); // Initialize FlatLaf and it's config
+        UIScale.setZoomFactor(config.zoomFactor.value());
 
         if(!packwizLocated) { // No packwiz, show setup wizard
             SwingUtilities.invokeLater(() -> {

@@ -53,7 +53,7 @@ public class ViewLogDialog extends BaseDialog {
         contentPanel.add(scrollPane, BorderLayout.CENTER);
 
         this.appendLogCallback = (entry, realtime) -> {
-            if(entry.logLevel() == LogEntry.LogLevel.DEBUG && !Config.getInstance().debugMode.getValue()) return;
+            if(entry.logLevel() == LogEntry.LogLevel.DEBUG && !Config.getInstance().debugMode.value()) return;
             logs.addElement(entry);
 
             SwingUtilities.invokeLater(() -> {

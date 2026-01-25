@@ -7,7 +7,7 @@ import com.lx862.pwgui.gui.components.kui.KButton;
 import com.lx862.pwgui.gui.components.kui.KRootContentPanel;
 import com.lx862.pwgui.gui.components.kui.KTextArea;
 import com.lx862.pwgui.util.Util;
-import com.lx862.pwgui.executable.ProgramExecution;
+import com.lx862.pwgui.task.RunProgramTask;
 
 import javax.swing.*;
 import java.awt.*;
@@ -21,7 +21,7 @@ public class DevServerDialog extends BaseDialog {
     private final KButton startButton;
     private final KButton stopButton;
     private ExecutorService serverExecutor;
-    private ProgramExecution packwizServeProgram;
+    private RunProgramTask packwizServeProgram;
 
     public DevServerDialog(JFrame frame) {
         super(frame, Util.withTitlePrefix("Packwiz Serve"));

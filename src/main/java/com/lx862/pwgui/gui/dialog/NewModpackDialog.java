@@ -1,9 +1,10 @@
 package com.lx862.pwgui.gui.dialog;
 
 import com.formdev.flatlaf.ui.FlatUIUtils;
+import com.formdev.flatlaf.util.SystemFileChooser;
 import com.lx862.pwgui.PWGUI;
 import com.lx862.pwgui.core.Config;
-import com.lx862.pwgui.executable.BatchedTask;
+import com.lx862.pwgui.task.BatchedTask;
 import com.lx862.pwgui.gui.components.AlignedBoxPanel;
 import com.lx862.pwgui.gui.components.ComboBoxCardLinker;
 import com.lx862.pwgui.gui.components.IconNamePairListCellRenderer;
@@ -23,15 +24,13 @@ import com.lx862.pwgui.gui.panel.ModpackInfoPanel;
 import com.lx862.pwgui.gui.panel.ModpackVersionPanel;
 import com.lx862.pwgui.gui.GUIConfiguration;
 import com.lx862.pwgui.util.Util;
-import org.apache.commons.io.FileUtils;
-import com.lx862.pwgui.executable.ProgramExecution;
+import com.lx862.pwgui.task.RunProgramTask;
 
 import javax.swing.*;
 import java.awt.*;
 import java.io.File;
 import java.io.IOException;
 import java.net.URI;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicReference;
@@ -113,36 +112,25 @@ public class NewModpackDialog extends BaseDialog {
             fileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
             fileChooser.setDialogTitle("Choose a folder to store your modpack in...");
 
-            if(fileChooser.showOpenDialog(parent) == JFileChooser.APPROVE_OPTION) {
-                File directory = fileChooser.getSelectedFile();
-                String cleanFilesystemName = packName.replaceAll("(?U)[^\\w\\._]+", "_"); // https://stackoverflow.com/questions/1155107/is-there-a-cross-platform-java-method-to-remove-filename-special-chars
-                File modpackDirectory = directory.toPath().resolve(cleanFilesystemName).toFile();
-
-                if(Files.exists(modpackDirectory.toPath())) {
-                    if(modpackDirectory.isFile()) {
-                        JOptionPane.showMessageDialog(parent, String.format("A file with name \"%s\" already exists!\nConsider removing/renaming the file.", modpackDirectory.getName()), Util.withTitlePrefix("Create Modpack"), JOptionPane.ERROR_MESSAGE);
-                        createModpack(parent, packName, packAuthor, packVersion, minecraft, modloader, finishCallback);
-                        return;
-                    } else if(modpackDirectory.list().length > 0) {
-                        // Note: We use "folder already exists" because it's easier to get by. If a user have an empty directory, this won't prompt because no data will be loss.
-                        if(JOptionPane.showConfirmDialog(parent, String.format("\"%s\" folder already exists!\nDo you want to use that folder for your Modpack anyway?\nWARNING: This would remove EVERYTHING within the folder!", modpackDirectory.getName()), Util.withTitlePrefix("Create Modpack"), JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
-                            FileUtils.deleteDirectory(modpackDirectory);
-                            Files.createDirectory(modpackDirectory.toPath());
-                        } else {
-                            createModpack(parent, packName, packAuthor, packVersion, minecraft, modloader, finishCallback);
-                            return;
-                        }
-                    }
+            fileChooser.setApproveCallback((selected, ctx) -> {
+                File firstSelected = selected[0];
+                if(firstSelected.list().length > 0) {
+                    ctx.showMessageDialog(JOptionPane.INFORMATION_MESSAGE, "Folder not empty", "The selected folder is not empty, please create an empty folder for the modpack to be stored in.", JOptionPane.OK_OPTION);
+                    return SystemFileChooser.CANCEL_OPTION;
                 } else {
-                    Files.createDirectory(modpackDirectory.toPath());
+                    return SystemFileChooser.APPROVE_OPTION;
                 }
+            });
+
+            if(fileChooser.showOpenDialog(parent) == JFileChooser.APPROVE_OPTION) {
+                File modpackDirectory = fileChooser.getSelectedFile();
 
                 // Build arguments
                 PackwizExecutable.PackwizArgumentBuilder arguments = PackwizExecutable.INSTANCE.init(packName, packAuthor, packVersion, minecraft.getVersion(), modloader);
 
                 PackwizExecutable.INSTANCE.changeWorkingDirectory(modpackDirectory.toPath());
 
-                ProgramExecution processExecution = arguments.build();
+                RunProgramTask processExecution = arguments.build();
                 processExecution.onExit(exitResult -> {
                     if(exitResult.success()) {
                         if(finishCallback != null) finishCallback.accept(modpackDirectory.toPath());
@@ -192,11 +180,10 @@ class ImportModpackPanel extends JPanel {
 
         innerPanel.add(new JLabel("Pack format:"));
 
-        JPanel mainPanel = new JPanel(new CardLayout());
-
         JComboBox<IconNamePair> packFormatComboBox = new JComboBox<>();
         packFormatComboBox.setRenderer(new IconNamePairListCellRenderer());
 
+        JPanel mainPanel = new JPanel(new CardLayout());
         ComboBoxCardLinker<IconNamePair> comboBoxCardLinker = new ComboBoxCardLinker<>(packFormatComboBox, mainPanel);
         comboBoxCardLinker.addTab(mr, new ImportModrinthPanel(parent, importCallback));
         comboBoxCardLinker.addTab(cf, new ImportCurseForgePanel(parent, importCallback));
@@ -297,15 +284,15 @@ class ImportModpackPanel extends JPanel {
                     }
                 }
             }
-            String authorName = Config.getInstance().authorName.getValue();
-            if(authorName == null) authorName = "PW-GUI";
+
+            String authorName = Config.getInstance().authorName.valueOr("PW-GUI");
 
             NewModpackDialog.createModpack(parent, pack.index.name, authorName, pack.index.versionId, minecraft, modloader, (destination) -> {
                 PackwizExecutable.INSTANCE.changeWorkingDirectory(destination);
 
-                BatchedTask batchedTask = new BatchedTask("Packwiz");
+                BatchedTask batchedTask = new BatchedTask("packwiz");
                 for(ModpackFileEntry fileEntry : pack.index.files) {
-                    batchedTask.add(generateModrinthCommand(destination, fileEntry));
+                    batchedTask.add(getCliAddCommand(destination, fileEntry));
                 }
 
                 batchedTask.onExit(exitResult -> {
@@ -314,16 +301,16 @@ class ImportModpackPanel extends JPanel {
                     }
                 });
 
-                TaskDialog taskDialog = new TaskDialog(parent, "Importing Metadata...", batchedTask);
+                TaskDialog taskDialog = new TaskDialog(parent, "Importing Pack...", batchedTask);
                 batchedTask.run(Strings.REASON_TRIGGERED_BY_USER);
                 taskDialog.setVisible(true);
             });
         }
 
-        private ProgramExecution generateModrinthCommand(Path modpackDir, ModpackFileEntry fileEntry) {
+        private RunProgramTask getCliAddCommand(Path modpackDir, ModpackFileEntry fileEntry) {
             Path parentDir = modpackDir.resolve(fileEntry.path).getParent();
             String metaFolder = parentDir.equals(modpackDir) ? "./" : modpackDir.relativize(parentDir).toString();
-            ProgramExecution pe;
+            RunProgramTask pe;
 
             URI downloadURL = fileEntry.downloads[0];
             if(downloadURL != null) {
@@ -425,15 +412,15 @@ class ImportModpackPanel extends JPanel {
         }
 
         private void runCurseForgeImportCommand(File sourceFile, Runnable callback) {
-            ProgramExecution programExecution = PackwizExecutable.INSTANCE.curseForge().importPack(sourceFile.toString()).build();
-            programExecution.onExit(exitResult -> {
+            RunProgramTask runProgramTask = PackwizExecutable.INSTANCE.curseForge().importPack(sourceFile.toString()).build();
+            runProgramTask.onExit(exitResult -> {
                 if(exitResult.success()) {
                     callback.run();
                 }
             });
 
-            TaskDialog taskDialog = new TaskDialog(parent, "Importing Modpack...", programExecution);
-            programExecution.run(Strings.REASON_TRIGGERED_BY_USER);
+            TaskDialog taskDialog = new TaskDialog(parent, "Importing Modpack...", runProgramTask);
+            runProgramTask.run(Strings.REASON_TRIGGERED_BY_USER);
             taskDialog.setVisible(true);
         }
     }

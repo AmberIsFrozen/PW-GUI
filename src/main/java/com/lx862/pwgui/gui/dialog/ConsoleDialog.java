@@ -3,7 +3,7 @@ package com.lx862.pwgui.gui.dialog;
 import com.lx862.pwgui.support.packwiz.executable.PackwizExecutable;
 import com.lx862.pwgui.util.Strings;
 import com.lx862.pwgui.executable.Executable;
-import com.lx862.pwgui.executable.ProgramExecution;
+import com.lx862.pwgui.task.RunProgramTask;
 import com.lx862.pwgui.gui.components.kui.*;
 import com.lx862.pwgui.gui.GUIConfiguration;
 import com.lx862.pwgui.util.Util;
@@ -22,7 +22,7 @@ public class ConsoleDialog extends BaseDialog {
     private final Executable executable;
     private final KTextArea logTextArea;
     private int commandHistoryIndex;
-    private ProgramExecution currentExecution;
+    private RunProgramTask currentExecution;
 
     public ConsoleDialog(Executable executable, Window parent) {
         super(parent, Util.withTitlePrefix(String.format("%s Console", executable.getProgramName())));
@@ -108,13 +108,13 @@ public class ConsoleDialog extends BaseDialog {
                 splitArgs[i] = argsTokenizer.nextToken();
             }
 
-            ProgramExecution programExecution = PackwizExecutable.INSTANCE.buildCommand(splitArgs).build();
-            currentExecution = programExecution;
-            programExecution.onOutput(line -> {
+            RunProgramTask runProgramTask = PackwizExecutable.INSTANCE.buildCommand(splitArgs).build();
+            currentExecution = runProgramTask;
+            runProgramTask.onOutput(line -> {
                 logTextArea.append(line.content() + "\n");
                 logTextArea.setCaretPosition(logTextArea.getDocument().getLength());
             });
-            programExecution.onExit(exitCode -> {
+            runProgramTask.onExit(exitCode -> {
                 if(helpMessage) {
                     logTextArea.select(0, 0);
                 } else {
@@ -122,7 +122,7 @@ public class ConsoleDialog extends BaseDialog {
                 }
                 currentExecution = null;
             });
-            programExecution.run(helpMessage ? "Display help message" : Strings.REASON_TRIGGERED_BY_USER);
+            runProgramTask.run(helpMessage ? "Display help message" : Strings.REASON_TRIGGERED_BY_USER);
         }
     }
 

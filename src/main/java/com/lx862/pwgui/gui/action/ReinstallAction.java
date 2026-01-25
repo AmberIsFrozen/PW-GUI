@@ -1,10 +1,10 @@
 package com.lx862.pwgui.gui.action;
 
 import com.lx862.pwgui.PWGUI;
-import com.lx862.pwgui.executable.BatchedTask;
+import com.lx862.pwgui.task.BatchedTask;
 import com.lx862.pwgui.gui.prompt.TaskDialog;
 import com.lx862.pwgui.support.packwiz.executable.PackwizExecutable;
-import com.lx862.pwgui.executable.ProgramExecution;
+import com.lx862.pwgui.task.RunProgramTask;
 import com.lx862.pwgui.support.packwiz.Modpack;
 import com.lx862.pwgui.support.packwiz.PackFile;
 import com.lx862.pwgui.support.packwiz.PackIndexFile;
@@ -53,8 +53,8 @@ public class ReinstallAction extends AbstractAction {
             // Remove
             BatchedTask removeExecution = new BatchedTask("Removing meta files");
             for(PackwizMetaFile packwizMetaFile : metas) {
-                ProgramExecution programExecution = PackwizExecutable.INSTANCE.remove(packwizMetaFile.getSlug()).build();
-                removeExecution.add(programExecution);
+                RunProgramTask runProgramTask = PackwizExecutable.INSTANCE.remove(packwizMetaFile.getSlug()).build();
+                removeExecution.add(runProgramTask);
             }
             removeExecution.run("Re-installation requested by user");
 
@@ -66,7 +66,7 @@ public class ReinstallAction extends AbstractAction {
 
                 String metaFolder = modpack.getRootPath().relativize(packwizMetaFile.getPath().getParent()).toString();
 
-                ProgramExecution execution;
+                RunProgramTask execution;
                 if(prefix.equals("mr")) {
                     execution = PackwizExecutable.INSTANCE.buildCommand("mr", "add", packwizMetaFile.updateMrModId).metaFolder(metaFolder).yes().build();
                 } else if(prefix.equals("cf")) {

@@ -34,7 +34,7 @@ public class SettingsDialog extends BaseDialog {
         super(parent, Util.withTitlePrefix("Settings"), ModalityType.DOCUMENT_MODAL);
         this.config = Config.getInstance();
 
-        this.initialTheme = config.applicationTheme.getValue();
+        this.initialTheme = config.applicationTheme.value();
 
         setSize(400, 500);
         setLocationRelativeTo(parent);
@@ -89,7 +89,7 @@ public class SettingsDialog extends BaseDialog {
     @Override
     public void dispose() {
         if(!saved) {
-            GUIConfiguration.setupGUI(initialTheme, config.useWindowDecoration.getValue(), null);
+            GUIConfiguration.setupGUI(initialTheme, config.useWindowDecoration.value(), null);
         } else {
             programPanel.applyTheme();
         }
@@ -121,7 +121,7 @@ public class SettingsDialog extends BaseDialog {
 
             themeComboBox.addItemListener(actionEvent -> {
                 ApplicationTheme t = (ApplicationTheme)themeComboBox.getSelectedItem();
-                GUIConfiguration.setupGUI(t, config.useWindowDecoration.getValue(), SettingsDialog.this);
+                GUIConfiguration.setupGUI(t, config.useWindowDecoration.value(), SettingsDialog.this);
             });
             themePanel.add(themeComboBox);
             add(themePanel);
@@ -135,17 +135,17 @@ public class SettingsDialog extends BaseDialog {
             add(GUIConfiguration.createVerticalPadding(4));
 
             relaunchModpackCheckbox = new JCheckBox("Open last modpack on launch");
-            relaunchModpackCheckbox.setSelected(config.openLastModpackOnLaunch.getValue());
+            relaunchModpackCheckbox.setSelected(config.openLastModpackOnLaunch.value());
             this.relaunchModpackCheckbox.setAlignmentX(Component.LEFT_ALIGNMENT);
             add(relaunchModpackCheckbox);
 
             showPackwizMetaFileNameCheckbox = new JCheckBox("Show packwiz metafile name (.pw.toml)");
-            showPackwizMetaFileNameCheckbox.setSelected(config.showMetaFileName.getValue());
+            showPackwizMetaFileNameCheckbox.setSelected(config.showMetaFileName.value());
             this.showPackwizMetaFileNameCheckbox.setAlignmentX(Component.LEFT_ALIGNMENT);
             add(showPackwizMetaFileNameCheckbox);
 
             this.debugModeCheckBox = new JCheckBox("Enable Debug Log");
-            debugModeCheckBox.setSelected(config.debugMode.getValue());
+            debugModeCheckBox.setSelected(config.debugMode.value());
             debugModeCheckBox.setAlignmentX(Component.LEFT_ALIGNMENT);
             add(debugModeCheckBox);
 
@@ -165,7 +165,7 @@ public class SettingsDialog extends BaseDialog {
         }
 
         public void applyTheme() {
-            GUIConfiguration.setupGUI((ApplicationTheme) themeComboBox.getSelectedItem(), config.useWindowDecoration.getValue(), null);
+            GUIConfiguration.setupGUI((ApplicationTheme) themeComboBox.getSelectedItem(), config.useWindowDecoration.value(), null);
         }
 
         class AuthorNamePanel extends KGridBagLayoutPanel {
@@ -174,7 +174,7 @@ public class SettingsDialog extends BaseDialog {
             public AuthorNamePanel() {
                 super(6, 3, 3);
                 this.nameTextField = new KTextField("Name here");
-                if(config.authorName.getValue() != null) this.nameTextField.setText(config.authorName.getValue());
+                if(config.authorName.value() != null) this.nameTextField.setText(config.authorName.value());
                 addRow(1, 1, new JLabel("Author pack as:"), this.nameTextField, new KHelpButton("This field is used to automatically fill the \"author\" field when creating a modpack, as well as the name field when changing the LICENSE file."));
                 setAlignmentX(Component.LEFT_ALIGNMENT);
             }
@@ -198,7 +198,7 @@ public class SettingsDialog extends BaseDialog {
             this.packwizLocationLabel = new JLabel("Location: ???");
 
             KButton changePackwizLocationButton = new KButton(new LocatePackwizAction("Change...", SettingsDialog.this, () -> {
-                Path newPath = Config.getInstance().packwizExecutablePath.getValue();
+                Path newPath = Config.getInstance().packwizExecutablePath.value();
                 packwizLocationLabel.setText(String.format("Location: %s", newPath.toString()));
                 packwizLocationLabel.setToolTipText(newPath.toString());
             }));
@@ -215,11 +215,11 @@ public class SettingsDialog extends BaseDialog {
             downloadPackwizButton.setAlignmentX(Component.LEFT_ALIGNMENT);
             add(downloadPackwizButton);
 
-            updatePackwizPath(config.packwizExecutablePath.getValue());
+            updatePackwizPath(config.packwizExecutablePath.value());
         }
 
         private void updatePackwizPath(Path newPath) {
-            Path oldPath = config.lastModpackPath.getValue();
+            Path oldPath = config.lastModpackPath.value();
 
             config.lastModpackPath.setValue(newPath);
             boolean located = PackwizExecutable.INSTANCE.probe(null) != null;

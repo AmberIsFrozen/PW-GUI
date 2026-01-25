@@ -6,23 +6,24 @@ import com.lx862.pwgui.support.packwiz.data.VersionMetadata;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.function.Consumer;
+import java.util.concurrent.CompletableFuture;
 
 public class Caches {
     public static final Map<PackComponent, List<VersionMetadata>> componentCaches = new HashMap<>();
     public static final Map<String, byte[]> resourceCaches = new HashMap<>();
 
-    public static void getVersionMetadata(PackComponent component, Consumer<List<VersionMetadata>> callback) {
+    public static CompletableFuture<List<VersionMetadata>> fetchVersionMetadata(PackComponent component) {
         if(componentCaches.containsKey(component)) {
-            callback.accept(componentCaches.get(component));
+            return CompletableFuture.completedFuture(componentCaches.get(component));
         } else {
             try {
-                component.versionGetter.get((versionList) -> {
-                    Caches.componentCaches.put(PackComponent.MINECRAFT, versionList);
-                    callback.accept(versionList);
+                return component.versionGetter.get().thenApply(versionList -> {
+                    Caches.componentCaches.put(component, versionList);
+                    return versionList;
                 });
             } catch (Exception e) {
                 Caches.componentCaches.put(component, null);
+                return CompletableFuture.completedFuture(null);
             }
         }
     }

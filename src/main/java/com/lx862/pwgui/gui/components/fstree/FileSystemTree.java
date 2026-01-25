@@ -72,11 +72,8 @@ public class FileSystemTree extends LazyJTree {
                 FileSystemEntityModel child = treeConfiguration.getModel(file);
                 if(child == null) continue;
 
-                if(file.isDirectory() && !excludedDirs.contains(file.getName())) {
-                    FileSystemSortedTreeNode node = new FileSystemSortedTreeNode(child);
-                    rootNode.add(node);
-                } else {
-                    FileSystemSortedTreeNode node = new FileSystemSortedTreeNode(child);
+                FileSystemSortedTreeNode node = new FileSystemSortedTreeNode(child);
+                if(!rootNode.containsNode(node)) { // Node might already be added externally (e.g. file watching)
                     rootNode.add(node);
                 }
             }

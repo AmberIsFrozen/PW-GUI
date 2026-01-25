@@ -92,19 +92,19 @@ public class Config extends WritableFile {
         }
         jsonObject.add("lastPickedFiles", lastPickedFilesJsonArray);
         if(lastModpackPath.valueNotNull()) {
-            jsonObject.addProperty(lastModpackPath.getKey(), lastModpackPath.getValue().toString());
+            jsonObject.addProperty(lastModpackPath.getKey(), lastModpackPath.value().toString());
         }
-        jsonObject.addProperty(applicationTheme.getKey(), applicationTheme.getValue().name());
-        jsonObject.addProperty(authorName.getKey(), authorName.getValue());
-        jsonObject.addProperty(openLastModpackOnLaunch.getKey(), openLastModpackOnLaunch.getValue());
-        jsonObject.addProperty(debugMode.getKey(), debugMode.getValue());
-        jsonObject.addProperty(useWindowDecoration.getKey(), useWindowDecoration.getValue());
-        jsonObject.addProperty(showMetaFileName.getKey(), showMetaFileName.getValue());
-        jsonObject.addProperty(zoomFactor.getKey(), zoomFactor.getValue());
+        jsonObject.addProperty(applicationTheme.getKey(), applicationTheme.value().name());
+        jsonObject.addProperty(authorName.getKey(), authorName.value());
+        jsonObject.addProperty(openLastModpackOnLaunch.getKey(), openLastModpackOnLaunch.value());
+        jsonObject.addProperty(debugMode.getKey(), debugMode.value());
+        jsonObject.addProperty(useWindowDecoration.getKey(), useWindowDecoration.value());
+        jsonObject.addProperty(showMetaFileName.getKey(), showMetaFileName.value());
+        jsonObject.addProperty(zoomFactor.getKey(), zoomFactor.value());
 
         JsonObject executableJsonObject = new JsonObject();
         if(packwizExecutablePath.valueNotNull()) {
-            executableJsonObject.addProperty(packwizExecutablePath.getKey(), packwizExecutablePath.getValue().toString());
+            executableJsonObject.addProperty(packwizExecutablePath.getKey(), packwizExecutablePath.value().toString());
         }
         jsonObject.add("executables", executableJsonObject);
 
@@ -115,7 +115,7 @@ public class Config extends WritableFile {
     }
 
     public void setLastModpackPath(Path newValue) {
-        if(!Objects.equals(newValue, this.lastModpackPath.getValue())) {
+        if(!Objects.equals(newValue, this.lastModpackPath.value())) {
             this.lastModpackPath.setValue(newValue);
             try { // Write if changed
                 write("Save last opened modpack path");
@@ -150,8 +150,12 @@ public class Config extends WritableFile {
             return this.configName;
         }
 
-        public T getValue() {
+        public T value() {
             return this.value;
+        }
+
+        public T valueOr(T defaultValue) {
+            return this.value == null ? defaultValue : value;
         }
 
         public void setValue(T newValue) {

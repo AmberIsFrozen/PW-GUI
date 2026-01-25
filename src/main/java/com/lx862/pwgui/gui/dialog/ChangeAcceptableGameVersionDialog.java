@@ -2,14 +2,14 @@ package com.lx862.pwgui.gui.dialog;
 
 import com.formdev.flatlaf.ui.FlatUIUtils;
 import com.lx862.pwgui.core.data.Caches;
-import com.lx862.pwgui.executable.Task;
+import com.lx862.pwgui.task.Task;
 import com.lx862.pwgui.support.packwiz.executable.PackwizExecutable;
 import com.lx862.pwgui.util.Strings;
 import com.lx862.pwgui.gui.components.kui.KActionPanel;
 import com.lx862.pwgui.gui.components.kui.KRootContentPanel;
 import com.lx862.pwgui.support.packwiz.data.PackComponent;
 import com.lx862.pwgui.support.packwiz.data.VersionMetadata;
-import com.lx862.pwgui.executable.BatchedTask;
+import com.lx862.pwgui.task.BatchedTask;
 import com.lx862.pwgui.gui.action.CloseWindowAction;
 import com.lx862.pwgui.gui.components.ToggleListSelectionModel;
 import com.lx862.pwgui.gui.components.kui.KButton;
@@ -65,11 +65,14 @@ public class ChangeAcceptableGameVersionDialog extends BaseDialog {
         versionListScrollPane.setAlignmentX(Component.LEFT_ALIGNMENT);
         contentPanel.add(versionListScrollPane);
 
-        Caches.getVersionMetadata(PackComponent.MINECRAFT, (versions) -> {
-            this.versions.clear();
-            this.versions.addAll(versions);
-            refreshVersionList(versionList, preSelectedVersions, snapshotCheckBox);
-        });
+        Caches.fetchVersionMetadata(PackComponent.MINECRAFT)
+            .thenAccept((versions) -> {
+                SwingUtilities.invokeLater(() -> {
+                    this.versions.clear();
+                    this.versions.addAll(versions);
+                    refreshVersionList(versionList, preSelectedVersions, snapshotCheckBox);
+                });
+            });
 
 
         snapshotCheckBox.addActionListener(actionEvent -> refreshVersionList(versionList, versionList.getSelectedValuesList(), snapshotCheckBox));

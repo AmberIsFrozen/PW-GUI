@@ -3,10 +3,9 @@ package com.lx862.pwgui.util;
 import com.lx862.pwgui.PWGUI;
 import com.lx862.pwgui.Main;
 import com.lx862.pwgui.core.ApplicationInfo;
-import com.lx862.pwgui.core.data.Cache;
 import com.lx862.pwgui.core.data.Caches;
 import com.lx862.pwgui.core.data.model.ManualModInfo;
-import com.lx862.pwgui.executable.ProgramExecution;
+import com.lx862.pwgui.task.RunProgramTask;
 import com.lx862.pwgui.gui.prompt.TaskDialog;
 import com.lx862.pwgui.gui.prompt.ManualDownloadDialog;
 
@@ -132,12 +131,12 @@ public class Util {
         }
     }
 
-    public static void addManualDownloadPrompt(JDialog parentDialog, ProgramExecution programExecution, TaskDialog taskDialog, Runnable callback) {
+    public static void addManualDownloadPrompt(JDialog parentDialog, RunProgramTask runProgramTask, TaskDialog taskDialog, Runnable callback) {
         List<ManualModInfo> manualDownloadMod = new ArrayList<>();
         AtomicBoolean captureManualDownloadMod = new AtomicBoolean();
         AtomicReference<String> cachePath = new AtomicReference<>();
 
-        programExecution.onOutput((stdout) -> {
+        runProgramTask.onOutput((stdout) -> {
             String line = stdout.content();
             if(line.contains("and must be manually downloaded")) {
                 captureManualDownloadMod.set(true);

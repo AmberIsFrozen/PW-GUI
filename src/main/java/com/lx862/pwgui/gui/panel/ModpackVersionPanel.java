@@ -14,7 +14,6 @@ import javax.swing.*;
 import java.awt.*;
 import java.util.List;
 import java.util.Objects;
-import java.util.function.Consumer;
 
 public class ModpackVersionPanel extends KGridBagLayoutPanel {
     private final JComboBox<VersionMetadata> minecraftVersionComboBox;
@@ -106,18 +105,21 @@ public class ModpackVersionPanel extends KGridBagLayoutPanel {
         // Dummy entry to retain the combo box height account for the list padding
         minecraftVersionComboBox.addItem(new VersionMetadata(null, "Loading...", VersionMetadata.State.RELEASE));
 
-        fetchComponentDatas(PackComponent.MINECRAFT, (versionList) -> {
-            boolean showSnapshot = showSnapshotCheckBox.isSelected();
-            boolean isSnapshot = versionList.stream().anyMatch(e -> e.getState() != VersionMetadata.State.RELEASE && e.getVersionName().equals(minecraftVersionComboBox.getEditor().getItem().toString()));
-            if(isSnapshot) {
-                showSnapshot = true;
-                showSnapshotCheckBox.setSelected(true);
-            }
-            fillComboBoxes(null, minecraftVersionComboBox, versionList, showSnapshot);
-            // We add event listener after we fill the combobox, as we don't want the fill update to be triggered
-            minecraftVersionComboBox.setAction(null);
-            minecraftVersionComboBox.addActionListener(actionEvent -> updateModloaderUI());
-        });
+        Caches.fetchVersionMetadata(PackComponent.MINECRAFT)
+            .thenAccept((versionList) -> {
+                SwingUtilities.invokeLater(() -> {
+                    boolean showSnapshot = showSnapshotCheckBox.isSelected();
+                    boolean isSnapshot = versionList.stream().anyMatch(e -> e.getState() != VersionMetadata.State.RELEASE && e.getVersionName().equals(minecraftVersionComboBox.getEditor().getItem().toString()));
+                    if(isSnapshot) {
+                        showSnapshot = true;
+                        showSnapshotCheckBox.setSelected(true);
+                    }
+                    fillComboBoxes(null, minecraftVersionComboBox, versionList, showSnapshot);
+                    // We add event listener after we fill the combobox, as we don't want the fill update to be triggered
+                    minecraftVersionComboBox.setAction(null);
+                    minecraftVersionComboBox.addActionListener(actionEvent -> updateModloaderUI());
+                });
+            });
     }
 
     private void setModloader(PackComponent modloader) {
@@ -138,10 +140,14 @@ public class ModpackVersionPanel extends KGridBagLayoutPanel {
 
             modloaderVersionComboBox.setEnabled(false);
             modloaderVersionComboBox.addItem(new VersionMetadata(null, "Loading...", VersionMetadata.State.RELEASE));
-            fetchComponentDatas(modloader, (versionList) -> {
-                fillComboBoxes(minecraftVersionComboBox.getEditor().getItem().toString(), modloaderVersionComboBox, versionList, false);
-                modloaderVersionComboBox.setEnabled(true);
-            });
+
+            Caches.fetchVersionMetadata(modloader)
+                .thenAccept((versionList) -> {
+                    SwingUtilities.invokeLater(() -> {
+                        fillComboBoxes(minecraftVersionComboBox.getEditor().getItem().toString(), modloaderVersionComboBox, versionList, false);
+                        modloaderVersionComboBox.setEnabled(true);
+                    });
+                });
         }
     }
 
@@ -182,23 +188,6 @@ public class ModpackVersionPanel extends KGridBagLayoutPanel {
         }
 
         comboBox.setSelectedIndex(equivalentToOldValueIndex);
-    }
-
-    private void fetchComponentDatas(PackComponent packComponent, Consumer<List<VersionMetadata>> callback) {
-        if(Caches.componentCaches.get(packComponent) != null) {
-            callback.accept(Caches.componentCaches.get(packComponent));
-            return;
-        }
-
-        try {
-            packComponent.versionGetter.get((versionList) -> {
-                Caches.componentCaches.put(packComponent, versionList);
-                SwingUtilities.invokeLater(() -> callback.accept(versionList));
-            });
-        } catch (Exception e) {
-            Caches.componentCaches.put(packComponent, null);
-            callback.accept(null);
-        }
     }
 
     public boolean minecraftVersionChanged() {

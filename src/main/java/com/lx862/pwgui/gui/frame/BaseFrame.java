@@ -34,7 +34,7 @@ public abstract class BaseFrame extends JFrame {
         setJMenuBar(jMenuBar);
 
         UIScale.setSupportedZoomFactors(ZOOM_LEVELS);
-        UIScale.setZoomFactor(Config.getInstance().zoomFactor.getValue());
+        UIScale.setZoomFactor(Config.getInstance().zoomFactor.value());
 
         shortcutKeyListener = e -> {
             if(e.getID() == KeyEvent.KEY_PRESSED) {

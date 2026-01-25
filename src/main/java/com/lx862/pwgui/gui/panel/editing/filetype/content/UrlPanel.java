@@ -4,7 +4,7 @@ import com.lx862.pwgui.support.packwiz.executable.PackwizExecutable;
 import com.lx862.pwgui.gui.components.kui.KButton;
 import com.lx862.pwgui.gui.listener.DocumentChangedListener;
 import com.lx862.pwgui.core.data.model.file.ContentDirectoryModel;
-import com.lx862.pwgui.executable.ProgramExecution;
+import com.lx862.pwgui.task.RunProgramTask;
 import com.lx862.pwgui.gui.components.kui.KGridBagLayoutPanel;
 import com.lx862.pwgui.gui.components.kui.KTextField;
 import com.lx862.pwgui.gui.prompt.TaskDialog;
@@ -84,15 +84,15 @@ public class UrlPanel extends JPanel {
         } catch (URISyntaxException ignored) {
         }
 
-        ProgramExecution programExecution = PackwizExecutable.INSTANCE.url().add(name, urlString, true).metaFolder(context.getModpack().getRootPath().relativize(fileEntry.path).toString()).build(); // We already did a domain check before, so forcibly add it anyway.
-        programExecution.onExit((exitResult) -> {
+        RunProgramTask runProgramTask = PackwizExecutable.INSTANCE.url().add(name, urlString, true).metaFolder(context.getModpack().getRootPath().relativize(fileEntry.path).toString()).build(); // We already did a domain check before, so forcibly add it anyway.
+        runProgramTask.onExit((exitResult) -> {
             if(exitResult.success()) {
                 JOptionPane.showMessageDialog(getTopLevelAncestor(), String.format("%s has been added!", name), Util.withTitlePrefix("Item Added!"), JOptionPane.INFORMATION_MESSAGE);
             }
         });
 
-        TaskDialog taskDialog = new TaskDialog((Window)getTopLevelAncestor(), "Adding item...", programExecution);
-        programExecution.run("Triggered by user");
+        TaskDialog taskDialog = new TaskDialog((Window)getTopLevelAncestor(), "Adding item...", runProgramTask);
+        runProgramTask.run("Triggered by user");
         taskDialog.setVisible(true);
     }
 

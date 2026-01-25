@@ -96,7 +96,7 @@ public class Logger {
         addListener(((entry, isRealtime) -> {
             if(entry.logLevel() == LogEntry.LogLevel.ERROR) {
                 System.err.println(entry.message());
-            } else if(entry.logLevel() != LogEntry.LogLevel.DEBUG || Config.getInstance().debugMode.getValue()) {
+            } else if(entry.logLevel() != LogEntry.LogLevel.DEBUG || Config.getInstance().debugMode.value()) {
                 System.out.println(entry.message());
             }
         }));

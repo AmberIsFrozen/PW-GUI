@@ -1,4 +1,4 @@
-package com.lx862.pwgui.executable;
+package com.lx862.pwgui.task;
 
 import javax.swing.*;
 import java.util.ArrayList;
@@ -36,7 +36,7 @@ public abstract class Task {
         return this;
     }
 
-    public void run(String reason) {
+    public final void run(String reason) {
         run(reason, this.defaultExecutor);
     }
 
@@ -44,15 +44,19 @@ public abstract class Task {
 
     public abstract void terminate();
 
-    protected void callOutputListeners(OutputMessage outputMessage) {
+    protected void submitOutput(String message) {
+        submitOutput(new OutputMessage(message, false));
+    }
+
+    protected void submitOutput(OutputMessage outputMessage) {
         invokeCallback(outputListeners, outputMessage);
     }
 
-    protected void setProgress(float value) {
+    protected void submitProgress(float value) {
         invokeCallback(progressListeners, value);
     }
 
-    protected void callExitListeners(ExitResult exitResult) {
+    protected void submitExitResult(ExitResult exitResult) {
         invokeCallback(exitListeners, exitResult);
     }
 

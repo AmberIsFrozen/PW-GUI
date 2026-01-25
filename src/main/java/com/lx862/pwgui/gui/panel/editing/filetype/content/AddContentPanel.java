@@ -4,7 +4,7 @@ import com.lx862.pwgui.support.packwiz.executable.PackwizExecutable;
 import com.lx862.pwgui.gui.ImageUtil;
 import com.lx862.pwgui.util.Strings;
 import com.lx862.pwgui.support.packwiz.Modpack;
-import com.lx862.pwgui.executable.ProgramExecution;
+import com.lx862.pwgui.task.RunProgramTask;
 import com.lx862.pwgui.gui.prompt.TaskDialog;
 import com.lx862.pwgui.gui.prompt.NumericSelectionDialog;
 import com.lx862.pwgui.gui.panel.editing.filetype.FileEntryPaneContext;
@@ -34,8 +34,8 @@ public class AddContentPanel extends FileTypePanel {
     }
 
     public static void addProjectFromContentPlatform(Window parent, Modpack modpack, String... args) {
-        ProgramExecution programExecution = PackwizExecutable.INSTANCE.buildCommand(args).build();
-        TaskDialog dialog = new TaskDialog(parent, "Adding mod...", programExecution);
+        RunProgramTask runProgramTask = PackwizExecutable.INSTANCE.buildCommand(args).build();
+        TaskDialog dialog = new TaskDialog(parent, "Adding mod...", runProgramTask);
 
         List<String> recordedOutputs = new ArrayList<>();
 
@@ -44,7 +44,7 @@ public class AddContentPanel extends FileTypePanel {
         AtomicBoolean noValidVersion = new AtomicBoolean();
         AtomicBoolean cancelled = new AtomicBoolean();
 
-        programExecution.onOutput((stdout) -> {
+        runProgramTask.onOutput((stdout) -> {
             String line = stdout.content();
             if((line.startsWith("Searching") && line.endsWith("...")) || line.startsWith("Dependencies found:")) {
                 recordedOutputs.clear();
@@ -68,9 +68,9 @@ public class AddContentPanel extends FileTypePanel {
                 recordOutput.set(false);
                 new NumericSelectionDialog(dialog, "Select Mod", recordedOutputs, (selectIdx) -> {
                     if(selectIdx == -1) {
-                        programExecution.enterInput("0");
+                        runProgramTask.enterInput("0");
                     } else {
-                        programExecution.enterInput(String.valueOf(selectIdx + 1));
+                        runProgramTask.enterInput(String.valueOf(selectIdx + 1));
                     }
                 }).setVisible(true);
             }
@@ -79,9 +79,9 @@ public class AddContentPanel extends FileTypePanel {
             if(line.endsWith("Would you like to add them? [Y/n]: ")) {
                 String depList = recordedOutputs.stream().map(e -> "• " + e).collect(Collectors.joining("\n"));
                 if(JOptionPane.showConfirmDialog(dialog, String.format("The following dependencies are required:\n%s\nDo you want to add them?", depList), Util.withTitlePrefix("Add Dependencies?"), JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
-                    programExecution.enterInput("Y");
+                    runProgramTask.enterInput("Y");
                 } else {
-                    programExecution.enterInput("N");
+                    runProgramTask.enterInput("N");
                 }
             }
 
@@ -113,13 +113,13 @@ public class AddContentPanel extends FileTypePanel {
             return false;
         });
 
-        programExecution.onExit((exitResult) -> {
+        runProgramTask.onExit((exitResult) -> {
             if(exitResult.success() && !cancelled.get()) {
                 JOptionPane.showMessageDialog(parent, String.format("%s has been added to the modpack!", modName.get()), Util.withTitlePrefix("Project Added!"), JOptionPane.INFORMATION_MESSAGE);
             }
         });
 
-        programExecution.run(Strings.REASON_TRIGGERED_BY_USER);
+        runProgramTask.run(Strings.REASON_TRIGGERED_BY_USER);
         dialog.setVisible(true);
     }
 }

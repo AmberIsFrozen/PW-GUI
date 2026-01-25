@@ -6,8 +6,8 @@ import com.lx862.pwgui.support.packwiz.PackFile;
 import com.lx862.pwgui.support.packwiz.PackIndexFile;
 import com.lx862.pwgui.support.packwiz.PackwizMetaFile;
 import com.lx862.pwgui.util.Strings;
-import com.lx862.pwgui.executable.BatchedTask;
-import com.lx862.pwgui.executable.ProgramExecution;
+import com.lx862.pwgui.task.BatchedTask;
+import com.lx862.pwgui.task.RunProgramTask;
 import com.lx862.pwgui.gui.prompt.TaskDialog;
 import com.lx862.pwgui.gui.prompt.IncompatibleSummaryDialog;
 import com.lx862.pwgui.util.Util;
@@ -39,7 +39,7 @@ public class FullUpdateAction extends UpdateAction {
     @Override
     public void actionPerformed(ActionEvent event) {
         Window parent = getParent.get();
-        ProgramExecution regularUpdateExecution = getProgramExecution(parent);
+        RunProgramTask regularUpdateExecution = getProgramExecution(parent);
 
         PackIndexFile packIndex = packFile.packIndexFile.get();
         List<PackIndexFile.FileEntry> originalEntries = packIndex.getFileEntries().stream().filter(f -> f.metafile).toList();
@@ -79,7 +79,7 @@ public class FullUpdateAction extends UpdateAction {
                         if(packwizMetaFile.updateGhSlug != null) continue;
 
                         String prefix = packwizMetaFile.updateMrVersion != null ? "mr" : "cf";
-                        ProgramExecution execution;
+                        RunProgramTask execution;
                         if(prefix.equals("mr")) {
                             execution = PackwizExecutable.INSTANCE.buildCommand("mr", "add", packwizMetaFile.updateMrModId).metaFolder(tempDirectory.getFileName().toString()).build();
                         } else {

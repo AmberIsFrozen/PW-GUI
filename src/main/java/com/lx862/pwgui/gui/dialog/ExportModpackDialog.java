@@ -14,7 +14,7 @@ import com.lx862.pwgui.gui.GUIConfiguration;
 import com.lx862.pwgui.util.Strings;
 import com.lx862.pwgui.support.packwiz.data.IconNamePair;
 import com.lx862.pwgui.gui.components.kui.KFileChooser;
-import com.lx862.pwgui.executable.ProgramExecution;
+import com.lx862.pwgui.task.RunProgramTask;
 import com.lx862.pwgui.util.Util;
 
 import javax.swing.*;
@@ -78,11 +78,11 @@ public class ExportModpackDialog extends BaseDialog {
     }
 
     private void exportModpack(List<String> args, File destination) {
-        ProgramExecution programRefresh = PackwizExecutable.INSTANCE.refresh().build();
+        RunProgramTask programRefresh = PackwizExecutable.INSTANCE.refresh().build();
         programRefresh.onExit(refreshExitResult -> {
             if(!refreshExitResult.success()) return;
 
-            ProgramExecution program = PackwizExecutable.INSTANCE.buildCommand(args.toArray(new String[0])).build();
+            RunProgramTask program = PackwizExecutable.INSTANCE.buildCommand(args.toArray(new String[0])).build();
             TaskDialog dialog = new TaskDialog(this, "Exporting Modpack...", program);
             Util.addManualDownloadPrompt(this, program, dialog, () -> {
                 exportModpack(args, destination);

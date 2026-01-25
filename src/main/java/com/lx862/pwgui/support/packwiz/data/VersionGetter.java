@@ -20,14 +20,13 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
-import java.util.function.Consumer;
 
 public interface VersionGetter {
-    void get(Consumer<List<VersionMetadata>> callback) throws MalformedURLException;
+    CompletableFuture<List<VersionMetadata>> get() throws MalformedURLException;
 
-    static void fetchMinecraft(Consumer<List<VersionMetadata>> callback) throws MalformedURLException {
+    static CompletableFuture<List<VersionMetadata>> fetchMinecraft() throws MalformedURLException {
         URL url = new URL("https://launchermeta.mojang.com/mc/game/version_manifest_v2.json");
-        CompletableFuture.runAsync(() -> {
+        return CompletableFuture.supplyAsync(() -> {
             try {
                 String content = NetworkHelper.getFromURL(url);
                 JsonObject jsonObject = JsonParser.parseString(content).getAsJsonObject();
@@ -39,29 +38,29 @@ public interface VersionGetter {
                     VersionMetadata metadata = new VersionMetadata(null, versionObject.get("id").getAsString(), versionType.equals("snapshot") ? VersionMetadata.State.ALPHA : VersionMetadata.State.RELEASE);
                     metadatas.add(metadata);
                 }
-                callback.accept(metadatas);
+                return metadatas;
             } catch (IOException e) {
-                callback.accept(null);
                 PWGUI.LOGGER.error("", e);
+                return null;
             }
         });
     }
 
-    static void fetchFabric(Consumer<List<VersionMetadata>> callback) throws MalformedURLException {
-        fetchFabricDerivatives("https://maven.fabricmc.net/net/fabricmc/fabric-loader/maven-metadata.xml", false, callback);
+    static CompletableFuture<List<VersionMetadata>> fetchFabric() throws MalformedURLException {
+        return fetchFabricDerivatives("https://maven.fabricmc.net/net/fabricmc/fabric-loader/maven-metadata.xml", false);
     }
 
-    static void fetchQuilt(Consumer<List<VersionMetadata>> callback) throws MalformedURLException {
-        fetchFabricDerivatives("https://maven.quiltmc.org/repository/release/org/quiltmc/quilt-loader/maven-metadata.xml", false, callback);
+    static CompletableFuture<List<VersionMetadata>> fetchQuilt() throws MalformedURLException {
+        return fetchFabricDerivatives("https://maven.quiltmc.org/repository/release/org/quiltmc/quilt-loader/maven-metadata.xml", false);
     }
 
-    static void fetchLiteloader(Consumer<List<VersionMetadata>> callback) throws MalformedURLException {
-        fetchFabricDerivatives("https://repo.mumfrey.com/content/repositories/snapshots/com/mumfrey/liteloader/maven-metadata.xml", true, callback);
+    static CompletableFuture<List<VersionMetadata>> fetchLiteloader() throws MalformedURLException {
+        return fetchFabricDerivatives("https://repo.mumfrey.com/content/repositories/snapshots/com/mumfrey/liteloader/maven-metadata.xml", true);
     }
 
-    static void fetchFabricDerivatives(String urlString, boolean mcVersionLabeled, Consumer<List<VersionMetadata>> callback) throws MalformedURLException {
+    static CompletableFuture<List<VersionMetadata>> fetchFabricDerivatives(String urlString, boolean mcVersionLabeled) throws MalformedURLException {
         URL url = new URL(urlString);
-        CompletableFuture.runAsync(() -> {
+        return CompletableFuture.supplyAsync(() -> {
             try {
                 DocumentBuilder builder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
 
@@ -76,17 +75,17 @@ public interface VersionGetter {
                     VersionMetadata metadata = new VersionMetadata(mcVersion, version, version.contains("beta") ? VersionMetadata.State.BETA : VersionMetadata.State.RELEASE);
                     metadatas.add(metadata);
                 }
-                callback.accept(metadatas);
+                return metadatas;
             } catch (Exception e) {
                 PWGUI.LOGGER.error("", e);
-                callback.accept(null);
+                return null;
             }
         });
     }
 
-    static void fetchForge(Consumer<List<VersionMetadata>> callback) throws MalformedURLException {
+    static CompletableFuture<List<VersionMetadata>> fetchForge() throws MalformedURLException {
         URL url = new URL("https://maven.minecraftforge.net/net/minecraftforge/forge/maven-metadata.xml");
-        CompletableFuture.runAsync(() -> {
+        return CompletableFuture.supplyAsync(() -> {
             try {
                 DocumentBuilder builder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
 
@@ -101,61 +100,67 @@ public interface VersionGetter {
                     VersionMetadata metadata = new VersionMetadata(mcVersion, modloaderVersion, VersionMetadata.State.RELEASE);
                     metadatas.add(metadata);
                 }
-                callback.accept(metadatas);
+                return metadatas;
             } catch (Exception e) {
                 PWGUI.LOGGER.error("", e);
-                callback.accept(null);
+                return null;
             }
         });
     }
 
-    static void fetchNeoForge(Consumer<List<VersionMetadata>> callback) throws MalformedURLException {
-        List<VersionMetadata> metadatas = new ArrayList<>();
-        fetchNeoForgeInternal("https://maven.neoforged.net/releases/net/neoforged/forge/maven-metadata.xml", (metadata12001) -> {
-            metadatas.addAll(metadata12001);
-
+    static CompletableFuture<List<VersionMetadata>> fetchNeoForge() throws MalformedURLException {
+        return CompletableFuture.supplyAsync(() -> {
             try {
-                fetchNeoForgeInternal("https://maven.neoforged.net/releases/net/neoforged/neoforge/maven-metadata.xml", (metadata12002) -> {
-                    metadatas.addAll(metadata12002);
-                    Collections.reverse(metadatas); // NeoForge sorts from oldest to newest
-                    callback.accept(metadatas);
-                }, false);
-            } catch (MalformedURLException e) {
-                PWGUI.LOGGER.error("", e);
-                callback.accept(null);
-            }
-        }, true);
-    }
-
-    static void fetchNeoForgeInternal(String urlString, Consumer<List<VersionMetadata>> callback, boolean isFor12001) throws MalformedURLException {
-        URL url = new URL(urlString);
-        CompletableFuture.runAsync(() -> {
-            try {
-                DocumentBuilder builder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
-
-                String content = NetworkHelper.getFromURL(url);
-                Document doc = builder.parse(new InputSource(new StringReader(content)));
-                NodeList versionList = doc.getElementsByTagName("version");
                 List<VersionMetadata> metadatas = new ArrayList<>();
-                for(int i = 0; i < versionList.getLength(); i++) {
-                    Node node = versionList.item(i);
-                    String version = node.getTextContent();
-                    if(isFor12001) {
-                        VersionMetadata metadata = new VersionMetadata("1.20.1", version.contains("-") ? version.split("-")[1] : version, VersionMetadata.State.RELEASE);
-                        metadatas.add(metadata);
-                    } else {
-                        String mcVersionMajor = version.split("\\.")[0];
-                        String mcVersionMinor = version.split("\\.")[1];
-                        String mcVersion = "1." + mcVersionMajor + (mcVersionMinor.equals("0") ? "" : "." + mcVersionMinor);
-                        VersionMetadata metadata = new VersionMetadata(mcVersion, version, version.contains("beta") ? VersionMetadata.State.BETA : VersionMetadata.State.RELEASE);
-                        metadatas.add(metadata);
-                    }
-                }
-                callback.accept(metadatas);
-            } catch (Exception e) {
-                PWGUI.LOGGER.error("", e);
-                callback.accept(null);
+
+                List<VersionMetadata> metadata12001 = fetchNeoForgeInternal("https://maven.neoforged.net/releases/net/neoforged/forge/maven-metadata.xml", true);
+                if(metadata12001 != null) metadatas.addAll(metadata12001);
+                return metadatas;
+            } catch (MalformedURLException e) {
+                return null;
+            }
+        })
+        .thenApplyAsync(metadatas -> {
+            if(metadatas == null) return metadatas;
+
+            try {
+                List<VersionMetadata> metadata12002 = fetchNeoForgeInternal("https://maven.neoforged.net/releases/net/neoforged/neoforge/maven-metadata.xml", false);
+                if(metadata12002 != null) metadatas.addAll(metadata12002);
+                Collections.reverse(metadatas); // NeoForge sorts from oldest to newest
+                return metadatas;
+            } catch (MalformedURLException e) {
+                return null;
             }
         });
+    }
+
+    static List<VersionMetadata> fetchNeoForgeInternal(String urlString, boolean isFor12001) throws MalformedURLException {
+        URL url = new URL(urlString);
+        try {
+            DocumentBuilder builder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
+
+            String content = NetworkHelper.getFromURL(url);
+            Document doc = builder.parse(new InputSource(new StringReader(content)));
+            NodeList versionList = doc.getElementsByTagName("version");
+            List<VersionMetadata> metadatas = new ArrayList<>();
+            for(int i = 0; i < versionList.getLength(); i++) {
+                Node node = versionList.item(i);
+                String version = node.getTextContent();
+                if(isFor12001) {
+                    VersionMetadata metadata = new VersionMetadata("1.20.1", version.contains("-") ? version.split("-")[1] : version, VersionMetadata.State.RELEASE);
+                    metadatas.add(metadata);
+                } else {
+                    String mcVersionMajor = version.split("\\.")[0];
+                    String mcVersionMinor = version.split("\\.")[1];
+                    String mcVersion = "1." + mcVersionMajor + (mcVersionMinor.equals("0") ? "" : "." + mcVersionMinor);
+                    VersionMetadata metadata = new VersionMetadata(mcVersion, version, version.contains("beta") ? VersionMetadata.State.BETA : VersionMetadata.State.RELEASE);
+                    metadatas.add(metadata);
+                }
+            }
+            return metadatas;
+        } catch (Exception e) {
+            PWGUI.LOGGER.error("", e);
+            return null;
+        }
     }
 }

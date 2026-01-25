@@ -24,7 +24,7 @@ public class BaseDialog extends JDialog {
 
     @Override
     public void setSize(int width, int height) {
-        float zoom = Config.getInstance().zoomFactor.getValue();
+        float zoom = Config.getInstance().zoomFactor.value();
         super.setSize((int)(width * zoom), (int)(height * zoom));
     }
 }

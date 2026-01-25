@@ -1,16 +1,14 @@
-package com.lx862.pwgui.executable;
+package com.lx862.pwgui.task;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.function.Consumer;
 
 /** Executes multiple tasks and invokes callback after completion of all commands */
 public class BatchedTask extends Task {
-    private final List<Task> programExecutions;
-    private final List<Consumer<ExitResult>> programExitCallbacks;
+    private final List<Task> tasks;
     private boolean startedExecution = false;
 
     public BatchedTask(String taskName) {
@@ -21,52 +19,49 @@ public class BatchedTask extends Task {
         this(taskName, executorService, false);
     }
 
-    private BatchedTask(String taskName, ExecutorService executorService, boolean ownedExecutor) {
+    private BatchedTask(String taskName, ExecutorService executorService, boolean ownExecutor) {
         super(taskName, executorService);
-        this.programExecutions = new ArrayList<>();
-        this.programExitCallbacks = new ArrayList<>();
+        this.tasks = new ArrayList<>();
 
-        if(ownedExecutor) {
-            onExit(exitCode -> {
+        if(ownExecutor) {
+            onExit(exitResult -> {
                 executorService.shutdownNow();
             });
         }
     }
 
     /** Add another program to queued for execution */
-    public void add(ProgramExecution exec) {
+    public void add(RunProgramTask exec) {
         if(startedExecution) throw new IllegalStateException("No more task should be added after batched task has been started!");
-        programExecutions.add(exec);
+        tasks.add(exec);
     }
 
     @Override
     public void run(String reason, ExecutorService executor) {
         startedExecution = true;
-        if(programExecutions.isEmpty()) { // Nothing to run
-            callExitListeners(ExitResult.ok());
+        if(tasks.isEmpty()) { // Nothing to run
+            submitExitResult(ExitResult.ok());
             return;
         }
 
         AtomicInteger erroredCommands = new AtomicInteger();
         AtomicInteger executedCommands = new AtomicInteger();
-        int totalCommands = programExecutions.size();
+        int totalCommands = tasks.size();
 
-        callOutputListeners(new OutputMessage(String.format("Executing %d commands...", totalCommands), false));
+        submitOutput(new OutputMessage(String.format("Executing %d commands...", totalCommands), false));
 
-        for(Task programExecution : programExecutions) {
-            programExecution.onOutput(this::callOutputListeners);
+        for(Task programExecution : tasks) {
+            programExecution.onOutput(this::submitOutput);
 
             programExecution.onExit(exitCode -> {
-                invokeCallback(programExitCallbacks, exitCode);
-
                 if(!exitCode.success()) erroredCommands.incrementAndGet();
                 executedCommands.incrementAndGet();
 
-                setProgress((float) executedCommands.get() / totalCommands);
+                submitProgress((float) executedCommands.get() / totalCommands);
 
                 boolean allCommandExecuted = executedCommands.get() == totalCommands;
                 if(allCommandExecuted) {
-                    callExitListeners(erroredCommands.get() == 0 ? ExitResult.ok() : ExitResult.code(erroredCommands.get()));
+                    submitExitResult(erroredCommands.get() == 0 ? ExitResult.ok() : ExitResult.code(erroredCommands.get()));
                 }
             });
             programExecution.run(reason, executor);
@@ -78,6 +73,6 @@ public class BatchedTask extends Task {
      */
     @Override
     public void terminate() {
-        programExecutions.forEach(Task::terminate);
+        tasks.forEach(Task::terminate);
     }
 }

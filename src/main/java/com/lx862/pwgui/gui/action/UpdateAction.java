@@ -2,7 +2,7 @@ package com.lx862.pwgui.gui.action;
 
 import com.lx862.pwgui.support.packwiz.executable.PackwizExecutable;
 import com.lx862.pwgui.util.Strings;
-import com.lx862.pwgui.executable.ProgramExecution;
+import com.lx862.pwgui.task.RunProgramTask;
 import com.lx862.pwgui.gui.prompt.TaskDialog;
 import com.lx862.pwgui.gui.prompt.UpdateSummaryDialog;
 import com.lx862.pwgui.util.Util;
@@ -30,9 +30,9 @@ public class UpdateAction extends AbstractAction {
     @Override
     public void actionPerformed(ActionEvent e) {
         Window parent = getParent.get();
-        ProgramExecution programExecution = getProgramExecution(parent);
+        RunProgramTask runProgramTask = getProgramExecution(parent);
 
-        programExecution.onExit(exitResult -> {
+        runProgramTask.onExit(exitResult -> {
             if(exitResult.success()) {
                 if(alreadyUpToDate.get()) {
                     JOptionPane.showMessageDialog(parent, "All files are already up to date!", Util.withTitlePrefix("Up to Date!"), JOptionPane.INFORMATION_MESSAGE);
@@ -43,19 +43,19 @@ public class UpdateAction extends AbstractAction {
                 }
             }
         });
-        TaskDialog taskDialog = new TaskDialog(parent, "Checking for update...", programExecution);
-        programExecution.run(Strings.REASON_TRIGGERED_BY_USER);
+        TaskDialog taskDialog = new TaskDialog(parent, "Checking for update...", runProgramTask);
+        runProgramTask.run(Strings.REASON_TRIGGERED_BY_USER);
         taskDialog.setVisible(true);
     }
 
-    public ProgramExecution getProgramExecution(Window parent) {
-        ProgramExecution programExecution = PackwizExecutable.INSTANCE.updateAll().build();
+    public RunProgramTask getProgramExecution(Window parent) {
+        RunProgramTask runProgramTask = PackwizExecutable.INSTANCE.updateAll().build();
         List<String> updateMods = new ArrayList<>();
         List<String> skippedMods = new ArrayList<>();
         List<String> unsupportedMods = new ArrayList<>();
         AtomicBoolean startLogMods = new AtomicBoolean();
 
-        programExecution.onOutput(stdout -> {
+        runProgramTask.onOutput(stdout -> {
             String line = stdout.content();
             if(line.startsWith("Updates found:")) {
                 startLogMods.set(true);
@@ -71,8 +71,8 @@ public class UpdateAction extends AbstractAction {
 
             if(line.equals("Do you want to update? [Y/n]: ")) {
                 new UpdateSummaryDialog(parent, updateMods, skippedMods, unsupportedMods, (update) -> {
-                    if(update) programExecution.enterInput("Y");
-                    else programExecution.enterInput("N");
+                    if(update) runProgramTask.enterInput("Y");
+                    else runProgramTask.enterInput("N");
                 }).setVisible(true);
             }
 
@@ -88,6 +88,6 @@ public class UpdateAction extends AbstractAction {
                 updateMods.add(line);
             }
         });
-        return programExecution;
+        return runProgramTask;
     }
 }

@@ -6,7 +6,7 @@ import com.lx862.pwgui.support.packwiz.executable.PackwizExecutable;
 import com.lx862.pwgui.gui.listener.DocumentChangedListener;
 import com.lx862.pwgui.gui.components.kui.*;
 import com.lx862.pwgui.util.Strings;
-import com.lx862.pwgui.executable.ProgramExecution;
+import com.lx862.pwgui.task.RunProgramTask;
 import com.lx862.pwgui.support.packwiz.PackwizMetaFile;
 import com.lx862.pwgui.gui.prompt.TaskDialog;
 import com.lx862.pwgui.gui.GUIConfiguration;
@@ -212,17 +212,17 @@ public class PackwizMetaPanel extends FileTypePanel {
     }
 
     private void checkForUpdate(Component parent) {
-        ProgramExecution programExecution = PackwizExecutable.INSTANCE.update(packwizMetaFile.getSlug()).build();
-        TaskDialog dialog = new TaskDialog((Window)getTopLevelAncestor(), String.format("Updating %s...", packwizMetaFile.name), programExecution);
+        RunProgramTask runProgramTask = PackwizExecutable.INSTANCE.update(packwizMetaFile.getSlug()).build();
+        TaskDialog dialog = new TaskDialog((Window)getTopLevelAncestor(), String.format("Updating %s...", packwizMetaFile.name), runProgramTask);
 
         AtomicReference<String> updateString = new AtomicReference<>(null);
-        programExecution.onOutput((stdout) -> {
+        runProgramTask.onOutput((stdout) -> {
             if(stdout.content().startsWith("Update available:")) {
                updateString.set(stdout.content().split("Update available: ")[1]);
             }
         });
 
-        programExecution.onExit(exitResult -> {
+        runProgramTask.onExit(exitResult -> {
             if(exitResult.success()) {
                 String updateMsg = updateString.get();
                 if(updateMsg != null) {
@@ -233,7 +233,7 @@ public class PackwizMetaPanel extends FileTypePanel {
             }
         });
 
-        programExecution.run(Strings.REASON_TRIGGERED_BY_USER);
+        runProgramTask.run(Strings.REASON_TRIGGERED_BY_USER);
         dialog.setVisible(true);
     }
 

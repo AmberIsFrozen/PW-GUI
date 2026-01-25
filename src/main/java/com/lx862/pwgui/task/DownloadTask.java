@@ -1,7 +1,7 @@
-package com.lx862.pwgui.util;
+package com.lx862.pwgui.task;
 
 import com.lx862.pwgui.PWGUI;
-import com.lx862.pwgui.executable.Task;
+import com.lx862.pwgui.util.Util;
 
 import javax.swing.*;
 import java.awt.*;
@@ -14,10 +14,10 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 public class DownloadTask extends Task {
-    private boolean terminateDownload = false;
     private final String itemName;
     private final URL url;
     private final Path destinationDir;
+    private boolean terminateDownload = false;
 
     public DownloadTask(String taskName, String itemName, URL url, Path destinationDir, ExecutorService defaultExecutor) {
         super(taskName, Executors.newSingleThreadExecutor());
@@ -25,15 +25,15 @@ public class DownloadTask extends Task {
         this.url = url;
         this.destinationDir = destinationDir;
 
-        onExit(exitCode -> {
+        onExit(exitResult -> {
             defaultExecutor.shutdownNow();
         });
     }
 
     @Override
     public void run(String reason, ExecutorService executor) {
-        callOutputListeners(new OutputMessage(String.format("Downloading %s from %s", itemName, url.toString()), false));
-        callOutputListeners(new OutputMessage(String.format("Initiating download for %s...", itemName), false));
+        submitOutput(new OutputMessage(String.format("Downloading %s from %s", itemName, url.toString()), false));
+        submitOutput(new OutputMessage(String.format("Initiating download for %s...", itemName), false));
 
         executor.submit(() -> {
             try {
@@ -49,14 +49,14 @@ public class DownloadTask extends Task {
                         fos.write(buffer, 0, bytesRead);
                         downloaded += 1024;
                         float progress = (float)downloaded / contentLength;
-                        setProgress(progress);
-                        callOutputListeners(new OutputMessage(String.format("Downloading %s (%d%%)", itemName, (int)(progress * 100)), false));
+                        submitProgress(progress);
+                        submitOutput(new OutputMessage(String.format("Downloading %s (%d%%)", itemName, (int)(progress * 100)), false));
                     }
                 }
-                callExitListeners(ExitResult.ok());
+                submitExitResult(ExitResult.ok());
             } catch (Exception e) {
                 PWGUI.LOGGER.error("Failed to download {}!", e, itemName);
-                callExitListeners(ExitResult.exception(-1, e));
+                submitExitResult(ExitResult.exception(-1, e));
             }
         });
     }

@@ -15,12 +15,12 @@ public class PackMetadataFileModel extends PlainTextFileModel {
 
     @Override
     public String getDisplayName() {
-        return Config.getInstance().showMetaFileName.getValue() ? name : packwizMetaFile.name;
+        return Config.getInstance().showMetaFileName.value() ? name : packwizMetaFile.name;
     }
 
     @Override
     public boolean isUserFriendlyName() {
-        return !Config.getInstance().showMetaFileName.getValue();
+        return !Config.getInstance().showMetaFileName.value();
     }
 
     public PackwizMetaFile getPackMetadata() {

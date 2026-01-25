@@ -1,6 +1,6 @@
 package com.lx862.pwgui.gui.prompt;
 
-import com.lx862.pwgui.executable.Task;
+import com.lx862.pwgui.task.Task;
 import com.lx862.pwgui.util.Util;
 
 import javax.swing.*;
