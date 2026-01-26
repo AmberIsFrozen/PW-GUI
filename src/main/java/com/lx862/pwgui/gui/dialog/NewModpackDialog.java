@@ -16,6 +16,8 @@ import com.lx862.pwgui.support.mrpack.ModrinthModpack;
 import com.lx862.pwgui.support.packwiz.data.IconNamePair;
 import com.lx862.pwgui.support.packwiz.data.PackComponent;
 import com.lx862.pwgui.support.packwiz.data.PackComponentVersion;
+import com.lx862.pwgui.task.ExtractZipTask;
+import com.lx862.pwgui.task.Task;
 import com.lx862.pwgui.util.Strings;
 import com.lx862.pwgui.support.packwiz.executable.PackwizExecutable;
 import com.lx862.pwgui.gui.components.kui.*;
@@ -25,6 +27,7 @@ import com.lx862.pwgui.gui.panel.ModpackVersionPanel;
 import com.lx862.pwgui.gui.GUIConfiguration;
 import com.lx862.pwgui.util.Util;
 import com.lx862.pwgui.task.RunProgramTask;
+import org.zeroturnaround.zip.ZipUtil;
 
 import javax.swing.*;
 import java.awt.*;
@@ -200,6 +203,8 @@ class ImportModpackPanel extends JPanel {
 
     static class ImportModrinthPanel extends AlignedBoxPanel {
         private final Window parent;
+        private Sideness importSide = Sideness.CLIENT;
+
         public ImportModrinthPanel(Window parent, Consumer<Path> importCallback) {
             super(LEFT_ALIGNMENT);
             this.parent = parent;
@@ -241,11 +246,35 @@ class ImportModpackPanel extends JPanel {
             });
 
             add(selectPackButton);
+
+            JPanel importSettingsPanel = new AlignedBoxPanel(LEFT_ALIGNMENT);
+            JPanel sidenessSettings = new KInlinePanel();
+            sidenessSettings.add(new JLabel("Side:"));
+
+            JRadioButton clientRadio = (JRadioButton) sidenessSettings.add(new JRadioButton("Client"));
+            JRadioButton serverRadio = (JRadioButton) sidenessSettings.add(new JRadioButton("Server"));
+            JRadioButton bothRadio = (JRadioButton) sidenessSettings.add(new JRadioButton("Both"));
+            bothRadio.setSelected(true);
+
+            clientRadio.addActionListener(e -> importSide = Sideness.CLIENT);
+            serverRadio.addActionListener(e -> importSide = Sideness.SERVER);
+            bothRadio.addActionListener(e -> importSide = Sideness.BOTH);
+
+            ButtonGroup buttonGroup = new ButtonGroup();
+            buttonGroup.add(clientRadio);
+            buttonGroup.add(serverRadio);
+            buttonGroup.add(bothRadio);
+
+            importSettingsPanel.add(sidenessSettings);
+
+            KCollapsibleToggle kCollapsibleToggle = new KCollapsibleToggle("Import Settings", "Import Settings", importSettingsPanel);
+            add(kCollapsibleToggle);
+            add(importSettingsPanel);
             add(Box.createVerticalGlue());
             add(new KSeparator());
 
             importButton.addActionListener(e -> {
-                doImport(selectedPack.get(), (path) -> {
+                doImport(selectedPack.get(), importSide, (path) -> {
                     importCallback.accept(path.resolve("pack.toml"));
                 });
             });
@@ -254,7 +283,7 @@ class ImportModpackPanel extends JPanel {
             add(actionPanel);
         }
 
-        private void doImport(ModrinthModpack pack, Consumer<Path> callback) {
+        private void doImport(ModrinthModpack pack, Sideness side, Consumer<Path> callback) {
             PackComponentVersion minecraft = null;
             PackComponentVersion modloader = null;
 
@@ -290,24 +319,40 @@ class ImportModpackPanel extends JPanel {
             NewModpackDialog.createModpack(parent, pack.index.name, authorName, pack.index.versionId, minecraft, modloader, (destination) -> {
                 PackwizExecutable.INSTANCE.changeWorkingDirectory(destination);
 
-                BatchedTask batchedTask = new BatchedTask("packwiz");
-                for(ModpackFileEntry fileEntry : pack.index.files) {
-                    batchedTask.add(getCliAddCommand(destination, fileEntry));
+                BatchedTask importTask = new BatchedTask("packwiz");
+
+                if(ZipUtil.containsEntry(pack.getFile(), "overrides")) {
+                    Task extractZipTask = new ExtractZipTask("Extracting files...", pack.getFile(), destination.toFile(), new ExtractZipTask.InnerDirectory("overrides"));
+                    importTask.add(extractZipTask);
                 }
 
-                batchedTask.onExit(exitResult -> {
+                if(ZipUtil.containsEntry(pack.getFile(), "client-overrides") && (side == Sideness.CLIENT || side == Sideness.BOTH)) {
+                    Task extractZipTask = new ExtractZipTask("Extracting client files...", pack.getFile(), destination.toFile(), new ExtractZipTask.InnerDirectory("client-overrides"));
+                    importTask.add(extractZipTask);
+                }
+
+                if(ZipUtil.containsEntry(pack.getFile(), "server-overrides") && (side == Sideness.SERVER || side == Sideness.BOTH)) {
+                    Task extractZipTask = new ExtractZipTask("Extracting server files...", pack.getFile(), destination.toFile(), new ExtractZipTask.InnerDirectory("client-overrides"));
+                    importTask.add(extractZipTask);
+                }
+
+                for(ModpackFileEntry fileEntry : pack.index.files) {
+                    importTask.add(getModrinthAddTask(destination, fileEntry));
+                }
+
+                importTask.onExit(exitResult -> {
                     if(exitResult.success()) {
                         callback.accept(destination);
                     }
                 });
 
-                TaskDialog taskDialog = new TaskDialog(parent, "Importing Pack...", batchedTask);
-                batchedTask.run(Strings.REASON_TRIGGERED_BY_USER);
+                TaskDialog taskDialog = new TaskDialog(parent, "Importing Pack...", importTask);
+                importTask.run(Strings.REASON_TRIGGERED_BY_USER);
                 taskDialog.setVisible(true);
             });
         }
 
-        private RunProgramTask getCliAddCommand(Path modpackDir, ModpackFileEntry fileEntry) {
+        private RunProgramTask getModrinthAddTask(Path modpackDir, ModpackFileEntry fileEntry) {
             Path parentDir = modpackDir.resolve(fileEntry.path).getParent();
             String metaFolder = parentDir.equals(modpackDir) ? "./" : modpackDir.relativize(parentDir).toString();
             RunProgramTask pe;
@@ -423,5 +468,11 @@ class ImportModpackPanel extends JPanel {
             runProgramTask.run(Strings.REASON_TRIGGERED_BY_USER);
             taskDialog.setVisible(true);
         }
+    }
+
+    enum Sideness {
+        CLIENT,
+        SERVER,
+        BOTH
     }
 }

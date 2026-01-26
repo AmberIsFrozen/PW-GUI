@@ -21,7 +21,7 @@ public class ModpackInfoPanel extends KGridBagLayoutPanel {
     public ModpackInfoPanel(PackFile existingFile, Runnable updateSaveState) {
         super(3, 2);
         this.initialName = existingFile == null ? "" : existingFile.name;
-        this.initialAuthor = existingFile == null ? Config.getInstance().authorName.value() == null ? "" : Config.getInstance().authorName.value() : existingFile.author;
+        this.initialAuthor = existingFile == null ? Config.getInstance().authorName.valueOr("") : existingFile.author;
         this.initialVersion = existingFile == null ? "" : existingFile.version;
 
         nameTextField = new KTextField("My Epic Modpack!", true);

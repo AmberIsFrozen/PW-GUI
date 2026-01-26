@@ -6,14 +6,15 @@ import org.zeroturnaround.zip.ZipUtil;
 
 import java.io.File;
 import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 public class ExtractZipTask extends Task {
     private final File zipSource;
     private final File destination;
     private final NameMapper nameMapper;
 
-    public ExtractZipTask(String taskName, File zipSource, File destination, NameMapper nameMapper, ExecutorService defaultExecutor) {
-        super(taskName, defaultExecutor);
+    public ExtractZipTask(String taskName, File zipSource, File destination, NameMapper nameMapper) {
+        super(taskName, Executors.newSingleThreadExecutor());
         this.zipSource = zipSource;
         this.destination = destination;
         this.nameMapper = nameMapper;
@@ -35,5 +36,18 @@ public class ExtractZipTask extends Task {
 
     @Override
     public void terminate() {
+    }
+
+    public static class InnerDirectory implements NameMapper {
+        private final String dirName;
+
+        public InnerDirectory(String dirName) {
+            this.dirName = dirName + "/";
+        }
+
+        @Override
+        public String map(String s) {
+            return s.startsWith(dirName) ? s.substring(dirName.length()) : null;
+        }
     }
 }

@@ -15,9 +15,12 @@ public abstract class ProgressDialog extends BaseDialog {
     private final JProgressBar progressBar;
     private final JLabel statusLabel;
     private final JTextArea logTextArea;
+    private final JLabel titleLabel;
+    private final String title;
 
     public ProgressDialog(Window window, String title) {
         super(window, Util.withTitlePrefix(title), ModalityType.DOCUMENT_MODAL);
+        this.title = title;
 
         setSize(450, 160);
         setLocationRelativeTo(window);
@@ -25,7 +28,7 @@ public abstract class ProgressDialog extends BaseDialog {
         KRootContentPanel contentPanel = new KRootContentPanel(10);
         contentPanel.setLayout(new BoxLayout(contentPanel, BoxLayout.Y_AXIS));
 
-        JLabel titleLabel = new JLabel(title);
+        titleLabel = new JLabel(title);
         titleLabel.setFont(FlatUIUtils.nonUIResource(UIManager.getFont("h2.font")));
         titleLabel.setAlignmentX(Component.LEFT_ALIGNMENT);
         contentPanel.add(titleLabel);
@@ -94,6 +97,7 @@ public abstract class ProgressDialog extends BaseDialog {
     protected void setProgress(int progress) {
         progressBar.setIndeterminate(false);
         progressBar.setValue(progress);
+        titleLabel.setText(String.format("%s (%d%%)", title, progress));
     }
 
     protected abstract void onCancellation();

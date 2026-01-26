@@ -9,7 +9,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 /** Executes multiple tasks and invokes callback after completion of all commands */
 public class BatchedTask extends Task {
     private final List<Task> tasks;
-    private boolean startedExecution = false;
+    private boolean started = false;
 
     public BatchedTask(String taskName) {
         this(taskName, Executors.newSingleThreadExecutor(), true);
@@ -31,46 +31,43 @@ public class BatchedTask extends Task {
     }
 
     /** Add another program to queued for execution */
-    public void add(RunProgramTask exec) {
-        if(startedExecution) throw new IllegalStateException("No more task should be added after batched task has been started!");
-        tasks.add(exec);
+    public void add(Task task) {
+        if(started) throw new IllegalStateException("No more task should be added after task has been started!");
+        tasks.add(task);
     }
 
     @Override
     public void run(String reason, ExecutorService executor) {
-        startedExecution = true;
+        started = true;
         if(tasks.isEmpty()) { // Nothing to run
             submitExitResult(ExitResult.ok());
             return;
         }
 
-        AtomicInteger erroredCommands = new AtomicInteger();
-        AtomicInteger executedCommands = new AtomicInteger();
-        int totalCommands = tasks.size();
+        AtomicInteger erroredTasks = new AtomicInteger();
+        AtomicInteger executedTasks = new AtomicInteger();
+        int totalTasks = tasks.size();
 
-        submitOutput(new OutputMessage(String.format("Executing %d commands...", totalCommands), false));
+        submitOutput(new OutputMessage(String.format("Executing %d commands...", totalTasks), false));
 
-        for(Task programExecution : tasks) {
-            programExecution.onOutput(this::submitOutput);
+        for(Task task : tasks) {
+            task.onOutput(this::submitOutput);
 
-            programExecution.onExit(exitCode -> {
-                if(!exitCode.success()) erroredCommands.incrementAndGet();
-                executedCommands.incrementAndGet();
+            task.onExit(exitCode -> {
+                if(!exitCode.success()) erroredTasks.incrementAndGet();
+                executedTasks.incrementAndGet();
 
-                submitProgress((float) executedCommands.get() / totalCommands);
+                submitProgress((float) executedTasks.get() / totalTasks);
 
-                boolean allCommandExecuted = executedCommands.get() == totalCommands;
-                if(allCommandExecuted) {
-                    submitExitResult(erroredCommands.get() == 0 ? ExitResult.ok() : ExitResult.code(erroredCommands.get()));
+                boolean allTaskExecuted = executedTasks.get() == totalTasks;
+                if(allTaskExecuted) {
+                    submitExitResult(erroredTasks.get() == 0 ? ExitResult.ok() : ExitResult.code(erroredTasks.get()));
                 }
             });
-            programExecution.run(reason, executor);
+            task.run(reason, executor);
         }
     }
 
-    /**
-     * Terminate process and shutdown executors
-     */
     @Override
     public void terminate() {
         tasks.forEach(Task::terminate);

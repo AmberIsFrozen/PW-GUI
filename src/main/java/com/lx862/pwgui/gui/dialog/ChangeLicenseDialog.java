@@ -64,7 +64,7 @@ public class ChangeLicenseDialog extends BaseDialog {
         placeholdersPanel.setAlignmentX(Component.LEFT_ALIGNMENT);
         JLabel nameLabel = new JLabel("Your name: ");
         JTextField nameTextField = new KTextField();
-        nameTextField.setText(Config.getInstance().authorName.value() == null ? "<Your name>" : Config.getInstance().authorName.value());
+        nameTextField.setText(Config.getInstance().authorName.valueOr("<Your Name>"));
 
         JLabel yearLabel = new JLabel("Copyright year: ");
         JTextField yearTextField = new KTextField();
