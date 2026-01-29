@@ -68,6 +68,7 @@ public class ViewLogDialog extends BaseDialog {
 
         contentPanel.add(actionPanel, BorderLayout.PAGE_END);
         add(contentPanel);
+        getRootPane().setDefaultButton(saveAsButton);
     }
 
     @Override

@@ -10,6 +10,7 @@ import com.lx862.pwgui.gui.components.fstree.FileSystemSortedTreeNode;
 import com.lx862.pwgui.gui.panel.editing.filetype.content.AddContentPanel;
 
 import javax.swing.*;
+import javax.swing.tree.TreePath;
 import java.awt.*;
 import java.io.IOException;
 import java.nio.file.Path;
@@ -36,14 +37,18 @@ public class EditPanel extends JPanel {
 
             fileBrowserPanel.updateIgnorePattern(null);
 
-            FileSystemSortedTreeNode node = (FileSystemSortedTreeNode) fileBrowserPanel.fileBrowserTree.getLastSelectedPathComponent();
+            List<FileSystemSortedTreeNode> selectedNodes = new ArrayList<>();
+            for(TreePath path : fileBrowserPanel.fileBrowserTree.getSelectionPaths()) {
+                FileSystemSortedTreeNode node = (FileSystemSortedTreeNode) path.getLastPathComponent();
+                selectedNodes.add(node);
+            }
 
             List<NameTabPair> filePanels;
-            if(node == null) {
+            if(selectedNodes.isEmpty()) {
                 filePanels = Collections.emptyList();
             } else {
-                FileSystemEntityModel entry = (FileSystemEntityModel) node.getUserObject();
-                filePanels = getViews(new FileEntryPaneContext(modpack, fileBrowserPanel::updateIgnorePattern, fileDetailPanel.saveButton::setEnabled, () -> saveChanges(true)), entry);
+                List<FileSystemEntityModel> entries = selectedNodes.stream().map(e -> (FileSystemEntityModel) e.getUserObject()).toList();
+                filePanels = getViews(new FileEntryPaneContext(modpack, fileBrowserPanel::updateIgnorePattern, fileDetailPanel.saveButton::setEnabled, () -> saveChanges(true)), entries);
                 Collections.reverse(filePanels);
             }
             fileDetailPanel.setTabs(filePanels);
@@ -61,29 +66,34 @@ public class EditPanel extends JPanel {
         fileDetailPanel.saveAllTabs(notify);
     }
 
-    private static List<NameTabPair> getViews(FileEntryPaneContext context, FileSystemEntityModel node) {
+    private static List<NameTabPair> getViews(FileEntryPaneContext context, List<FileSystemEntityModel> nodes) {
         List<NameTabPair> panels = new ArrayList<>();
         try {
-            if(node instanceof DirectoryModel) addPanel(panels, () -> new NameTabPair("Folder", new DirectoryPanel(context, (DirectoryModel)node)));
-            if(node instanceof GenericFileModel) addPanel(panels, () -> new NameTabPair("File", new FilePanel(context, (GenericFileModel)node)));
-            if(node instanceof ContentDirectoryModel) addPanel(panels, () -> new NameTabPair(String.format("Add new %s", node.getDisplayName()), new AddContentPanel(context, (ContentDirectoryModel) node)));
-            if(node instanceof PlainTextFileModel) addPanel(panels, () -> new NameTabPair("Plain Text", new PlainTextPanel(context, (PlainTextFileModel) node)));
-            if(node instanceof ConfigDirectoryModel) addPanel(panels, () -> new NameTabPair("Config Folder", new ConfigDirectoryPanel(context, (DirectoryModel)node)));
-            if(node instanceof GitIgnoreFileModel) addPanel(panels, () -> new NameTabPair("Git Ignore", new GitIgnorePanel(context, (GitIgnoreFileModel) node)));
-            if(node instanceof ImageFileModel) addPanel(panels, () -> new NameTabPair("Image Preview", new ImagePanel(context, (ImageFileModel) node)));
-            if(node instanceof LicenseFileModel) addPanel(panels, () -> new NameTabPair("License", new LicenseFilePanel(context, (LicenseFileModel) node)));
-            if(node instanceof MarkdownFileModel) addPanel(panels, () -> new NameTabPair("Markdown", new MarkdownPanel(context, (MarkdownFileModel) node)));
-            if(node instanceof MinecraftOptionsFileModel) addPanel(panels, () -> new NameTabPair("Minecraft Options", new MinecraftOptionPanel(context, (MinecraftOptionsFileModel) node)));
-            if(node instanceof ModpackConfigFileModel) addPanel(panels, () -> {
-                try {
-                    return new NameTabPair("Modpack Config", new ModpackConfigPanel(context, (ModpackConfigFileModel) node));
-                } catch (IOException e) {
-                    throw new RuntimeException(e);
-                }
-            });
-            if(node instanceof ModpackIndexFileModel) addPanel(panels, () -> new NameTabPair("Packwiz Index", new ModpackIndexFilePanel(context, (ModpackIndexFileModel) node)));
-            if(node instanceof PackwizIgnoreFileModel) addPanel(panels, () -> new NameTabPair("Packwiz Ignore", new PackwizIgnorePanel(context, (PackwizIgnoreFileModel) node)));
-            if(node instanceof PackMetadataFileModel) addPanel(panels, () -> new NameTabPair("Packwiz Meta File", new PackwizMetaPanel(context, (PackMetadataFileModel) node)));
+            if(nodes.size() > 1) {
+                addPanel(panels, () -> new NameTabPair("Multiple items", new MultipleItemsPanel(context, nodes)));
+            } else {
+                FileSystemEntityModel node = nodes.get(0);
+                if(node instanceof DirectoryModel) addPanel(panels, () -> new NameTabPair("Folder", new DirectoryPanel(context, (DirectoryModel)node)));
+                if(node instanceof GenericFileModel) addPanel(panels, () -> new NameTabPair("File", new FilePanel(context, (GenericFileModel)node)));
+                if(node instanceof ContentDirectoryModel) addPanel(panels, () -> new NameTabPair(String.format("Add new %s", node.getDisplayName()), new AddContentPanel(context, (ContentDirectoryModel) node)));
+                if(node instanceof PlainTextFileModel) addPanel(panels, () -> new NameTabPair("Plain Text", new PlainTextPanel(context, (PlainTextFileModel) node)));
+                if(node instanceof ConfigDirectoryModel) addPanel(panels, () -> new NameTabPair("Config Folder", new ConfigDirectoryPanel(context, (DirectoryModel)node)));
+                if(node instanceof GitIgnoreFileModel) addPanel(panels, () -> new NameTabPair("Git Ignore", new GitIgnorePanel(context, (GitIgnoreFileModel) node)));
+                if(node instanceof ImageFileModel) addPanel(panels, () -> new NameTabPair("Image Preview", new ImagePanel(context, (ImageFileModel) node)));
+                if(node instanceof LicenseFileModel) addPanel(panels, () -> new NameTabPair("License", new LicenseFilePanel(context, (LicenseFileModel) node)));
+                if(node instanceof MarkdownFileModel) addPanel(panels, () -> new NameTabPair("Markdown", new MarkdownPanel(context, (MarkdownFileModel) node)));
+                if(node instanceof MinecraftOptionsFileModel) addPanel(panels, () -> new NameTabPair("Minecraft Options", new MinecraftOptionPanel(context, (MinecraftOptionsFileModel) node)));
+                if(node instanceof ModpackConfigFileModel) addPanel(panels, () -> {
+                    try {
+                        return new NameTabPair("Modpack Config", new ModpackConfigPanel(context, (ModpackConfigFileModel) node));
+                    } catch (IOException e) {
+                        throw new RuntimeException(e);
+                    }
+                });
+                if(node instanceof ModpackIndexFileModel) addPanel(panels, () -> new NameTabPair("Packwiz Index", new ModpackIndexFilePanel(context, (ModpackIndexFileModel) node)));
+                if(node instanceof PackwizIgnoreFileModel) addPanel(panels, () -> new NameTabPair("Packwiz Ignore", new PackwizIgnorePanel(context, (PackwizIgnoreFileModel) node)));
+                if(node instanceof PackMetadataFileModel) addPanel(panels, () -> new NameTabPair("Packwiz Meta File", new PackwizMetaPanel(context, (PackMetadataFileModel) node)));
+            }
         } catch (Exception e) {
             PWGUI.LOGGER.error("", e);
         }
