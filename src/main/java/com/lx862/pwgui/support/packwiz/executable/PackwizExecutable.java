@@ -130,8 +130,18 @@ public class PackwizExecutable extends Executable {
     }
 
     public class Modrinth {
-        public PackwizArgumentBuilder add(String name) {
-            return buildCommand("modrinth", "add", name);
+        public PackwizArgumentBuilder add(String name, String projectId, String versionId) {
+            PackwizArgumentBuilder builder = buildCommand("modrinth", "add");
+            if(name != null) {
+                builder.append(name);
+            }
+            if(projectId != null) {
+                builder.append("--project-id", projectId);
+            }
+            if(versionId != null) {
+                builder.append("--version-id", projectId);
+            }
+            return builder;
         }
     }
 

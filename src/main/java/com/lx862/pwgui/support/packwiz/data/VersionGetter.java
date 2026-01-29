@@ -15,7 +15,6 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import java.io.IOException;
 import java.io.StringReader;
 import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -24,11 +23,10 @@ import java.util.concurrent.CompletableFuture;
 public interface VersionGetter {
     CompletableFuture<List<VersionMetadata>> get() throws MalformedURLException;
 
-    static CompletableFuture<List<VersionMetadata>> fetchMinecraft() throws MalformedURLException {
-        URL url = new URL("https://launchermeta.mojang.com/mc/game/version_manifest_v2.json");
+    static CompletableFuture<List<VersionMetadata>> fetchMinecraft() {
         return CompletableFuture.supplyAsync(() -> {
             try {
-                String content = NetworkHelper.getFromURL(url);
+                String content = NetworkHelper.getRequestToString("https://launchermeta.mojang.com/mc/game/version_manifest_v2.json");
                 JsonObject jsonObject = JsonParser.parseString(content).getAsJsonObject();
                 JsonArray versionsArray = jsonObject.get("versions").getAsJsonArray();
                 List<VersionMetadata> metadatas = new ArrayList<>();
@@ -58,13 +56,12 @@ public interface VersionGetter {
         return fetchFabricDerivatives("https://repo.mumfrey.com/content/repositories/snapshots/com/mumfrey/liteloader/maven-metadata.xml", true);
     }
 
-    static CompletableFuture<List<VersionMetadata>> fetchFabricDerivatives(String urlString, boolean mcVersionLabeled) throws MalformedURLException {
-        URL url = new URL(urlString);
+    static CompletableFuture<List<VersionMetadata>> fetchFabricDerivatives(String url, boolean mcVersionLabeled) {
         return CompletableFuture.supplyAsync(() -> {
             try {
                 DocumentBuilder builder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
 
-                String content = NetworkHelper.getFromURL(url);
+                String content = NetworkHelper.getRequestToString(url);
                 Document doc = builder.parse(new InputSource(new StringReader(content)));
                 NodeList versionList = doc.getElementsByTagName("version");
                 List<VersionMetadata> metadatas = new ArrayList<>();
@@ -84,12 +81,11 @@ public interface VersionGetter {
     }
 
     static CompletableFuture<List<VersionMetadata>> fetchForge() throws MalformedURLException {
-        URL url = new URL("https://maven.minecraftforge.net/net/minecraftforge/forge/maven-metadata.xml");
         return CompletableFuture.supplyAsync(() -> {
             try {
                 DocumentBuilder builder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
 
-                String content = NetworkHelper.getFromURL(url);
+                String content = NetworkHelper.getRequestToString("https://maven.minecraftforge.net/net/minecraftforge/forge/maven-metadata.xml");
                 Document doc = builder.parse(new InputSource(new StringReader(content)));
                 NodeList versionList = doc.getElementsByTagName("version");
                 List<VersionMetadata> metadatas = new ArrayList<>();
@@ -134,12 +130,11 @@ public interface VersionGetter {
         });
     }
 
-    static List<VersionMetadata> fetchNeoForgeInternal(String urlString, boolean isFor12001) throws MalformedURLException {
-        URL url = new URL(urlString);
+    static List<VersionMetadata> fetchNeoForgeInternal(String url, boolean isFor12001) throws MalformedURLException {
         try {
             DocumentBuilder builder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
 
-            String content = NetworkHelper.getFromURL(url);
+            String content = NetworkHelper.getRequestToString(url);
             Document doc = builder.parse(new InputSource(new StringReader(content)));
             NodeList versionList = doc.getElementsByTagName("version");
             List<VersionMetadata> metadatas = new ArrayList<>();

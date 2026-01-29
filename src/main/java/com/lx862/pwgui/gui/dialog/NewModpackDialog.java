@@ -2,9 +2,13 @@ package com.lx862.pwgui.gui.dialog;
 
 import com.formdev.flatlaf.ui.FlatUIUtils;
 import com.formdev.flatlaf.util.SystemFileChooser;
+import com.google.gson.Gson;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
 import com.lx862.pwgui.PWGUI;
 import com.lx862.pwgui.core.Config;
-import com.lx862.pwgui.task.BatchedTask;
+import com.lx862.pwgui.task.*;
 import com.lx862.pwgui.gui.components.AlignedBoxPanel;
 import com.lx862.pwgui.gui.components.ComboBoxCardLinker;
 import com.lx862.pwgui.gui.components.IconNamePairListCellRenderer;
@@ -16,8 +20,7 @@ import com.lx862.pwgui.support.mrpack.ModrinthModpack;
 import com.lx862.pwgui.support.packwiz.data.IconNamePair;
 import com.lx862.pwgui.support.packwiz.data.PackComponent;
 import com.lx862.pwgui.support.packwiz.data.PackComponentVersion;
-import com.lx862.pwgui.task.ExtractZipTask;
-import com.lx862.pwgui.task.Task;
+import com.lx862.pwgui.util.NetworkHelper;
 import com.lx862.pwgui.util.Strings;
 import com.lx862.pwgui.support.packwiz.executable.PackwizExecutable;
 import com.lx862.pwgui.gui.components.kui.*;
@@ -26,15 +29,16 @@ import com.lx862.pwgui.gui.panel.ModpackInfoPanel;
 import com.lx862.pwgui.gui.panel.ModpackVersionPanel;
 import com.lx862.pwgui.gui.GUIConfiguration;
 import com.lx862.pwgui.util.Util;
-import com.lx862.pwgui.task.RunProgramTask;
 import org.zeroturnaround.zip.ZipUtil;
 
 import javax.swing.*;
 import java.awt.*;
 import java.io.File;
 import java.io.IOException;
+import java.net.HttpURLConnection;
 import java.net.URI;
 import java.nio.file.Path;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Consumer;
@@ -87,16 +91,35 @@ public class NewModpackDialog extends BaseDialog {
         createPanel.add(createFormPanel, BorderLayout.CENTER);
 
         saveButton.addActionListener(actionEvent -> {
-            createModpack(
-                this,
-                modpackInfoPanel.getPackName(), modpackInfoPanel.getPackAuthor(), modpackInfoPanel.getPackVersion(),
-                modpackVersionPanel.getMinecraft(), modpackVersionPanel.getModloader(),
-                (path) -> {
-                    dispose();
-                    doAftermath(path, modpackVersionPanel.getModloader() != null);
-                    packCreatedCallback.accept(path.resolve("pack.toml"));
+            try {
+                AtomicReference<Path> packPath = new AtomicReference<>();
+                Task task = createModpack(
+                        this,
+                        modpackInfoPanel.getPackName(), modpackInfoPanel.getPackAuthor(), modpackInfoPanel.getPackVersion(),
+                        modpackVersionPanel.getMinecraft(), modpackVersionPanel.getModloader(),
+                        (path) -> {
+                            packPath.set(path);
+                            PackwizExecutable.INSTANCE.changeWorkingDirectory(path);
+                        }
+                );
+
+                if(task != null) {
+                    task.onExit(exitResult -> {
+                        if(exitResult.success()) {
+                            dispose();
+                            doAftermath(packPath.get(), modpackVersionPanel.getModloader() != null);
+                            packCreatedCallback.accept(packPath.get().resolve("pack.toml"));
+                        }
+                    });
+
+                    TaskDialog taskDialog = new TaskDialog(this, "Creating Modpack...", task);
+                    task.run(Strings.REASON_TRIGGERED_BY_USER);
+                    taskDialog.setVisible(true);
                 }
-            );
+            } catch (Exception e) {
+                PWGUI.LOGGER.error("", e);
+                JOptionPane.showMessageDialog(this, String.format("Failed to create modpack:\n%s", e.getMessage()), Util.withTitlePrefix("Create Modpack"), JOptionPane.ERROR_MESSAGE);
+            }
         });
 
         KActionPanel actionPanel = new KActionPanel.Builder().setPositiveButton(saveButton).build();
@@ -109,44 +132,30 @@ public class NewModpackDialog extends BaseDialog {
         add(contentPanel);
     }
 
-    public static void createModpack(Window parent, String packName, String packAuthor, String packVersion, PackComponentVersion minecraft, PackComponentVersion modloader, Consumer<Path> finishCallback) {
-        try {
-            KFileChooser fileChooser = new KFileChooser("new-modpack");
-            fileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
-            fileChooser.setDialogTitle("Choose a folder to store your modpack in...");
+    public static Task createModpack(Window parent, String packName, String packAuthor, String packVersion, PackComponentVersion minecraft, PackComponentVersion modloader, Consumer<Path> pathCallback) {
+        KFileChooser fileChooser = new KFileChooser("new-modpack");
+        fileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+        fileChooser.setDialogTitle("Choose a folder to store your modpack in...");
 
-            fileChooser.setApproveCallback((selected, ctx) -> {
-                File firstSelected = selected[0];
-                if(firstSelected.list().length > 0) {
-                    ctx.showMessageDialog(JOptionPane.INFORMATION_MESSAGE, "Folder not empty", "The selected folder is not empty, please create an empty folder for the modpack to be stored in.", JOptionPane.OK_OPTION);
-                    return SystemFileChooser.CANCEL_OPTION;
-                } else {
-                    return SystemFileChooser.APPROVE_OPTION;
-                }
-            });
-
-            if(fileChooser.showOpenDialog(parent) == JFileChooser.APPROVE_OPTION) {
-                File modpackDirectory = fileChooser.getSelectedFile();
-
-                // Build arguments
-                PackwizExecutable.PackwizArgumentBuilder arguments = PackwizExecutable.INSTANCE.init(packName, packAuthor, packVersion, minecraft.getVersion(), modloader);
-
-                PackwizExecutable.INSTANCE.changeWorkingDirectory(modpackDirectory.toPath());
-
-                RunProgramTask processExecution = arguments.build();
-                processExecution.onExit(exitResult -> {
-                    if(exitResult.success()) {
-                        if(finishCallback != null) finishCallback.accept(modpackDirectory.toPath());
-                    }
-                });
-
-                TaskDialog taskDialog = new TaskDialog(parent, "Creating Modpack...", processExecution);
-                processExecution.run(Strings.REASON_TRIGGERED_BY_USER);
-                taskDialog.setVisible(true);
+        fileChooser.setApproveCallback((selected, ctx) -> {
+            File firstSelected = selected[0];
+            if(firstSelected.list().length > 0) {
+                ctx.showMessageDialog(JOptionPane.INFORMATION_MESSAGE, "Folder not empty", "The selected folder is not empty, please create an empty folder for the modpack to be stored in.", JOptionPane.OK_OPTION);
+                return SystemFileChooser.CANCEL_OPTION;
+            } else {
+                return SystemFileChooser.APPROVE_OPTION;
             }
-        } catch (Exception e) {
-            PWGUI.LOGGER.error("", e);
-            JOptionPane.showMessageDialog(parent, String.format("Failed to create modpack:\n%s", e.getMessage()), Util.withTitlePrefix("Create Modpack"), JOptionPane.ERROR_MESSAGE);
+        });
+
+        if(fileChooser.showOpenDialog(parent) == JFileChooser.APPROVE_OPTION) {
+            File modpackDirectory = fileChooser.getSelectedFile();
+            pathCallback.accept(modpackDirectory.toPath());
+
+            // Build arguments
+            PackwizExecutable.PackwizArgumentBuilder arguments = PackwizExecutable.INSTANCE.init(packName, packAuthor, packVersion, minecraft.getVersion(), modloader);
+            return arguments.build();
+        } else {
+            return null;
         }
     }
 
@@ -314,66 +323,96 @@ class ImportModpackPanel extends JPanel {
                 }
             }
 
-            String authorName = Config.getInstance().authorName.valueOr("PW-GUI");
+            BatchedTask importPackTask = new BatchedTask("Pack Importer");
+            AtomicReference<Path> packDestinationPath = new AtomicReference<>();
 
-            NewModpackDialog.createModpack(parent, pack.index.name, authorName, pack.index.versionId, minecraft, modloader, (destination) -> {
+            Task createPackTask = NewModpackDialog.createModpack(parent, pack.index.name, Config.getInstance().authorName.valueOr("PW-GUI"), pack.index.versionId, minecraft, modloader, (destination) -> {
                 PackwizExecutable.INSTANCE.changeWorkingDirectory(destination);
-
-                BatchedTask importTask = new BatchedTask("packwiz");
-
-                if(ZipUtil.containsEntry(pack.getFile(), "overrides")) {
-                    Task extractZipTask = new ExtractZipTask("Extracting files...", pack.getFile(), destination.toFile(), new ExtractZipTask.InnerDirectory("overrides"));
-                    importTask.add(extractZipTask);
-                }
-
-                if(ZipUtil.containsEntry(pack.getFile(), "client-overrides") && (side == Sideness.CLIENT || side == Sideness.BOTH)) {
-                    Task extractZipTask = new ExtractZipTask("Extracting client files...", pack.getFile(), destination.toFile(), new ExtractZipTask.InnerDirectory("client-overrides"));
-                    importTask.add(extractZipTask);
-                }
-
-                if(ZipUtil.containsEntry(pack.getFile(), "server-overrides") && (side == Sideness.SERVER || side == Sideness.BOTH)) {
-                    Task extractZipTask = new ExtractZipTask("Extracting server files...", pack.getFile(), destination.toFile(), new ExtractZipTask.InnerDirectory("client-overrides"));
-                    importTask.add(extractZipTask);
-                }
-
-                for(ModpackFileEntry fileEntry : pack.index.files) {
-                    importTask.add(getModrinthAddTask(destination, fileEntry));
-                }
-
-                importTask.onExit(exitResult -> {
-                    if(exitResult.success()) {
-                        callback.accept(destination);
-                    }
-                });
-
-                TaskDialog taskDialog = new TaskDialog(parent, "Importing Pack...", importTask);
-                importTask.run(Strings.REASON_TRIGGERED_BY_USER);
-                taskDialog.setVisible(true);
+                packDestinationPath.set(destination);
             });
+            importPackTask.add(createPackTask);
+
+            /* Add copy override tasks */
+            if(ZipUtil.containsEntry(pack.getFile(), "overrides")) {
+                Task extractZipTask = new ExtractZipTask("Extracting files...", pack.getFile(), packDestinationPath.get().toFile(), new ExtractZipTask.InnerDirectory("overrides"));
+                importPackTask.add(extractZipTask);
+            }
+
+            if(ZipUtil.containsEntry(pack.getFile(), "client-overrides") && (side == Sideness.CLIENT || side == Sideness.BOTH)) {
+                Task extractZipTask = new ExtractZipTask("Extracting client files...", pack.getFile(), packDestinationPath.get().toFile(), new ExtractZipTask.InnerDirectory("client-overrides"));
+                importPackTask.add(extractZipTask);
+            }
+
+            if(ZipUtil.containsEntry(pack.getFile(), "server-overrides") && (side == Sideness.SERVER || side == Sideness.BOTH)) {
+                Task extractZipTask = new ExtractZipTask("Extracting server files...", pack.getFile(), packDestinationPath.get().toFile(), new ExtractZipTask.InnerDirectory("client-overrides"));
+                importPackTask.add(extractZipTask);
+            }
+
+            /* Fetch MR for version */
+            Map<String, ModrinthVersionEntry> projectVersions = new HashMap<>();
+
+            JsonObject versionFilesRequestObject = new JsonObject();
+            JsonArray hashArray = new JsonArray();
+
+            for(ModpackFileEntry fileEntry : pack.index.files) {
+                hashArray.add(fileEntry.hashes.sha512);
+            }
+            versionFilesRequestObject.add("hashes", hashArray);
+            versionFilesRequestObject.addProperty("algorithm", "sha512");
+
+            HttpFetchTask httpFetchTask = new HttpFetchTask("Fetching modrinth projects...", () -> {
+                return NetworkHelper.postRequest("https://api.modrinth.com/v2/version_files", versionFilesRequestObject.toString().getBytes());
+            }, (str) -> {
+                JsonObject resultObject = new Gson().fromJson(str, JsonObject.class);
+                for(Map.Entry<String, JsonElement> versionEntry : resultObject.entrySet()) {
+                    JsonObject versionObject = versionEntry.getValue().getAsJsonObject();
+                    ModrinthVersionEntry pv = new ModrinthVersionEntry(versionEntry.getKey(), versionObject.get("project_id").getAsString(), versionObject.get("id").getAsString());
+                    projectVersions.put(versionEntry.getKey(), pv);
+                }
+            });
+
+            importPackTask.add(httpFetchTask);
+
+            importPackTask.onExit(exitResult -> {
+                if(exitResult.success()) {
+                    BatchedTask importMetadataTask = new BatchedTask("packwiz");
+
+                    for(ModpackFileEntry fileEntry : pack.index.files) {
+                        ModrinthVersionEntry pv = projectVersions.get(fileEntry.hashes.sha512);
+                        importMetadataTask.add(getModrinthAddTask(packDestinationPath.get(), fileEntry, pv));
+                    }
+
+                    importMetadataTask.onExit(metadataExitResult -> {
+                        if(metadataExitResult.success()) {
+                            callback.accept(packDestinationPath.get());
+                        }
+                    });
+
+                    TaskDialog taskDialog = new TaskDialog(parent, "Importing Metadata...", importMetadataTask);
+                    importMetadataTask.run(Strings.REASON_TRIGGERED_BY_USER);
+                    taskDialog.setVisible(true);
+                }
+            });
+
+            TaskDialog taskDialog = new TaskDialog(parent, "Importing Pack...", importPackTask);
+            importPackTask.run(Strings.REASON_TRIGGERED_BY_USER);
+            taskDialog.setVisible(true);
         }
 
-        private RunProgramTask getModrinthAddTask(Path modpackDir, ModpackFileEntry fileEntry) {
+        private RunProgramTask getModrinthAddTask(Path modpackDir, ModpackFileEntry fileEntry, ModrinthVersionEntry modrinthVersionEntry) {
             Path parentDir = modpackDir.resolve(fileEntry.path).getParent();
             String metaFolder = parentDir.equals(modpackDir) ? "./" : modpackDir.relativize(parentDir).toString();
             RunProgramTask pe;
 
             URI downloadURL = fileEntry.downloads[0];
             if(downloadURL != null) {
-                // HACK: We are parsing the CDN URL for now, this is a terrible idea as they aren't consistent, we should replace them with the hash checking API before this gets into prod.
-                if(downloadURL.getHost().contains("cdn.modrinth.com")) {
-
-                    String cdnVersionName = downloadURL.toString().split("versions/")[1].split("/")[0];
-                    if(cdnVersionName.contains(".")) { // Some version file on the cdn use the version name directly instead of id
-                        String projectId = downloadURL.toString().split("data/")[1].split("/")[0];
-                        pe = PackwizExecutable.INSTANCE.modrinth().add(projectId).metaFolder(metaFolder).build();
-                    } else {
-                        pe = PackwizExecutable.INSTANCE.modrinth().add(downloadURL.toString()).metaFolder(metaFolder).build();
-                    }
+                if(modrinthVersionEntry != null) {
+                    pe = PackwizExecutable.INSTANCE.modrinth().add(null, modrinthVersionEntry.versionId(), modrinthVersionEntry.versionId).metaFolder(metaFolder).build();
                 } else {
                     String potentialSlug = Path.of(fileEntry.path).getFileName().toString();
                     Matcher matcher = Pattern.compile("-[0-9]").matcher(potentialSlug);
                     if(matcher.find()) {
-                        potentialSlug = potentialSlug.substring(0, matcher.start());
+                        potentialSlug = potentialSlug.substring(0, matcher.start()); // Cut off dashes followed by number, those are likely version name.
                     }
 
                     pe = PackwizExecutable.INSTANCE.url().add(potentialSlug, downloadURL.toString(), true).metaFolder(metaFolder).build();
@@ -389,6 +428,8 @@ class ImportModpackPanel extends JPanel {
             });
             return pe;
         }
+
+        private record ModrinthVersionEntry(String hash, String projectId, String versionId) {}
     }
 
     static class ImportCurseForgePanel extends AlignedBoxPanel {
