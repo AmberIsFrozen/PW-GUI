@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.nio.file.*;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.util.HashMap;
+import java.util.Map;
 
 import static java.nio.file.StandardWatchEventKinds.*;
 
@@ -13,7 +14,7 @@ public class FileSystemWatcher {
     private final Path path;
     private final WatchEvent.Kind<?>[] watchKinds;
     private final boolean recursive;
-    private final HashMap<Path, WatchKey> watchKeys;
+    private final Map<Path, WatchKey> watchKeys;
 
     public FileSystemWatcher(Path path, boolean recursive, WatchEvent.Kind<?> ...watchKinds) {
         this.path = path;

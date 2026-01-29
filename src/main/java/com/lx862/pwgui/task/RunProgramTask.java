@@ -53,7 +53,8 @@ public class RunProgramTask extends Task {
                 PWGUI.LOGGER.error("", e);
                 submitOutput(new OutputMessage(Util.withBracketPrefix(String.format("Failed to execute %s:\n%s", getTaskName(), e.getMessage())), false));
                 submitExitResult(ExitResult.code(-2));
-            } catch (InterruptedException ignored) {
+            } catch (InterruptedException e) {
+                submitExitResult(ExitResult.terminated(e));
             }
         });
     }

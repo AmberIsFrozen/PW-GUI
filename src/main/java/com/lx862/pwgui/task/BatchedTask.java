@@ -1,5 +1,7 @@
 package com.lx862.pwgui.task;
 
+import com.lx862.pwgui.PWGUI;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
@@ -12,22 +14,12 @@ public class BatchedTask extends Task {
     private boolean started = false;
 
     public BatchedTask(String taskName) {
-        this(taskName, Executors.newSingleThreadExecutor(), true);
+        this(taskName, PWGUI.BACKGROUND_EXECUTOR);
     }
 
     public BatchedTask(String taskName, ExecutorService executorService) {
-        this(taskName, executorService, false);
-    }
-
-    private BatchedTask(String taskName, ExecutorService executorService, boolean ownExecutor) {
         super(taskName, executorService);
         this.tasks = new ArrayList<>();
-
-        if(ownExecutor) {
-            onExit(exitResult -> {
-                executorService.shutdownNow();
-            });
-        }
     }
 
     /** Add another program to queued for execution */
@@ -53,8 +45,8 @@ public class BatchedTask extends Task {
         for(Task task : tasks) {
             task.onOutput(this::submitOutput);
 
-            task.onExit(exitCode -> {
-                if(!exitCode.success()) erroredTasks.incrementAndGet();
+            task.onExit(exitResult -> {
+                if(!exitResult.success() && !exitResult.terminated()) erroredTasks.incrementAndGet();
                 executedTasks.incrementAndGet();
 
                 submitProgress((float) executedTasks.get() / totalTasks);

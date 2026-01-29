@@ -21,7 +21,7 @@ public class MarkdownPanel extends FileTypePanel {
             String html = GUIConfiguration.markdownToHtml(content);
             editorPane.setInitialContent(html);
         } catch (Exception e) {
-            PWGUI.LOGGER.error("", e);
+            PWGUI.LOGGER.error("Error trying to read file!", e);
             editorPane.setText(Util.withBracketPrefix(String.format("Error trying to read file: %s", e.getMessage())));
         }
 

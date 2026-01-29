@@ -17,9 +17,10 @@ import java.awt.event.KeyEvent;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.HashMap;
+import java.util.Map;
 
 public class UrlPanel extends JPanel {
-    private static final HashMap<String, String> alternativeForDomain = new HashMap<>();
+    private static final Map<String, String> alternativeForDomain = new HashMap<>();
 
     static {
         alternativeForDomain.put("modrinth.com", "Modrinth");

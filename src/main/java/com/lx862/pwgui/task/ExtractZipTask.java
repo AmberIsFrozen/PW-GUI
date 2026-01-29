@@ -1,12 +1,12 @@
 package com.lx862.pwgui.task;
 
+import com.lx862.pwgui.PWGUI;
 import org.zeroturnaround.zip.NameMapper;
 import org.zeroturnaround.zip.ZipException;
 import org.zeroturnaround.zip.ZipUtil;
 
 import java.io.File;
 import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
 public class ExtractZipTask extends Task {
     private final File zipSource;
@@ -14,7 +14,7 @@ public class ExtractZipTask extends Task {
     private final NameMapper nameMapper;
 
     public ExtractZipTask(String taskName, File zipSource, File destination, NameMapper nameMapper) {
-        super(taskName, Executors.newSingleThreadExecutor());
+        super(taskName, PWGUI.BACKGROUND_EXECUTOR);
         this.zipSource = zipSource;
         this.destination = destination;
         this.nameMapper = nameMapper;

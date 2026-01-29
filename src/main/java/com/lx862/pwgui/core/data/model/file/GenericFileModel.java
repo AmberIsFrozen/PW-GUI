@@ -12,9 +12,4 @@ public class GenericFileModel extends FileSystemEntityModel {
         this.fileSize = file.length();
         this.lastModified = file.lastModified();
     }
-
-    @Override
-    public Icon getIcon() {
-        return UIManager.getIcon("FileView.fileIcon");
-    }
 }

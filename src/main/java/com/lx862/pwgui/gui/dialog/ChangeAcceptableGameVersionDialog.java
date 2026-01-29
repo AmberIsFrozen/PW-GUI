@@ -84,8 +84,8 @@ public class ChangeAcceptableGameVersionDialog extends BaseDialog {
             // Because we directly run packwiz to change the version, it would bypass the regular save procedure and would overwrite the file directly, discarding any unsaved changes
             // We should prompt for saving to avoid any data loss (Ideally we should write the changes ourselves, but meh :P)
             saveCallback.run();
-            changeAcceptableVersion(preSelectedVersions, versionList.getSelectedValuesList(), (exitCode) -> {
-                if(exitCode.success()) {
+            changeAcceptableVersion(preSelectedVersions, versionList.getSelectedValuesList(), (exitResult) -> {
+                if(exitResult.success()) {
                     dispose();
                 } else {
                     JOptionPane.showMessageDialog(this, "Some versions did not get added due to errors.\nPlease check log for details.", Util.withTitlePrefix("Error"), JOptionPane.ERROR_MESSAGE);

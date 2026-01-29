@@ -59,8 +59,7 @@ public class ReinstallAction extends AbstractAction {
             removeExecution.run("Re-installation requested by user");
 
             // Add
-            ExecutorService executor = Executors.newFixedThreadPool(1);
-            BatchedTask addExecution = new BatchedTask("Re-adding meta files", executor);
+            BatchedTask addExecution = new BatchedTask("Re-adding meta files");
             for(PackwizMetaFile packwizMetaFile : metas) {
                 String prefix = packwizMetaFile.updateMrVersion != null ? "mr" : packwizMetaFile.updateCfProjectId == -1 ? "url" : "cf";
 
@@ -79,7 +78,6 @@ public class ReinstallAction extends AbstractAction {
             }
 
             addExecution.onExit((success) -> {
-                executor.shutdownNow();
                 JOptionPane.showMessageDialog(parent, "Re-installation finished.");
             });
 

@@ -23,7 +23,7 @@ public class TaskDialog extends ProgressDialog {
         });
 
         task.onExit(exitResult -> {
-            if(!exitResult.success()) {
+            if(!exitResult.success() && !exitResult.terminated()) {
                 showErrorDialog(exitResult);
             }
             dispose();
@@ -34,11 +34,9 @@ public class TaskDialog extends ProgressDialog {
     }
 
     protected void showErrorDialog(Task.ExitResult exitResult) {
-        if(!exitResult.success() && exitResult.exitCode() != -1) { // -1 reserved for termination exit.
-            if(taskErroredSupplier != null && !taskErroredSupplier.get()) return; // it's not considered an error
-            String formattedMessage = String.format("%s exited with code %d:\n%s", task.getTaskName(), exitResult.exitCode(), lastOutput.get());
-            JOptionPane.showMessageDialog(this, formattedMessage, Util.withTitlePrefix(task.getTaskName()), JOptionPane.ERROR_MESSAGE);
-        }
+        if(taskErroredSupplier != null && !taskErroredSupplier.get()) return; // it's not considered an error
+        String formattedMessage = String.format("%s exited with code %d:\n%s", task.getTaskName(), exitResult.exitCode(), lastOutput.get());
+        JOptionPane.showMessageDialog(this, formattedMessage, Util.withTitlePrefix(task.getTaskName()), JOptionPane.ERROR_MESSAGE);
     }
 
     public void whenProgramErrored(Supplier<Boolean> supplier) {

@@ -1,6 +1,7 @@
 package com.lx862.pwgui.executable;
 
 import com.lx862.pwgui.core.log.Logger;
+import com.lx862.pwgui.core.thread.NamedThreadFactory;
 import com.lx862.pwgui.task.RunProgramTask;
 
 import java.io.BufferedReader;
@@ -25,13 +26,13 @@ public abstract class Executable {
     public Executable(Logger logger, String programName) {
         if(logger == null) throw new IllegalArgumentException("Logger must not be null!");
 
-        this.workingDirectory = Paths.get(System.getProperty("user.dir"));
-        this.executor = Executors.newSingleThreadExecutor();
+        this.programName = programName;
+        this.logger = logger;
+        this.executor = newExecutor();
         this.keywords = new ArrayList<>();
         this.potentialPaths = new ArrayList<>();
-        this.programName = programName;
         this.executableLocation = null;
-        this.logger = logger;
+        this.workingDirectory = Paths.get(System.getProperty("user.dir"));
     }
 
     public boolean updateExecutableLocation(String executableOverride) {
@@ -106,8 +107,8 @@ public abstract class Executable {
         executor.shutdownNow();
     }
 
-    private void ensureExecutorActive() {
-        if(executor == null || executor.isShutdown()) executor = Executors.newSingleThreadExecutor();
+    private ExecutorService newExecutor() {
+        return Executors.newSingleThreadExecutor(new NamedThreadFactory(getProgramName() + " Executor"));
     }
 
     public class ProgramArgumentBuilder {
@@ -128,7 +129,8 @@ public abstract class Executable {
         }
 
         public RunProgramTask build() {
-            ensureExecutorActive();
+            if(executor == null || executor.isShutdown()) executor = newExecutor();
+
             args.add(0, executableLocation);
             ProcessBuilder processBuilder = new ProcessBuilder(args.toArray(new String[0]));
             processBuilder.directory(workingDirectory.toFile());

@@ -13,13 +13,16 @@ public abstract class FileSystemEntityModel {
         this.name = file.getName();
     }
 
-    public String getDisplayName() {
-        return name;
+    public final String getDisplayName() {
+        String customName = getCustomName();
+        return customName == null ? name : customName;
+    }
+
+    protected String getCustomName() {
+        return null;
     }
 
     public boolean isUserFriendlyName() {
-        return false;
+        return getCustomName() != null;
     }
-
-    public abstract Icon getIcon();
 }

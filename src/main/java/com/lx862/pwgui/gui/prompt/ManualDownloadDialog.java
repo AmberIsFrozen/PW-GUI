@@ -104,6 +104,7 @@ public class ManualDownloadDialog extends BaseDialog {
                 SwingUtilities.invokeLater(this::refreshMissingModList);
             });
         });
+        this.fileWatcherThread.setDaemon(true);
         this.fileWatcherThread.start();
         this.watchingPathLabel.setText(String.format("<html>Download location: <b>%s</b></html>", path.toString()));
         this.watchingPath = path;

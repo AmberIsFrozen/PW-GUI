@@ -17,13 +17,14 @@ import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.function.Consumer;
 
 public abstract class BaseFrame extends JFrame {
     private static final float[] ZOOM_LEVELS = {1.0f, 1.1f, 1.2f ,1.3f, 1.4f, 1.5f, 1.6f, 1.7f, 1.8f, 1.9f, 2.0f};
     protected final JMenuBar jMenuBar;
     private final KeyEventDispatcher shortcutKeyListener;
-    private final HashMap<Float, JCheckBoxMenuItem> zoomDropdownItems = new HashMap<>();
+    private final Map<Float, JCheckBoxMenuItem> zoomDropdownItems = new HashMap<>();
     private int baseWidth;
     private int baseHeight;
 

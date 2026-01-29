@@ -19,15 +19,11 @@ public class DownloadTask extends Task {
     private final Path destinationDir;
     private boolean terminateDownload = false;
 
-    public DownloadTask(String taskName, String itemName, URL url, Path destinationDir, ExecutorService defaultExecutor) {
-        super(taskName, Executors.newSingleThreadExecutor());
+    public DownloadTask(String taskName, String itemName, URL url, Path destinationDir) {
+        super(taskName, PWGUI.BACKGROUND_EXECUTOR);
         this.itemName = itemName;
         this.url = url;
         this.destinationDir = destinationDir;
-
-        onExit(exitResult -> {
-            defaultExecutor.shutdownNow();
-        });
     }
 
     @Override
@@ -54,6 +50,8 @@ public class DownloadTask extends Task {
                     }
                 }
                 submitExitResult(ExitResult.ok());
+            } catch (InterruptedException e) {
+                submitExitResult(ExitResult.terminated(e));
             } catch (Exception e) {
                 PWGUI.LOGGER.error("Failed to download {}!", e, itemName);
                 submitExitResult(ExitResult.exception(-1, e));

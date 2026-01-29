@@ -8,7 +8,7 @@ public class LicenseFileModel extends PlainTextFileModel {
     }
 
     @Override
-    public String getDisplayName() {
+    public String getCustomName() {
         return "License";
     }
 

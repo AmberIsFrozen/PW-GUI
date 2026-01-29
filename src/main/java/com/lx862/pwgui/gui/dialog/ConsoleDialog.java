@@ -114,11 +114,12 @@ public class ConsoleDialog extends BaseDialog {
                 logTextArea.append(line.content() + "\n");
                 logTextArea.setCaretPosition(logTextArea.getDocument().getLength());
             });
-            runProgramTask.onExit(exitCode -> {
+            runProgramTask.onExit(exitResult -> {
                 if(helpMessage) {
                     logTextArea.select(0, 0);
                 } else {
-                    logTextArea.append(String.format("Exited with code %d\n", exitCode));
+                    logTextArea.append(String.format("Exited with code %d\n", exitResult.exitCode()));
+                    logTextArea.setCaretPosition(logTextArea.getDocument().getLength());
                 }
                 currentExecution = null;
             });

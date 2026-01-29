@@ -14,7 +14,7 @@ public class PackMetadataFileModel extends PlainTextFileModel {
     }
 
     @Override
-    public String getDisplayName() {
+    public String getCustomName() {
         return Config.getInstance().showMetaFileName.value() ? name : packwizMetaFile.name;
     }
 

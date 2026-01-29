@@ -64,11 +64,15 @@ public class DownloadPackwizAction extends AbstractAction {
         URL url = URI.create(String.format(mirrors[mirrorIdx], getArtifactName())).toURL();
         boolean lastAvailableAttempt = mirrorIdx == mirrors.length-1;
 
-        DownloadTask task = new DownloadTask("packwiz", "packwiz", url, destination, Executors.newSingleThreadExecutor());
+        DownloadTask task = new DownloadTask("packwiz", "packwiz", url, destination);
         TaskDialog downloadDialog = new TaskDialog(parent, "Downloading packwiz...", task);
 
         task.onExit(exitResult -> {
             downloadDialog.dispose();
+            if(exitResult.terminated()) {
+                return;
+            }
+
             if(lastAvailableAttempt && !exitResult.success()) {
                 task.showErrorDialog(parent, exitResult.exception());
                 return;

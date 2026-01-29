@@ -46,7 +46,7 @@ public class MultipleItemsPanel extends FileTypePanel {
         KButton removeButton = new KButton("Remove All");
         removeButton.setMnemonic(KeyEvent.VK_R);
         removeButton.addActionListener(actionEvent -> {
-            final boolean shouldDelete = JOptionPane.showConfirmDialog(getTopLevelAncestor(), String.format("Are you sure you want to delete \"%d\" items?", fileEntries.size()), Util.withTitlePrefix("Delete Confirmation"), JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION;
+            final boolean shouldDelete = JOptionPane.showConfirmDialog(getTopLevelAncestor(), String.format("Are you sure you want to delete %d items?", fileEntries.size()), Util.withTitlePrefix("Delete Confirmation"), JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION;
             if(shouldDelete) {
                 List<Path> failedPaths = new ArrayList<>();
                 for(FileSystemEntityModel model : fileEntries) {

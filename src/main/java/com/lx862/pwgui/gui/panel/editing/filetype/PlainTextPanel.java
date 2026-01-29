@@ -28,7 +28,7 @@ public class PlainTextPanel extends FileTypePanel {
         try {
             content = fileEntry.getContent();
         } catch (Exception e) {
-            PWGUI.LOGGER.error("", e);
+            PWGUI.LOGGER.error("Error trying to read file!", e);
             content = Util.withBracketPrefix(String.format("Error trying to read file: %s", e.getMessage()));
         }
         this.initialContent = content;

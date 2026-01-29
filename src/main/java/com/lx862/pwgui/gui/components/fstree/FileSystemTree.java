@@ -36,7 +36,7 @@ public class FileSystemTree extends LazyJTree {
         setTransferHandler(new FileTransferHandler());
         addTreeSelectionListener((treeSelectionEvent) -> {
             FileSystemSortedTreeNode treeNode = (FileSystemSortedTreeNode)treeSelectionEvent.getPath().getLastPathComponent();
-            newFileAcknowledged(treeNode.path);
+            newFileAcknowledged(treeNode.getModel().path);
         });
         setShowsRootHandles(true);
     }
@@ -66,7 +66,7 @@ public class FileSystemTree extends LazyJTree {
     }
 
     private FileSystemSortedTreeNode addChildToTree(FileSystemSortedTreeNode rootNode) {
-        File[] files = rootNode.path.toFile().listFiles();
+        File[] files = rootNode.getModel().path.toFile().listFiles();
         if(files != null) {
             for(File file : files) {
                 FileSystemEntityModel child = treeConfiguration.getModel(file);
@@ -101,13 +101,13 @@ public class FileSystemTree extends LazyJTree {
         FileSystemSortedTreeNode newNode = generateRecursiveTree(target);
 
         iterateTree((node) -> {
-            if(node.path.equals(parent)) {
+            if(node.getModel().path.equals(parent)) {
                 if(!node.containsNode(newNode)) {
                     node.addAndSort(newNode);
                     int insertedIndex = node.getIndex(newNode);
                     ((DefaultTreeModel)getModel()).nodesWereInserted(node, new int[]{insertedIndex});
                 } else {
-                    PWGUI.LOGGER.warn("[FileSystemTree] Node {} already exists in tree!", newNode.path);
+                    PWGUI.LOGGER.warn("[FileSystemTree] Node {} already exists in tree!", newNode.getModel().path);
                 }
             }
         });
@@ -115,7 +115,7 @@ public class FileSystemTree extends LazyJTree {
 
     private void modifyNode(Path target, FileSystemEntityModel newFileType) {
         iterateTree((node) -> {
-            if(node.path.equals(target)) {
+            if(node.getModel().path.equals(target)) {
                 TreePath treePath = new TreePath(node.getPath());
                 node.setUserObject(newFileType);
 
@@ -131,7 +131,7 @@ public class FileSystemTree extends LazyJTree {
 
     private void removeNode(Path target) {
         iterateTree((node) -> {
-            if(node.path.equals(target)) {
+            if(node.getModel().path.equals(target)) {
                 ((DefaultTreeModel)getModel()).removeNodeFromParent(node);
             }
         });

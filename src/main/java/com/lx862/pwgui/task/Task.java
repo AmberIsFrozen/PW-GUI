@@ -83,5 +83,12 @@ public abstract class Task {
         public static ExitResult exception(int exitCode, Exception ex) {
             return new ExitResult(false, exitCode, ex);
         }
+        public static ExitResult terminated(InterruptedException e) {
+            return exception(1, e);
+        }
+
+        public boolean terminated() {
+            return exception != null && exception instanceof InterruptedException;
+        }
     }
 }

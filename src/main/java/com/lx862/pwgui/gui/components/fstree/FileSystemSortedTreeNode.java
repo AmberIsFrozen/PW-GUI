@@ -6,22 +6,24 @@ import javax.swing.tree.MutableTreeNode;
 import java.nio.file.Path;
 
 public class FileSystemSortedTreeNode extends LazyLoadedDefaultTreeNode implements Comparable<MutableTreeNode> {
-    public final String name;
-    public final Path path;
+    private final FileSystemEntityModel model;
     private final int initialChildFileCount;
 
     public FileSystemSortedTreeNode(FileSystemEntityModel model) {
-        this.path = model.path;
-        this.name = model.name;
+        this.model = model;
 
-        String[] fileList = this.path.toFile().list();
+        String[] fileList = model.path.toFile().list();
         this.initialChildFileCount = fileList == null ? 0 : fileList.length;
         setUserObject(model);
     }
 
     @Override
     public String toString() {
-        return String.format("FileSystemSortedTreeNode[name=%s, path=%s]", name, path);
+        return String.format("FileSystemSortedTreeNode[name=%s, path=%s]", model.name, model.path);
+    }
+
+    public FileSystemEntityModel getModel() {
+        return this.model;
     }
 
     public void addAndSort(MutableTreeNode newChild) {
@@ -44,15 +46,15 @@ public class FileSystemSortedTreeNode extends LazyLoadedDefaultTreeNode implemen
         if(other == this) return true;
         if(!(other instanceof FileSystemSortedTreeNode)) return false;
 
-        return path.equals(((FileSystemSortedTreeNode)other).path);
+        return model.path.equals(((FileSystemSortedTreeNode)other).model.path);
     }
 
     @Override
     public int compareTo(MutableTreeNode otherNode) {
         if(otherNode instanceof FileSystemSortedTreeNode other) {
-            int bl1 = Boolean.compare(other.path.toFile().isDirectory(), path.toFile().isDirectory());
+            int bl1 = Boolean.compare(other.model.path.toFile().isDirectory(), model.path.toFile().isDirectory());
             if(bl1 == 0) {
-                return name.compareToIgnoreCase(other.name);
+                return model.name.compareToIgnoreCase(other.model.name);
             } else {
                 return bl1;
             }

@@ -41,7 +41,7 @@ public interface VersionGetter {
                 PWGUI.LOGGER.error("", e);
                 return null;
             }
-        });
+        }, PWGUI.BACKGROUND_EXECUTOR);
     }
 
     static CompletableFuture<List<VersionMetadata>> fetchFabric() throws MalformedURLException {
@@ -77,7 +77,7 @@ public interface VersionGetter {
                 PWGUI.LOGGER.error("", e);
                 return null;
             }
-        });
+        }, PWGUI.BACKGROUND_EXECUTOR);
     }
 
     static CompletableFuture<List<VersionMetadata>> fetchForge() throws MalformedURLException {
@@ -101,7 +101,7 @@ public interface VersionGetter {
                 PWGUI.LOGGER.error("", e);
                 return null;
             }
-        });
+        }, PWGUI.BACKGROUND_EXECUTOR);
     }
 
     static CompletableFuture<List<VersionMetadata>> fetchNeoForge() throws MalformedURLException {
@@ -115,7 +115,7 @@ public interface VersionGetter {
             } catch (MalformedURLException e) {
                 return null;
             }
-        })
+        }, PWGUI.BACKGROUND_EXECUTOR)
         .thenApplyAsync(metadatas -> {
             if(metadatas == null) return metadatas;
 
@@ -127,7 +127,7 @@ public interface VersionGetter {
             } catch (MalformedURLException e) {
                 return null;
             }
-        });
+        }, PWGUI.BACKGROUND_EXECUTOR);
     }
 
     static List<VersionMetadata> fetchNeoForgeInternal(String url, boolean isFor12001) throws MalformedURLException {

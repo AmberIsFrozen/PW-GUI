@@ -15,9 +15,9 @@ import java.awt.*;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.WatchEvent;
-import java.util.ArrayList;
-import java.util.Collections;
+import java.util.*;
 import java.util.List;
+import java.util.function.Predicate;
 import java.util.function.Supplier;
 
 public class EditPanel extends JPanel {
@@ -38,9 +38,11 @@ public class EditPanel extends JPanel {
             fileBrowserPanel.updateIgnorePattern(null);
 
             List<FileSystemSortedTreeNode> selectedNodes = new ArrayList<>();
-            for(TreePath path : fileBrowserPanel.fileBrowserTree.getSelectionPaths()) {
-                FileSystemSortedTreeNode node = (FileSystemSortedTreeNode) path.getLastPathComponent();
-                selectedNodes.add(node);
+            if(fileBrowserPanel.fileBrowserTree.getSelectionPaths() != null) {
+                for(TreePath path : fileBrowserPanel.fileBrowserTree.getSelectionPaths()) {
+                    FileSystemSortedTreeNode node = (FileSystemSortedTreeNode) path.getLastPathComponent();
+                    selectedNodes.add(node);
+                }
             }
 
             List<NameTabPair> filePanels;

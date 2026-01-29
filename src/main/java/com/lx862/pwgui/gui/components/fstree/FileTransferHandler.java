@@ -31,7 +31,7 @@ public class FileTransferHandler extends TransferHandler {
         JTree.DropLocation dropLocation = (JTree.DropLocation)info.getDropLocation();
         TreePath nodePath = dropLocation.getPath();
         if(nodePath.getLastPathComponent() instanceof FileSystemSortedTreeNode node) {
-            Path pasteDirectory = node.path.toFile().isDirectory() ? node.path : node.path.getParent();
+            Path pasteDirectory = node.getModel().path.toFile().isDirectory() ? node.getModel().path : node.getModel().path.getParent();
             Transferable transferable = info.getTransferable();
 
             try {

@@ -68,9 +68,7 @@ public class FullUpdateAction extends UpdateAction {
                         return;
                     }
 
-                    ExecutorService executor = Executors.newFixedThreadPool(1);
-
-                    BatchedTask batchedTask = new BatchedTask("Packwiz", executor);
+                    BatchedTask batchedTask = new BatchedTask("Packwiz");
                     for(PackIndexFile.FileEntry entry : unchangedEntries) {
                         PackwizMetaFile packwizMetaFile = new PackwizMetaFile(entry.path);
                         if(packwizMetaFile.pinned || !packwizMetaFile.haveUpdateSource()) continue;
@@ -100,7 +98,6 @@ public class FullUpdateAction extends UpdateAction {
                     }
 
                     batchedTask.onExit(programErrored -> {
-                        executor.shutdownNow();
                         PWGUI.LOGGER.info("Found {} incompatible item(s) under the current modpack configuration.", filesWithoutSuitableVersion.size());
 
                         try {

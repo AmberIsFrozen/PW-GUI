@@ -4,6 +4,7 @@ import com.formdev.flatlaf.util.UIScale;
 import com.lx862.pwgui.core.ApplicationInfo;
 import com.lx862.pwgui.core.Config;
 import com.lx862.pwgui.core.log.Logger;
+import com.lx862.pwgui.core.thread.DaemonThreadFactory;
 import com.lx862.pwgui.support.packwiz.executable.PackwizExecutable;
 import com.lx862.pwgui.gui.frame.EditFrame;
 import com.lx862.pwgui.gui.frame.SetupFrame;
@@ -15,9 +16,12 @@ import org.apache.commons.cli.CommandLine;
 import javax.swing.*;
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 public class PWGUI {
     public static final Logger LOGGER = new Logger("PW-GUI");
+    public static final ExecutorService BACKGROUND_EXECUTOR = Executors.newSingleThreadExecutor(new DaemonThreadFactory("PW-GUI Background Task Executor"));
 
     /**
      * Initialize/re-initialize the program

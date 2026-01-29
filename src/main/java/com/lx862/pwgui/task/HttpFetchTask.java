@@ -13,13 +13,9 @@ public class HttpFetchTask extends Task {
     private final Consumer<String> stringConsumer;
 
     public HttpFetchTask(String taskName, ConstructRequest constructRequest, Consumer<String> stringConsumer) {
-        super(taskName, Executors.newSingleThreadExecutor());
+        super(taskName, PWGUI.BACKGROUND_EXECUTOR);
         this.stringConsumer = stringConsumer;
         this.constructRequest = constructRequest;
-
-        onExit(exitResult -> {
-            defaultExecutor.shutdownNow();
-        });
     }
 
     @Override
