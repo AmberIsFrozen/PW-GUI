@@ -1,15 +1,15 @@
 [versions]
-shadow = "9.3.1"
-flatlaf = "3.7"
+shadow = "9.5.1"
+flatlaf = "3.7.2"
 toml4j = "0.7.2"
-common-io = "2.21.0"
+common-io = "2.22.0"
 common-cli = "1.11.0"
 imageio = "3.13.0"
-gson = "2.13.2"
-commonmark = "0.27.1"
-rsyntaxtextarea = "3.6.1"
-ztzip = "1.17"
-slf4j = "2.0.17"
+gson = "2.14.0"
+commonmark = "0.29.0"
+rsyntaxtextarea = "3.6.2"
+ztzip = "1.18.2"
+slf4j = "2.0.18"
 
 [plugins]
 shadow = { id = "com.gradleup.shadow", version.ref = "shadow" }
