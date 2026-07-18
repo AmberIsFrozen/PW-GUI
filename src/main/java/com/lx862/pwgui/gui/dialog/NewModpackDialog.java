@@ -223,17 +223,38 @@ class ImportModpackPanel extends JPanel {
             JButton importButton = new JButton("Import!");
             importButton.setEnabled(false);
 
-            JLabel descriptionLabel = new JLabel("Work-in-progress!");
+            JLabel descriptionLabel = new JLabel("<html>You may import a <b>Modrinth Modpack (.mrpack)</b> and create a packwiz-formatted pack out of it.<br>Note that this is an additional feature added to PW-GUI and not a part of packwiz.</html>");
             add(descriptionLabel);
 
-            add(GUIConfiguration.createVerticalPadding(10));
+            add(GUIConfiguration.createVerticalPadding(5));
 
-            JPanel pathPanel = new KInlinePanel();
-            pathPanel.add(new JLabel("Selected path:"));
-            JLabel pathLabel = new JLabel("None");
-            pathLabel.setFont(pathLabel.getFont().deriveFont(Font.BOLD));
-            pathPanel.add(pathLabel);
-            add(pathPanel);
+            add(new KSeparator());
+
+            add(GUIConfiguration.createVerticalPadding(5));
+
+            JPanel modpackNamePanel = new KInlinePanel();
+            modpackNamePanel.add(new JLabel("Modpack Name:"));
+            JLabel modpackNameLabel = new JLabel("None");
+            modpackNameLabel.setFont(modpackNameLabel.getFont().deriveFont(Font.BOLD));
+            modpackNamePanel.add(modpackNameLabel);
+            modpackNamePanel.setVisible(false);
+            add(modpackNamePanel);
+
+            JPanel modpackVersionPanel = new KInlinePanel();
+            modpackVersionPanel.add(new JLabel("Modpack Version:"));
+            JLabel modpackVersionLabel = new JLabel("None");
+            modpackVersionLabel.setFont(modpackVersionLabel.getFont().deriveFont(Font.BOLD));
+            modpackVersionPanel.add(modpackVersionLabel);
+            modpackVersionPanel.setVisible(false);
+            add(modpackVersionPanel);
+
+            JPanel modpackPathPanel = new KInlinePanel();
+            modpackPathPanel.add(new JLabel("Selected path:"));
+            JLabel modpackPathLabel = new JLabel("None");
+            modpackPathLabel.setFont(modpackPathLabel.getFont().deriveFont(Font.BOLD));
+            modpackPathPanel.add(modpackPathLabel);
+            modpackPathPanel.setVisible(false);
+            add(modpackPathPanel);
 
             JButton selectPackButton = new JButton("Select pack...");
             selectPackButton.addActionListener(e -> {
@@ -245,8 +266,16 @@ class ImportModpackPanel extends JPanel {
 
                     try {
                         selectedPack.set(new ModrinthModpack(file.toPath()));
-                        pathLabel.setText(file.getAbsoluteFile().toString());
                         importButton.setEnabled(true);
+
+                        modpackNameLabel.setText(selectedPack.get().index.name);
+                        modpackNamePanel.setVisible(true);
+
+                        modpackVersionLabel.setText(selectedPack.get().index.versionId);
+                        modpackVersionPanel.setVisible(true);
+
+                        modpackPathLabel.setText(file.getAbsoluteFile().toString());
+                        modpackPathPanel.setVisible(true);
                     } catch (Exception ex) {
                         JOptionPane.showMessageDialog(this, "The selected pack is invalid!\n" + ex.getMessage(), "Invalid Modrinth Modpack!", JOptionPane.ERROR_MESSAGE);
                         PWGUI.LOGGER.error("Failed to parse modrinth modpack!", ex);
