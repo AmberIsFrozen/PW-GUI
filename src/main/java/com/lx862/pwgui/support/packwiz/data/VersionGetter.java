@@ -145,9 +145,11 @@ public interface VersionGetter {
                     VersionMetadata metadata = new VersionMetadata("1.20.1", version.contains("-") ? version.split("-")[1] : version, VersionMetadata.State.RELEASE);
                     metadatas.add(metadata);
                 } else {
-                    String mcVersionMajor = version.split("\\.")[0];
-                    String mcVersionMinor = version.split("\\.")[1];
-                    String mcVersion = "1." + mcVersionMajor + (mcVersionMinor.equals("0") ? "" : "." + mcVersionMinor);
+                    String[] versionComponents = version.split("\\.");
+                    String mcVersionMajor = versionComponents[0];
+                    String mcVersionMinor = versionComponents[1];
+                    boolean is26x = mcVersionMajor.equals("26");
+                    String mcVersion = (is26x ? "" : "1.") + mcVersionMajor + (mcVersionMinor.equals("0") ? "" : "." + mcVersionMinor);
                     VersionMetadata metadata = new VersionMetadata(mcVersion, version, version.contains("beta") ? VersionMetadata.State.BETA : VersionMetadata.State.RELEASE);
                     metadatas.add(metadata);
                 }
