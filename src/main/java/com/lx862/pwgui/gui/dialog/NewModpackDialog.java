@@ -332,22 +332,6 @@ class ImportModpackPanel extends JPanel {
             });
             importPackTask.add(createPackTask);
 
-            /* Add copy override tasks */
-            if(ZipUtil.containsEntry(pack.getFile(), "overrides")) {
-                Task extractZipTask = new ExtractZipTask("Extracting files...", pack.getFile(), packDestinationPath.get().toFile(), new ExtractZipTask.InnerDirectory("overrides"));
-                importPackTask.add(extractZipTask);
-            }
-
-            if(ZipUtil.containsEntry(pack.getFile(), "client-overrides") && (side == Sideness.CLIENT || side == Sideness.BOTH)) {
-                Task extractZipTask = new ExtractZipTask("Extracting client files...", pack.getFile(), packDestinationPath.get().toFile(), new ExtractZipTask.InnerDirectory("client-overrides"));
-                importPackTask.add(extractZipTask);
-            }
-
-            if(ZipUtil.containsEntry(pack.getFile(), "server-overrides") && (side == Sideness.SERVER || side == Sideness.BOTH)) {
-                Task extractZipTask = new ExtractZipTask("Extracting server files...", pack.getFile(), packDestinationPath.get().toFile(), new ExtractZipTask.InnerDirectory("client-overrides"));
-                importPackTask.add(extractZipTask);
-            }
-
             /* Fetch MR for version */
             Map<String, ModrinthVersionEntry> projectVersions = new HashMap<>();
 
@@ -372,6 +356,22 @@ class ImportModpackPanel extends JPanel {
             });
 
             importPackTask.add(httpFetchTask);
+
+            /* Add copy override tasks */
+            if(ZipUtil.containsEntry(pack.getFile(), "overrides")) {
+                Task extractZipTask = new ExtractZipTask("Extracting files...", pack.getFile(), packDestinationPath.get().toFile(), new ExtractZipTask.InnerDirectory("overrides"));
+                importPackTask.add(extractZipTask);
+            }
+
+            if(ZipUtil.containsEntry(pack.getFile(), "client-overrides") && (side == Sideness.CLIENT || side == Sideness.BOTH)) {
+                Task extractZipTask = new ExtractZipTask("Extracting client files...", pack.getFile(), packDestinationPath.get().toFile(), new ExtractZipTask.InnerDirectory("client-overrides"));
+                importPackTask.add(extractZipTask);
+            }
+
+            if(ZipUtil.containsEntry(pack.getFile(), "server-overrides") && (side == Sideness.SERVER || side == Sideness.BOTH)) {
+                Task extractZipTask = new ExtractZipTask("Extracting server files...", pack.getFile(), packDestinationPath.get().toFile(), new ExtractZipTask.InnerDirectory("client-overrides"));
+                importPackTask.add(extractZipTask);
+            }
 
             importPackTask.onExit(exitResult -> {
                 if(exitResult.success()) {
