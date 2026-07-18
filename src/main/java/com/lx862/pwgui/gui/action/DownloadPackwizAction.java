@@ -32,7 +32,7 @@ public class DownloadPackwizAction extends AbstractAction {
     private final Consumer<Path> finishCallback;
     private static final String[] downloadMirror = {
             "https://nightly.link/packwiz/packwiz/workflows/go/main/%s.zip", // https://github.com/packwiz/packwiz/tree/main
-            "https://nightly.link/AmberIsFrozen/packwiz/workflows/go/artifact/%s.zip" // https://github.com/AmberIsFrozen/packwiz/tree/artifact
+            "https://github.com/AmberIsFrozen/packwiz/releases/latest/download/%s.zip" // https://github.com/AmberIsFrozen/packwiz/tree/artifact
     };
 
     public DownloadPackwizAction(String title, Window parent, Consumer<Path> finishCallback) {
@@ -61,7 +61,8 @@ public class DownloadPackwizAction extends AbstractAction {
 
     private void attemptDownload(String[] mirrors, int mirrorIdx, Window parent, Path destinationPath) throws MalformedURLException {
         Path destination = destinationPath.resolve("packwiz_executable.zip");
-        URL url = URI.create(String.format(mirrors[mirrorIdx], getArtifactName())).toURL();
+        String urlStr = mirrors[mirrorIdx];
+        URL url = URI.create(String.format(urlStr, getArtifactName(urlStr.startsWith("https://nightly.link")))).toURL();
         boolean lastAvailableAttempt = mirrorIdx == mirrors.length-1;
 
         DownloadTask task = new DownloadTask("packwiz", "packwiz", url, destination);
@@ -132,11 +133,12 @@ public class DownloadPackwizAction extends AbstractAction {
         downloadDialog.setVisible(true);
     }
 
-    private static String getArtifactName() {
+    private static String getArtifactName(boolean isArtifact) {
         boolean isWindows = false;
+        ApplicationInfo.OperatingSystem os = ApplicationInfo.INSTANCE.os;
 
         String artifactName;
-        switch(ApplicationInfo.INSTANCE.os.type()) {
+        switch(os.type()) {
             case WINDOWS -> {
                 isWindows = true;
                 artifactName = "Windows 64-bit";
@@ -153,9 +155,10 @@ public class DownloadPackwizAction extends AbstractAction {
         }
 
         if(ApplicationInfo.INSTANCE.os.architecture().isArm()) artifactName += " ARM";
+        if(ApplicationInfo.INSTANCE.os.architecture().isRiscV()) artifactName += " RISC-V";
         else if(!isWindows) artifactName += " x86";
 
-        artifactName = artifactName.replace(" ", "%20");
+        artifactName = artifactName.replace(" ", isArtifact ? "%20" : ".");
         return artifactName;
     }
 

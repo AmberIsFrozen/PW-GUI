@@ -22,7 +22,12 @@ public class ApplicationInfo {
         String os = System.getProperty("os.name").toLowerCase(Locale.ROOT);
         String arch = System.getProperty("os.arch");
         OperatingSystem.Type osType = os.contains("windows") ? OperatingSystem.Type.WINDOWS : os.contains("mac") ? OperatingSystem.Type.MAC_OS : os.contains("linux") ? OperatingSystem.Type.LINUX : OperatingSystem.Type.UNKNOWN;
-        OperatingSystem.Architecture osArch = arch.equals("aarch64") ? OperatingSystem.Architecture.ARM64 : arch.equals("arm") ? OperatingSystem.Architecture.ARM : OperatingSystem.Architecture.X86;
+        OperatingSystem.Architecture osArch =
+                arch.equals("riscv64") ? OperatingSystem.Architecture.RISCV64 :
+                arch.equals("riscv") ? OperatingSystem.Architecture.RISCV :
+                arch.equals("aarch64") ? OperatingSystem.Architecture.ARM64 :
+                arch.equals("arm") ? OperatingSystem.Architecture.ARM :
+                OperatingSystem.Architecture.X86;
 
         this.os = new OperatingSystem(osType, osArch);
     }
@@ -63,7 +68,9 @@ public class ApplicationInfo {
         public enum Architecture {
             X86("x86"),
             ARM("arm"),
-            ARM64("arm64");
+            ARM64("arm64"),
+            RISCV("riscv"),
+            RISCV64("riscv64");
 
             private final String name;
 
@@ -78,6 +85,10 @@ public class ApplicationInfo {
 
             public boolean isArm() {
                 return this == ARM || this == ARM64;
+            }
+
+            public boolean isRiscV() {
+                return this == RISCV || this == RISCV64;
             }
         }
 
