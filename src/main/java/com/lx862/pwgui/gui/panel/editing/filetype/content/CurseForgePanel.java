@@ -23,7 +23,7 @@ public class CurseForgePanel extends JPanel {
         descriptionLabel.setAlignmentX(LEFT_ALIGNMENT);
         formPanel.addRow(2, descriptionLabel);
 
-        KTextField contentTextField = new KTextField("Cloth Config API");
+        KTextField contentTextField = new KTextField("Mod name here...");
         formPanel.addRow(1, new JLabel("URL/Search Term: "), contentTextField);
 
         contentTextField.addActionListener(actionEvent -> {

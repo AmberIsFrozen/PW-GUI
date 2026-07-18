@@ -102,7 +102,7 @@ public class WelcomeFrame extends BaseFrame {
             private final JFrame parent;
 
             public CreateModpackAction(JFrame parent) {
-                super("Create new modpack...");
+                super("New modpack...");
                 this.parent = parent;
                 putValue(MNEMONIC_KEY, KeyEvent.VK_C);
             }

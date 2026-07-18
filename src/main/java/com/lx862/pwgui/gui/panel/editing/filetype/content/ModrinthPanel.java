@@ -26,7 +26,7 @@ public class ModrinthPanel extends JPanel {
         descriptionLabel.setAlignmentX(LEFT_ALIGNMENT);
         formPanel.addRow(2, descriptionLabel);
 
-        KTextField contentTextField = new KTextField("Cloth Config API");
+        KTextField contentTextField = new KTextField("Mod name here...");
         contentTextField.addActionListener(actionEvent -> {
             if(!contentTextField.getText().isEmpty()) AddContentPanel.addProjectFromContentPlatform((Window)getTopLevelAncestor(), context.getModpack(), "modrinth", "add", contentTextField.getText());
         });

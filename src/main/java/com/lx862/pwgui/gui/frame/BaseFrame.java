@@ -140,7 +140,7 @@ public abstract class BaseFrame extends JFrame {
         JMenu addMissingMenu = new JMenu("Add Missing...");
 
         JMenuItem modsDirectoryMenuItem = new JMenuItem(new CreateMissingDirectoryAction(this, modpack.getRootPath(), "mods", "Mods Folder"));
-        JMenuItem configDirectoryMenuItem = new JMenuItem(new CreateMissingDirectoryAction(this, modpack.getRootPath(), "config", "Mod Config Folder"));
+        JMenuItem configDirectoryMenuItem = new JMenuItem(new CreateMissingDirectoryAction(this, modpack.getRootPath(), "config", "Config Folder"));
         JMenuItem resourcePacksDirectoryMenuItem = new JMenuItem(new CreateMissingDirectoryAction(this, modpack.getRootPath(), "resourcepacks", "Resource Packs Folder"));
         JMenuItem shaderPacksDirectoryMenuItem = new JMenuItem(new CreateMissingDirectoryAction(this, modpack.getRootPath(), "shaderpacks", "Shader Packs Folder"));
         JMenuItem pluginsDirectoryMenuItem = new JMenuItem(new CreateMissingDirectoryAction(this, modpack.getRootPath(), "plugins", "Plugins Folder"));
