@@ -70,10 +70,12 @@ public class FileSystemTreeCellRenderer extends DefaultTreeCellRenderer {
         }
         if(model instanceof ContentDirectoryModel) {
             switch(model.path.getFileName().toString()) {
-                case "mods" -> {
+                case "mods", "plugins" -> {
                     return new ImageIcon(ImageUtil.convertImage(Util.getAssets("/assets/ui/mime/mods.png"), 16));
                 }
-                // TODO resourcepacks & plugins
+                case "resourcepacks" -> {
+                    return new ImageIcon(ImageUtil.convertImage(Util.getAssets("/assets/ui/mime/pack.png"), 16));
+                }
                 case "shaderpacks" -> {
                     return new ImageIcon(ImageUtil.convertImage(Util.getAssets("/assets/ui/mime/shaderpacks.png"), 16));
                 }
