@@ -20,6 +20,7 @@ public class ModpackVersionPanel extends KGridBagLayoutPanel {
     private final JComboBox<VersionMetadata> modloaderVersionComboBox;
     private final JCheckBox showSnapshotCheckBox;
     private final JLabel modloaderVersionLabel;
+    private final JCheckBox modloaderAllVersionCheckbox;
 
     private final PackComponentVersion initialMinecraft;
     private final PackComponentVersion initialModloader;
@@ -94,8 +95,12 @@ public class ModpackVersionPanel extends KGridBagLayoutPanel {
 
         modloaderVersionLabel = new JLabel("Modloader Version: ");
 
+        modloaderAllVersionCheckbox = new JCheckBox("Show beta version");
+        modloaderAllVersionCheckbox.addActionListener(actionEvent -> updateModloaderUI());
+
         addRow(2, modloaderChoicePanel);
         addRow(1, modloaderVersionLabel, modloaderVersionComboBox);
+        addRow(1, null, modloaderAllVersionCheckbox);
 
         updateMinecraftUI();
         updateModloaderUI();
@@ -133,9 +138,11 @@ public class ModpackVersionPanel extends KGridBagLayoutPanel {
         if(modloader == null) {
             modloaderVersionLabel.setVisible(false);
             modloaderVersionComboBox.setVisible(false);
+            modloaderAllVersionCheckbox.setVisible(false);
         } else {
             modloaderVersionLabel.setVisible(true);
             modloaderVersionComboBox.setVisible(true);
+            modloaderAllVersionCheckbox.setVisible(true);
             modloaderVersionLabel.setText(modloader.iconName.name() + " version:");
 
             modloaderVersionComboBox.setEnabled(false);
@@ -144,7 +151,12 @@ public class ModpackVersionPanel extends KGridBagLayoutPanel {
             Caches.fetchVersionMetadata(modloader)
                 .thenAccept((versionList) -> {
                     SwingUtilities.invokeLater(() -> {
-                        fillComboBoxes(minecraftVersionComboBox.getEditor().getItem().toString(), modloaderVersionComboBox, versionList, false);
+                        boolean isBeta = versionList.stream().anyMatch(e -> e.getState() != VersionMetadata.State.RELEASE && e.getVersionName().equals(modloaderVersionComboBox.getEditor().getItem().toString()));
+                        if(isBeta) {
+                            modloaderAllVersionCheckbox.setSelected(true);
+                        }
+
+                        fillComboBoxes(minecraftVersionComboBox.getEditor().getItem().toString(), modloaderVersionComboBox, versionList, modloaderAllVersionCheckbox.isSelected());
                         modloaderVersionComboBox.setEnabled(true);
                     });
                 });
@@ -170,9 +182,9 @@ public class ModpackVersionPanel extends KGridBagLayoutPanel {
 
         List<VersionMetadata> filteredMetadatas = metadatas.stream()
                 .filter(e -> {
-                   boolean releaseTypeMatched = showAllReleaseType || e.getState() == VersionMetadata.State.RELEASE;
-                   boolean minecraftVersionMatched = e.getAccompaniedMinecraftVersion() == null || e.getAccompaniedMinecraftVersion().equals(mcVersion);
-                   return releaseTypeMatched && minecraftVersionMatched;
+                    boolean releaseTypeMatched = showAllReleaseType || e.getState() == VersionMetadata.State.RELEASE;
+                    boolean minecraftVersionMatched = e.getAccompaniedMinecraftVersion() == null || e.getAccompaniedMinecraftVersion().equals(mcVersion);
+                    return releaseTypeMatched && minecraftVersionMatched;
                 })
                 .toList();
 

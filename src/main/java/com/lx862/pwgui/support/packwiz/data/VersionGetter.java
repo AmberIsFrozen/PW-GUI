@@ -18,6 +18,7 @@ import java.net.MalformedURLException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
 
 public interface VersionGetter {
@@ -149,6 +150,9 @@ public interface VersionGetter {
                     String mcVersionMajor = versionComponents[0];
                     String mcVersionMinor = versionComponents[1];
                     boolean is26x = mcVersionMajor.equals("26");
+                    if(is26x && !Objects.equals(versionComponents[2], "0")) {
+                        mcVersionMinor += "." + versionComponents[2];
+                    }
                     String mcVersion = (is26x ? "" : "1.") + mcVersionMajor + (mcVersionMinor.equals("0") ? "" : "." + mcVersionMinor);
                     VersionMetadata metadata = new VersionMetadata(mcVersion, version, version.contains("beta") ? VersionMetadata.State.BETA : VersionMetadata.State.RELEASE);
                     metadatas.add(metadata);

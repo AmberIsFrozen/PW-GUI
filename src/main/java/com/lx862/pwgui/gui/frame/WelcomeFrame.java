@@ -104,7 +104,7 @@ public class WelcomeFrame extends BaseFrame {
             public CreateModpackAction(JFrame parent) {
                 super("New modpack...");
                 this.parent = parent;
-                putValue(MNEMONIC_KEY, KeyEvent.VK_C);
+                putValue(MNEMONIC_KEY, KeyEvent.VK_N);
             }
 
             @Override
