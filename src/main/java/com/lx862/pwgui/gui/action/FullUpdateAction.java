@@ -123,7 +123,7 @@ public class FullUpdateAction extends UpdateAction {
             }
         });
         TaskDialog updateProgressDialog = new TaskDialog(parent, "Checking for update...", regularUpdateExecution);
-        updateProgressDialog.setVisible(true);
         regularUpdateExecution.run(Strings.REASON_TRIGGERED_BY_USER);
+        updateProgressDialog.setVisible(true);
     }
 }
