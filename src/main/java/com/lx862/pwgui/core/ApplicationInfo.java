@@ -13,6 +13,7 @@ public class ApplicationInfo {
     public String name;
     public String version;
     public String author;
+    public String[] news;
     public final OperatingSystem os;
 
     public static ApplicationInfo INSTANCE;

@@ -27,6 +27,7 @@ public class WelcomeFrame extends BaseFrame {
     public WelcomeFrame(Component parent) {
         super(ApplicationInfo.INSTANCE.name);
 
+        setLayout(new BorderLayout());
         setSize(400, 525);
         setLocationRelativeTo(parent);
 
@@ -36,9 +37,14 @@ public class WelcomeFrame extends BaseFrame {
         jMenuBar.add(super.getHelpMenu());
 
         KRootContentPanel contentPanel = new KRootContentPanel(10);
+        if(ApplicationInfo.INSTANCE.news.length > 0) {
+            JPanel newsPanel = new NewsPanel(ApplicationInfo.INSTANCE.news);
+            add(newsPanel, BorderLayout.NORTH);
+        }
+
         JPanel mainPanel = new MainPanel(this);
         contentPanel.add(mainPanel, BorderLayout.CENTER);
-        add(contentPanel);
+        add(contentPanel, BorderLayout.CENTER);
     }
 
     @Override
@@ -46,6 +52,18 @@ public class WelcomeFrame extends BaseFrame {
         super.dispose();
         PackwizExecutable.INSTANCE.dispose();
         GitExecutable.INSTANCE.dispose();
+    }
+
+    static class NewsPanel extends JPanel {
+        public NewsPanel(String[] news) {
+            setLayout(new BorderLayout());
+            setBorder(GUIConfiguration.borderWithPadding(8, BorderFactory.createLineBorder(new Color(0x776000), 1)));
+            setBackground(new Color(0xFFE044));
+
+            JLabel jLabel = new JLabel("<html>" + news[0] + "</html>");
+            jLabel.setForeground(Color.BLACK);
+            add(jLabel, BorderLayout.CENTER);
+        }
     }
 
     static class MainPanel extends JPanel {

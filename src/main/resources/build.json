@@ -1,5 +1,6 @@
 {
   "name": "${name}",
   "version": "${version}",
-  "author": "${author}"
+  "author": "${author}",
+  "news": ["NeoForge 26.x modpack may require a newer packwiz version.<br>Re-download packwiz if modpack creation failed."]
 }
