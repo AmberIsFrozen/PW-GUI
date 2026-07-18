@@ -70,7 +70,7 @@ public interface VersionGetter {
                     Node node = versionList.item((versionList.getLength()-1) - i); // Revert the list, since we want the newest to be 1st, and oldest to be last
                     String version = node.getTextContent();
                     String mcVersion = mcVersionLabeled ? version.split("-")[0] : null;
-                    VersionMetadata metadata = new VersionMetadata(mcVersion, version, version.contains("beta") ? VersionMetadata.State.BETA : VersionMetadata.State.RELEASE);
+                    VersionMetadata metadata = new VersionMetadata(mcVersion, version, version.contains("beta") ? VersionMetadata.State.BETA : version.contains("alpha") ? VersionMetadata.State.ALPHA : VersionMetadata.State.RELEASE);
                     metadatas.add(metadata);
                 }
                 return metadatas;

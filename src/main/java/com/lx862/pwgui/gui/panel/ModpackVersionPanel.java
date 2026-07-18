@@ -95,7 +95,7 @@ public class ModpackVersionPanel extends KGridBagLayoutPanel {
 
         modloaderVersionLabel = new JLabel("Modloader Version: ");
 
-        modloaderAllVersionCheckbox = new JCheckBox("Show beta version");
+        modloaderAllVersionCheckbox = new JCheckBox("Show all versions");
         modloaderAllVersionCheckbox.addActionListener(actionEvent -> updateModloaderUI());
 
         addRow(2, modloaderChoicePanel);
