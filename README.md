@@ -14,7 +14,7 @@ PW-GUI is a tool designed to simplify modpack management by providing a graphica
 
 The end goal is that newcomers should be able to get started authoring their own Minecraft modpack with packwiz, as well as offering an overview of the modpack.
 
-## What stuff can it do?
+## What can it do?
 - You can create a modpack from scratch
 - You can import a CurseForge modpack
 - You can export a modpack to Modrinth (.mrpack) / CurseForge (.zip) format
@@ -22,7 +22,7 @@ The end goal is that newcomers should be able to get started authoring their own
 - You can add new content from Modrinth/CurseForge/Direct URL
 - *TLDR: Pretty much most things the packwiz CLI do, just in GUI!*
 
-### What (more) stuff can it do?
+### What (more) can it do?
 - In-app downloading of the packwiz executable
 - Edit preserve state of each file (Whether the file should be overriden by players)
 - Mark mod as optional, pinned, as well as modifying different "sides"
